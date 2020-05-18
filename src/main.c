@@ -94,10 +94,18 @@ int main(int argc, char *argv[])
     jerry_cleanup();
   }
 
-  //jerry_release_value(execute("print('hello')"));
   jerry_release_value(execute(buf));
 
-  jerry_cleanup();
+  while(1)
+  {
+    char * input = NULL;
+    if (!input)
+    {
+      break;
+    }
+    free(input);
+  }
 
+  jerry_cleanup();
   return 0;
 }
