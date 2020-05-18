@@ -88,16 +88,16 @@ int main(int argc, char *argv[])
 
   char *buf = loadfile("./index.js");
 
-  if (buf)
-  {
-    //jerry_release_value(execute("print('hello')"));
-    jerry_release_value(execute(buf));
-  }
-  else
+  if (!buf)
   {
     puts("file not found");
+    jerry_cleanup();
   }
 
-  jerry_cleanup ();
+  //jerry_release_value(execute("print('hello')"));
+  jerry_release_value(execute(buf));
+
+  jerry_cleanup();
+
   return 0;
 }
