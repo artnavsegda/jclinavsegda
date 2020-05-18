@@ -134,12 +134,15 @@ int main(int argc, char *argv[])
     char * input = readline(">");
 
     if (!input)
-    {
       break;
-    }
 
-    jerry_release_value(call_single_str(interpret, input));
+    jerry_value_t ret_val = call_single_str(interpret, input);
     free(input);
+
+    if (jerry_value_is_null(ret_val))
+      break;
+
+    jerry_release_value(ret_val);
   }
 
   jerry_cleanup();

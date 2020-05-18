@@ -6,6 +6,8 @@ function interpret(cmdline)
 {
   var arguments = cmdline.split(" ");
   print(arguments[0]);
+  if (arguments[0] == "exit")
+    return null;
 }
 
 function complete(userinput)
