@@ -7,6 +7,8 @@
 #include <linux/limits.h>
 #include <dirent.h>
 #include <assert.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "jerryscript-config.h"
 #include "jerryscript.h"
 #include "jerryscript-ext/handler.h"
@@ -96,13 +98,29 @@ int main(int argc, char *argv[])
 
   jerry_release_value(execute(buf));
 
+  jerry_value_t global_obj_val = jerry_get_global_object ();
+  jerry_value_t interpret = jerryx_get_property_str(global_obj_val, "interpret");
+  if (!jerry_value_is_function (interpret))
+  {
+    puts("no interpret global function");
+  }
+
   while(1)
   {
-    char * input = NULL;
+    char * input = readline(">");
+
     if (!input)
     {
       break;
     }
+
+    jerry_value_t args[1];
+    args[0] = jerry_create_string_from_utf8 (input);
+    jerry_value_t this_val = jerry_create_undefined();
+    jerry_value_t ret_val = jerry_call_function(interpret, this_val, args, 1);
+    jerry_release_value(ret_val);
+    jerry_release_value(this_val);
+    jerry_release_value(args[0]);
     free(input);
   }
 
