@@ -7,3 +7,9 @@ function interpret(cmdline)
   var arguments = cmdline.split(" ");
   print(arguments[0]);
 }
+
+function complete(userinput)
+{
+  print("");
+  print("Tab !");
+}

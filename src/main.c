@@ -44,7 +44,7 @@ static void register_js_function (const char *name_p, jerry_external_handler_t h
   jerry_release_value (result_val);
 }
 
-jerry_value_t execute(char *buf)
+static jerry_value_t execute(char *buf)
 {
   jerry_value_t eval_ret = jerry_parse (NULL, 0, buf, strlen (buf), JERRY_PARSE_NO_OPTS);
 
@@ -63,7 +63,7 @@ jerry_value_t execute(char *buf)
   return eval_ret;
 }
 
-char * loadfile(char *filename)
+static char * loadfile(char *filename)
 {
   int jsmain = open(filename,O_RDONLY);
 
@@ -81,23 +81,24 @@ char * loadfile(char *filename)
   return buf;
 }
 
-static void call_single_str(jerry_value_t function, char * argument)
+static jerry_value_t call_single_str(jerry_value_t function, char * argument)
 {
   jerry_value_t args[1];
   args[0] = jerry_create_string_from_utf8 (argument);
   jerry_value_t this_val = jerry_create_undefined();
   jerry_value_t ret_val = jerry_call_function(function, this_val, args, 1);
-  jerry_release_value(ret_val);
   jerry_release_value(this_val);
   jerry_release_value(args[0]);
+  return ret_val;
 }
 
-int jcli_completion(int count, int key)
+static int jcli_completion(int count, int key)
 {
   jerry_value_t global_obj_val = jerry_get_global_object ();
   jerry_value_t complete = jerryx_get_property_str(global_obj_val, "complete");
   jerry_release_value(global_obj_val);
-  call_single_str(complete, rl_line_buffer);
+  jerry_release_value(call_single_str(complete, rl_line_buffer));
+  rl_on_new_line();
   return 0;
 }
 
@@ -126,6 +127,8 @@ int main(int argc, char *argv[])
   }
   jerry_release_value(global_obj_val);
 
+  rl_bind_key('\t', jcli_completion);
+
   while(1)
   {
     char * input = readline(">");
@@ -135,7 +138,7 @@ int main(int argc, char *argv[])
       break;
     }
 
-    call_single_str(interpret, input);
+    jerry_release_value(call_single_str(interpret, input));
     free(input);
   }
 
