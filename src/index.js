@@ -4,7 +4,6 @@ var IRZ = require ('irz_module');
 
 function interpret(cmdline)
 {
-  print(cmdline);
   var arguments = cmdline.split(" ");
   print(arguments[0]);
 }
