@@ -14,4 +14,5 @@ function complete(userinput)
 {
   print("");
   print("Tab !");
+  return null;
 }

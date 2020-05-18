@@ -97,8 +97,12 @@ static int jcli_completion(int count, int key)
   jerry_value_t global_obj_val = jerry_get_global_object ();
   jerry_value_t complete = jerryx_get_property_str(global_obj_val, "complete");
   jerry_release_value(global_obj_val);
-  jerry_release_value(call_single_str(complete, rl_line_buffer));
-  rl_on_new_line();
+  jerry_value_t ret_val = call_single_str(complete, rl_line_buffer);
+
+  if (jerry_value_is_null(ret_val))
+    rl_on_new_line();
+
+  jerry_release_value(ret_val);
   return 0;
 }
 
