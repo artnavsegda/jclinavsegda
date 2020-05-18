@@ -81,6 +81,17 @@ char * loadfile(char *filename)
   return buf;
 }
 
+static void call_single_str(jerry_value_t function, char * argument)
+{
+  jerry_value_t args[1];
+  args[0] = jerry_create_string_from_utf8 (argument);
+  jerry_value_t this_val = jerry_create_undefined();
+  jerry_value_t ret_val = jerry_call_function(function, this_val, args, 1);
+  jerry_release_value(ret_val);
+  jerry_release_value(this_val);
+  jerry_release_value(args[0]);
+}
+
 int main(int argc, char *argv[])
 {
   irz_module_register();
@@ -114,13 +125,7 @@ int main(int argc, char *argv[])
       break;
     }
 
-    jerry_value_t args[1];
-    args[0] = jerry_create_string_from_utf8 (input);
-    jerry_value_t this_val = jerry_create_undefined();
-    jerry_value_t ret_val = jerry_call_function(interpret, this_val, args, 1);
-    jerry_release_value(ret_val);
-    jerry_release_value(this_val);
-    jerry_release_value(args[0]);
+    call_single_str(interpret, input);
     free(input);
   }
 
