@@ -28,15 +28,32 @@ static jerry_value_t handle_require (const jerry_value_t js_function, const jerr
 static void register_js_function (const char *name_p, jerry_external_handler_t handler_p)
 {
   jerry_value_t result_val = jerryx_handler_register_global ((const jerry_char_t *) name_p, handler_p);
-
   if (jerry_value_is_error (result_val))
   {
     jerry_port_log (JERRY_LOG_LEVEL_WARNING, "Warning: failed to register '%s' method.", name_p);
     result_val = jerry_get_value_from_error (result_val, true);
     print_unhandled_exception (result_val);
   }
-
   jerry_release_value (result_val);
+}
+
+jerry_value_t execute(char *buf)
+{
+  jerry_value_t eval_ret = jerry_parse (NULL, 0, buf, strlen (buf), JERRY_PARSE_NO_OPTS);
+
+  if (!jerry_value_is_error (eval_ret))
+  {
+    jerry_value_t func_val = eval_ret;
+    eval_ret = jerry_run (func_val);
+    jerry_release_value (func_val);
+  }
+
+  if (jerry_value_is_error (eval_ret))
+  {
+    eval_ret = jerry_get_value_from_error (eval_ret, true);
+    print_unhandled_exception (eval_ret);
+  }
+  return eval_ret;
 }
 
 int main (void)
@@ -45,7 +62,7 @@ int main (void)
   jerry_init (JERRY_INIT_EMPTY);
   register_js_function("print", jerryx_handler_print);
   register_js_function("require", handle_require);
-
+  jerry_release_value(execute("print('hello')"));
   jerry_cleanup ();
   return 0;
 }
