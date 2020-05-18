@@ -64,6 +64,12 @@ jerry_value_t execute(char *buf)
 char * loadfile(char *filename)
 {
   int jsmain = open(filename,O_RDONLY);
+
+  if (jsmain == -1)
+  {
+    return NULL;
+  }
+
   struct stat sb;
   fstat(jsmain, &sb);
   char *buf = malloc(sb.st_size+2);
@@ -73,7 +79,7 @@ char * loadfile(char *filename)
   return buf;
 }
 
-int main (void)
+int main(int argc, char *argv[])
 {
   irz_module_register();
   jerry_init (JERRY_INIT_EMPTY);
@@ -81,7 +87,16 @@ int main (void)
   register_js_function("require", handle_require);
 
   char *buf = loadfile("./index.js");
-  jerry_release_value(execute("print('hello')"));
+
+  if (buf)
+  {
+    //jerry_release_value(execute("print('hello')"));
+    jerry_release_value(execute(buf));
+  }
+  else
+  {
+    puts("file not found");
+  }
 
   jerry_cleanup ();
   return 0;
