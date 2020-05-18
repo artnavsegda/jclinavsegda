@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <linux/limits.h>
+#include <dirent.h>
+#include <assert.h>
 #include "jerryscript-config.h"
 #include "jerryscript.h"
 #include "jerryscript-ext/handler.h"
@@ -56,13 +61,28 @@ jerry_value_t execute(char *buf)
   return eval_ret;
 }
 
+char * loadfile(char *filename)
+{
+  int jsmain = open(filename,O_RDONLY);
+  struct stat sb;
+  fstat(jsmain, &sb);
+  char *buf = malloc(sb.st_size+2);
+  read(jsmain,buf,sb.st_size+1);
+  close(jsmain);
+  buf[sb.st_size] = '\0';
+  return buf;
+}
+
 int main (void)
 {
   irz_module_register();
   jerry_init (JERRY_INIT_EMPTY);
   register_js_function("print", jerryx_handler_print);
   register_js_function("require", handle_require);
+
+  char *buf = loadfile("./index.js");
   jerry_release_value(execute("print('hello')"));
+
   jerry_cleanup ();
   return 0;
 }
