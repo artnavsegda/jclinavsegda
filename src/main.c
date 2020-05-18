@@ -92,6 +92,15 @@ static void call_single_str(jerry_value_t function, char * argument)
   jerry_release_value(args[0]);
 }
 
+int jcli_completion(int count, int key)
+{
+  jerry_value_t global_obj_val = jerry_get_global_object ();
+  jerry_value_t complete = jerryx_get_property_str(global_obj_val, "complete");
+  jerry_release_value(global_obj_val);
+  call_single_str(complete, rl_line_buffer);
+  return 0;
+}
+
 int main(int argc, char *argv[])
 {
   irz_module_register();
@@ -115,6 +124,7 @@ int main(int argc, char *argv[])
   {
     puts("no interpret global function");
   }
+  jerry_release_value(global_obj_val);
 
   while(1)
   {
