@@ -24,10 +24,13 @@ function complete(userinput)
     }
   }
   else {
-    var keys = Object.getOwnPropertyNames(globalstate.schema);
+    // var keys = Object.getOwnPropertyNames(globalstate.schema);
+    // print("");
+    // for (var i = 0; i < keys.length; i++)
+    //   print(keys[i]);
+    // return null;
     print("");
-    for (var i = 0; i < keys.length; i++)
-      print(keys[i]);
+    Object.getOwnPropertyNames(globalstate.schema).forEach((element) => print(element));
     return null;
   }
 }
