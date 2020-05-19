@@ -1,6 +1,6 @@
 var IRZ = require ('irz_module');
 
-var prompt = "cli>";
+var prompt = "cli>"
 
 var globalstate;
 
@@ -12,7 +12,10 @@ function interpret(cmdline)
     return null;
 
   if (globalstate.schema[arguments[0]])
+  {
     print("exist");
+    prompt = "cli/" + arguments[0] + "/>";
+  }
 }
 
 // tab completion callback

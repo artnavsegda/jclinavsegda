@@ -141,14 +141,16 @@ int main(int argc, char *argv[])
 
   jerry_value_t global_obj_val = jerry_get_global_object ();
   jerry_value_t interpret = jerryx_get_property_str(global_obj_val, "interpret");
-  jerry_value_t prompt_val = jerryx_get_property_str(global_obj_val, "prompt");
   jerry_release_value(global_obj_val);
   if (jerry_value_is_function (interpret))
   {
     rl_bind_key('\t', jcli_completion);
     while(1)
     {
+      jerry_value_t prompt_val = jerryx_get_property_str(global_obj_val, "prompt");
       jerry_char_t *prompt = allocate_string(prompt_val);
+      jerry_release_value(prompt_val);
+      puts(prompt);
       char * input = readline(prompt);
       free (prompt);
       if (!input)
