@@ -30,7 +30,12 @@ function complete(userinput)
 function acquire(commandname)
 {
   var state;
-  var aulist = IRZ.pipe(commandname).split("\n");
+  var aulist = JSON.parse(IRZ.pipe(commandname));
+
+  print(JSON.stringify(aulist));
+
+  return null;
+
   for (var i = 0; i < aulist.length; i++) {
     var somejson = JSON.parse(IRZ.cat(aulist[i]));
     Object.defineProperty(state.schema, somejson.title, {value: somejson});

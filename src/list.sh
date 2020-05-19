@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo -n "[ './one.json','./two.json','./three.json' ]"
+echo -n '[ "./one.json","./two.json","./three.json" ]'
 
