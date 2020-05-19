@@ -8,9 +8,11 @@ var globalstate;
 function interpret(cmdline)
 {
   var arguments = cmdline.split(" ");
-  print(arguments[0]);
   if (arguments[0] == "exit")
     return null;
+
+  if (globalstate.schema[arguments[0]])
+    print("exist");
 }
 
 // tab completion callback
