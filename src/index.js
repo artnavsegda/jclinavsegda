@@ -10,7 +10,11 @@ function interpret(cmdline)
 
 function complete(userinput)
 {
-  print("");
-  print("Tab !");
-  return null;
+  if (userinput) {
+
+  }
+  else {
+    print("\nTab !");
+    return null;
+  }
 }
