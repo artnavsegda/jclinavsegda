@@ -59,8 +59,7 @@ static jerry_value_t module_system_handler(const jerry_value_t function_object, 
     jerry_size_t copied_bytes = jerry_string_to_utf8_char_buffer (string_value, buffer, sizeof (buffer) - 1);
     buffer[copied_bytes] = '\0';
     jerry_release_value (string_value);
-    system(buffer);
-    return jerry_create_undefined();
+    return jerry_create_number (WEXITSTATUS(system(buffer)));
   }
   else
     printf ("System handler was called\n");

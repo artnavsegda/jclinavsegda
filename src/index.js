@@ -45,5 +45,4 @@ function acquire(commandname)
 }
 
 print("starting CLI");
-print(IRZ.pipe("cat index.js"));
 //acquire("./list.sh");
