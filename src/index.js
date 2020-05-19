@@ -16,15 +16,19 @@ function interpret(cmdline)
 // tab completion callback
 function complete(userinput)
 {
-  var commands = ["one", "two", "three"];
   if (userinput) {
-    for (var i = 0; i < commands.length; i++) {
-      if (commands[i].startsWith(userinput))
-        return commands[i];
+    var keys = Object.getOwnPropertyNames(globalstate.schema);
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i].startsWith(userinput))
+        return keys[i];
     }
   }
   else {
-    print("\nTab !");
+    var keys = Object.getOwnPropertyNames(globalstate.schema);
+    print("");
+    for (var i = 0; i < keys.length; i++) {
+      print(keys[i]);
+    }
     return null;
   }
 }
