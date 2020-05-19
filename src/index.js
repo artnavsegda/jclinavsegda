@@ -2,6 +2,7 @@ var IRZ = require ('irz_module');
 
 var prompt = "cli>";
 
+// mandatory function for CLI
 function interpret(cmdline)
 {
   var arguments = cmdline.split(" ");
@@ -10,6 +11,7 @@ function interpret(cmdline)
     return null;
 }
 
+// tab completion callback
 function complete(userinput)
 {
   var commands = ["one", "two", "three"];
@@ -24,3 +26,23 @@ function complete(userinput)
     return null;
   }
 }
+
+function acquire(commandname)
+{
+  var state;
+  var aulist = IRZ.pipe(commandname).split("\n");
+  for (var i = 0; i < aulist.length; i++) {
+    var somejson = JSON.parse(IRZ.cat(aulist[i]));
+    Object.defineProperty(state.schema, somejson.title, {value: somejson});
+    if (somejson.acquire === undefined){}
+    else {
+      print(somejson.acquire);
+      var pipedata = IRZ.pipe("./" + somejson.acquire);
+      var somejsondata = JSON.parse(pipedata);
+      Object.defineProperty(dataobject, somejson.title, {value: somejsondata});
+    }
+  }
+}
+
+print("starting CLI");
+//acquire("./list.sh");
