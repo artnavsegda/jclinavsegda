@@ -68,6 +68,32 @@ static jerry_value_t module_system_handler(const jerry_value_t function_object, 
   return jerry_create_undefined();
 }
 
+#define CHUNK 10
+static char * allocate_stream(FILE * stream)
+{
+  char * buf = malloc(CHUNK+1);
+  int chunkcounter, totalcounter = 0, limit = CHUNK;
+
+  while (1)
+  {
+    chunkcounter = fread(&buf[totalcounter], 1, CHUNK, stream);
+    totalcounter += chunkcounter;
+    if (chunkcounter == CHUNK)
+    {
+      limit += CHUNK;
+      char * newbuf = realloc(buf,limit+1);
+      if (newbuf == NULL)
+        break;
+      else
+        buf = newbuf;
+    }
+    else
+      break;
+  }
+  buf[totalcounter] = '\0';
+  return buf;
+}
+
 static jerry_value_t module_pipe_handler(const jerry_value_t function_object, const jerry_value_t function_this, const jerry_value_t arguments[], const jerry_length_t arguments_count)
 {
   if (arguments_count > 0)
@@ -78,13 +104,10 @@ static jerry_value_t module_pipe_handler(const jerry_value_t function_object, co
     buffer[copied_bytes] = '\0';
     jerry_release_value (string_value);
     FILE * filetoread = popen(buffer, "r");
-    char filecontent[1000] = "empty";
-    if (filetoread)
-    {
-      fread(filecontent,1000,1,filetoread);
-      fclose(filetoread);
-    }
+    char * filecontent = allocate_stream(filetoread);
+    pclose(filetoread);
     jerry_value_t returnvalue = jerry_create_string (filecontent);
+    free(filecontent);
     return returnvalue;
   }
   return jerry_create_undefined();
