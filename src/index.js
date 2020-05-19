@@ -36,8 +36,9 @@ function acquire(commandname)
 {
   var state = { schema: {}, data: {} };
   var aulist = JSON.parse(IRZ.pipe(commandname));
-  for (var i = 0; i < aulist.length; i++) {
-    var somejson = JSON.parse(IRZ.cat(aulist[i]));
+
+  aulist.forEach((element) => {
+    var somejson = JSON.parse(IRZ.cat(element));
     Object.defineProperty(state.schema, somejson.title, {value: somejson});
     if (somejson.acquire === undefined){}
     else {
@@ -45,7 +46,7 @@ function acquire(commandname)
       var somejsondata = JSON.parse(pipedata);
       Object.defineProperty(state.data, somejson.title, {value: somejsondata});
     }
-  }
+  });
   return state;
 }
 
