@@ -17,14 +17,11 @@ function interpret(cmdline)
 function complete(userinput)
 {
   if (userinput) {
-    var keys = Object.getOwnPropertyNames(globalstate.schema);
-    for (var i = 0; i < keys.length; i++) {
-      if (keys[i].startsWith(userinput))
-        return keys[i];
-    }
-
     var completion;
-    Object.getOwnPropertyNames(globalstate.schema).forEach((element) => {completion = element});
+    Object.getOwnPropertyNames(globalstate.schema).forEach((element) => {
+      if (element.startsWith(userinput))
+        completion = element;
+    });
     return completion;
   }
   else {
