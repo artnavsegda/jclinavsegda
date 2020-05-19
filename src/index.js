@@ -45,4 +45,4 @@ function acquire(commandname)
 }
 
 print("starting CLI");
-//acquire("./list.sh");
+acquire("./list.sh");
