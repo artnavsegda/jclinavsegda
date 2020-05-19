@@ -1,3 +1,5 @@
+import * as jsonpointer from "jsonpointer.js";
+
 var IRZ = require ('irz_module');
 
 var prompt = "cli>"
@@ -17,24 +19,24 @@ function generateprompt(stack_path)
 // mandatory function for CLI
 function interpret(cmdline)
 {
-  var arguments = cmdline.split(" ");
-  if (arguments[0] == "exit")
+  var cmdargs = cmdline.split(" ");
+  if (cmdargs[0] == "exit")
     return null;
 
-  if (arguments[0] == "/")
+  if (cmdargs[0] == "/")
   {
     path = [];
   }
 
-  if (arguments[0] == "..")
+  if (cmdargs[0] == "..")
   {
     path.pop();
   }
 
-  if (globalstate.schema[arguments[0]])
+  if (globalstate.schema[cmdargs[0]])
   {
     print("exist");
-    path.push(arguments[0]);
+    path.push(cmdargs[0]);
   }
   prompt = generateprompt(path);
 }
