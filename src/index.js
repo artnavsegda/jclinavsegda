@@ -4,6 +4,16 @@ var prompt = "cli>"
 var globalstate;
 var path = [];
 
+function generateprompt(stack_path)
+{
+  if (stack_path[0]){
+    return "cli/" + stack_path[0] + ">";
+  }
+  else {
+    return "cli>";
+  }
+}
+
 // mandatory function for CLI
 function interpret(cmdline)
 {
@@ -14,21 +24,19 @@ function interpret(cmdline)
   if (arguments[0] == "/")
   {
     path = [];
-    prompt = "cli>";
   }
 
   if (arguments[0] == "..")
   {
     path.pop();
-    prompt = "cli>";
   }
 
   if (globalstate.schema[arguments[0]])
   {
     print("exist");
-    path.push(globalstate.schema[arguments[0]]);
-    prompt = "cli/" + arguments[0] + ">";
+    path.push(arguments[0]);
   }
+  prompt = generateprompt(path);
 }
 
 // tab completion callback
