@@ -35,9 +35,7 @@ function complete(userinput)
 function acquire(commandname)
 {
   var state = { schema: {}, data: {} };
-  var aulist = JSON.parse(IRZ.pipe(commandname));
-
-  aulist.forEach((element) => {
+  JSON.parse(IRZ.pipe(commandname)).forEach((element) => {
     var somejson = JSON.parse(IRZ.cat(element));
     Object.defineProperty(state.schema, somejson.title, {value: somejson});
     if (somejson.acquire === undefined){}
