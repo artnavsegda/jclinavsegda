@@ -22,6 +22,10 @@ function complete(userinput)
       if (keys[i].startsWith(userinput))
         return keys[i];
     }
+
+    var completion;
+    Object.getOwnPropertyNames(globalstate.schema).forEach((element) => {completion = element});
+    return completion;
   }
   else {
     print("");
