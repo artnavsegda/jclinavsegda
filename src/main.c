@@ -101,6 +101,14 @@ static char * allocate_string(jerry_value_t string_val)
   return string_buffer_p;
 }
 
+static char * allocate_string_by_name(jerry_value_t parent_obj, char * string_name)
+{
+  jerry_value_t string_val = jerryx_get_property_str(parent_obj, string_name);
+  jerry_char_t *string = allocate_string(string_val);
+  jerry_release_value(string_val);
+  return string;
+}
+
 static int jcli_completion(int count, int key)
 {
   jerry_value_t global_obj_val = jerry_get_global_object ();
@@ -147,10 +155,7 @@ int main(int argc, char *argv[])
     rl_bind_key('\t', jcli_completion);
     while(1)
     {
-      jerry_value_t prompt_val = jerryx_get_property_str(global_obj_val, "prompt");
-      jerry_char_t *prompt = allocate_string(prompt_val);
-      jerry_release_value(prompt_val);
-      puts(prompt);
+      jerry_char_t *prompt = allocate_string_by_name(global_obj_val, "prompt");
       char * input = readline(prompt);
       free (prompt);
       if (!input)

@@ -14,7 +14,7 @@ function interpret(cmdline)
   if (globalstate.schema[arguments[0]])
   {
     print("exist");
-    prompt = "cli/" + arguments[0] + "/>";
+    prompt = "cli/" + arguments[0] + ">";
   }
 }
 
