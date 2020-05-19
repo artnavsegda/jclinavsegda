@@ -11,6 +11,12 @@ function interpret(cmdline)
   if (arguments[0] == "exit")
     return null;
 
+  if (arguments[0] == "/")
+    prompt = "cli>";
+
+    if (arguments[0] == "..")
+      prompt = "cli>";
+
   if (globalstate.schema[arguments[0]])
   {
     print("exist");
