@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
     }
   }
   else
-    puts("Error: no interpret() global function defined");
+    puts("Error: no interpret(input) global function defined");
 
   jerry_cleanup();
   return 0;

@@ -2,6 +2,8 @@ var IRZ = require ('irz_module');
 
 var prompt = "cli>";
 
+var globalstate;
+
 // mandatory function for CLI
 function interpret(cmdline)
 {
@@ -29,25 +31,20 @@ function complete(userinput)
 
 function acquire(commandname)
 {
-  var state;
+  var state = { schema: {}, data: {} };
   var aulist = JSON.parse(IRZ.pipe(commandname));
-
-  print(JSON.stringify(aulist));
-
-  return null;
-
   for (var i = 0; i < aulist.length; i++) {
     var somejson = JSON.parse(IRZ.cat(aulist[i]));
     Object.defineProperty(state.schema, somejson.title, {value: somejson});
     if (somejson.acquire === undefined){}
     else {
-      print(somejson.acquire);
       var pipedata = IRZ.pipe("./" + somejson.acquire);
       var somejsondata = JSON.parse(pipedata);
-      Object.defineProperty(dataobject, somejson.title, {value: somejsondata});
+      Object.defineProperty(state.data, somejson.title, {value: somejsondata});
     }
   }
+  return state;
 }
 
 print("starting CLI");
-acquire("./list.sh");
+globalstate = acquire("./list.sh");
