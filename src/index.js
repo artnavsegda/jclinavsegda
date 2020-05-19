@@ -10,8 +10,12 @@ function interpret(cmdline)
 
 function complete(userinput)
 {
+  var commands = ["one", "two", "three"];
   if (userinput) {
-
+    for (var i = 0; i < commands.length; i++) {
+      if (commands[i].startsWith(userinput))
+        return commands[i];
+    }
   }
   else {
     print("\nTab !");

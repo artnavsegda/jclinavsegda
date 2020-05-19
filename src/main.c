@@ -96,13 +96,23 @@ static int jcli_completion(int count, int key)
 {
   jerry_value_t global_obj_val = jerry_get_global_object ();
   jerry_value_t complete = jerryx_get_property_str(global_obj_val, "complete");
-  jerry_release_value(global_obj_val);
-  jerry_value_t ret_val = call_single_str(complete, rl_line_buffer);
-
-  if (jerry_value_is_null(ret_val))
-    rl_on_new_line();
-
-  jerry_release_value(ret_val);
+  if (jerry_value_is_function (complete))
+  {
+    jerry_release_value(global_obj_val);
+    jerry_value_t ret_val = call_single_str(complete, rl_line_buffer);
+    if (jerry_value_is_null(ret_val))
+      rl_on_new_line();
+    else if (jerry_value_is_string(ret_val))
+    {
+      jerry_size_t string_size = jerry_get_string_size (ret_val);
+      jerry_char_t *string_buffer_p = (jerry_char_t *) malloc (sizeof (jerry_char_t) * (string_size + 1));
+      jerry_size_t copied_bytes = jerry_string_to_char_buffer (ret_val, string_buffer_p, string_size);
+      string_buffer_p[copied_bytes] = '\0';
+      rl_insert_text(&string_buffer_p[rl_point]);
+      free (string_buffer_p);
+    }
+    jerry_release_value(ret_val);
+  }
   return 0;
 }
 
