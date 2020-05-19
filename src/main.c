@@ -135,29 +135,28 @@ int main(int argc, char *argv[])
 
   jerry_value_t global_obj_val = jerry_get_global_object ();
   jerry_value_t interpret = jerryx_get_property_str(global_obj_val, "interpret");
-  if (!jerry_value_is_function (interpret))
-  {
-    puts("no interpret global function");
-  }
   jerry_release_value(global_obj_val);
-
-  rl_bind_key('\t', jcli_completion);
-
-  while(1)
+  if (jerry_value_is_function (interpret))
   {
-    char * input = readline(">");
+    rl_bind_key('\t', jcli_completion);
+    while(1)
+    {
+      char * input = readline(">");
 
-    if (!input)
-      break;
+      if (!input)
+        break;
 
-    jerry_value_t ret_val = call_single_str(interpret, input);
-    free(input);
+      jerry_value_t ret_val = call_single_str(interpret, input);
+      free(input);
 
-    if (jerry_value_is_null(ret_val))
-      break;
+      if (jerry_value_is_null(ret_val))
+        break;
 
-    jerry_release_value(ret_val);
+      jerry_release_value(ret_val);
+    }
   }
+  else
+    puts("Error: no interpret() global function defined");
 
   jerry_cleanup();
   return 0;
