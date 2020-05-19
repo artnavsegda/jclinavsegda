@@ -1,8 +1,8 @@
 var IRZ = require ('irz_module');
 
 var prompt = "cli>"
-
 var globalstate;
+var path = [];
 
 // mandatory function for CLI
 function interpret(cmdline)
@@ -12,14 +12,21 @@ function interpret(cmdline)
     return null;
 
   if (arguments[0] == "/")
+  {
+    path = [];
     prompt = "cli>";
+  }
 
   if (arguments[0] == "..")
+  {
+    path.pop();
     prompt = "cli>";
+  }
 
   if (globalstate.schema[arguments[0]])
   {
     print("exist");
+    path.push(globalstate.schema[arguments[0]]);
     prompt = "cli/" + arguments[0] + ">";
   }
 }
