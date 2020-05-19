@@ -1,5 +1,7 @@
 var IRZ = require ('irz_module');
 
+var prompt = "cli>";
+
 function interpret(cmdline)
 {
   var arguments = cmdline.split(" ");

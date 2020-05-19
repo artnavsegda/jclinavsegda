@@ -92,6 +92,15 @@ static jerry_value_t call_single_str(jerry_value_t function, char * argument)
   return ret_val;
 }
 
+static char * allocate_string(jerry_value_t string_val)
+{
+  jerry_size_t string_size = jerry_get_string_size (string_val);
+  jerry_char_t *string_buffer_p = (jerry_char_t *) malloc (sizeof (jerry_char_t) * (string_size + 1));
+  jerry_size_t copied_bytes = jerry_string_to_char_buffer (string_val, string_buffer_p, string_size);
+  string_buffer_p[copied_bytes] = '\0';
+  return string_buffer_p;
+}
+
 static int jcli_completion(int count, int key)
 {
   jerry_value_t global_obj_val = jerry_get_global_object ();
@@ -104,10 +113,7 @@ static int jcli_completion(int count, int key)
       rl_on_new_line();
     else if (jerry_value_is_string(ret_val))
     {
-      jerry_size_t string_size = jerry_get_string_size (ret_val);
-      jerry_char_t *string_buffer_p = (jerry_char_t *) malloc (sizeof (jerry_char_t) * (string_size + 1));
-      jerry_size_t copied_bytes = jerry_string_to_char_buffer (ret_val, string_buffer_p, string_size);
-      string_buffer_p[copied_bytes] = '\0';
+      jerry_char_t *string_buffer_p = allocate_string(ret_val);
       rl_insert_text(&string_buffer_p[rl_point]);
       free (string_buffer_p);
     }
@@ -135,23 +141,22 @@ int main(int argc, char *argv[])
 
   jerry_value_t global_obj_val = jerry_get_global_object ();
   jerry_value_t interpret = jerryx_get_property_str(global_obj_val, "interpret");
+  jerry_value_t prompt_val = jerryx_get_property_str(global_obj_val, "prompt");
   jerry_release_value(global_obj_val);
   if (jerry_value_is_function (interpret))
   {
     rl_bind_key('\t', jcli_completion);
     while(1)
     {
-      char * input = readline(">");
-
+      jerry_char_t *prompt = allocate_string(prompt_val);
+      char * input = readline(prompt);
+      free (prompt);
       if (!input)
         break;
-
       jerry_value_t ret_val = call_single_str(interpret, input);
       free(input);
-
       if (jerry_value_is_null(ret_val))
         break;
-
       jerry_release_value(ret_val);
     }
   }
