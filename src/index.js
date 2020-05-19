@@ -5,6 +5,7 @@ var IRZ = require ('irz_module');
 var prompt = "cli>"
 var globalstate;
 var path = [];
+var stringpath = "/"
 
 function generateprompt(stack_path)
 {
@@ -77,3 +78,5 @@ function acquire(commandname)
 
 print("starting CLI");
 globalstate = acquire("./list.sh");
+
+//print(JSON.stringify(jsonpointer.get(globalstate.data, "/one")));
