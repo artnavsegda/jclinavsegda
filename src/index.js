@@ -11,22 +11,27 @@ class Proto {
   // constructor(schema) {
   //   this.schema = schema;
   // }
-  constructor(mylist) {
-    this.mylist = mylist;
+  constructor(filelist) {
+    this.filelist = filelist;
+    this.facelist = [];
+
+    filelist.forEach((filename) => {
+      this.facelist.push(new Face(JSON.parse(IRZ.cat(filename))));
+    });
   }
   add(newelement) {
-    this.mylist.push(newelement);
+    this.filelist.push(newelement);
   }
   list() {
-    // this.mylist = ["one", "two", "three"];
+    this.facelist.forEach((element) => {
+     print(JSON.stringify(element));
+     print(element.schema.title);
+     //print(Object.keys(element)[0]);
+    });
 
-    //this.mylist.forEach((element) => {
-    //  //print(element.name);
-    //  print(Object.keys(element)[0]);
-    //});
-
-    print(this.mylist);
-    return this.mylist;
+    print(this.filelist);
+    print(this.facelist);
+    return this.filelist;
   }
 }
 
@@ -135,6 +140,10 @@ var three = new Face(JSON.parse(IRZ.cat("./three.json")));
 one.list();
 two.list();
 three.list();
+
+var myproto = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
+
+myproto.list();
 
 
 
