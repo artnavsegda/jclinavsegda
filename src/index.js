@@ -16,7 +16,7 @@ var state = {
 
   },
   getPrompt: function(){
-    return "cli>";
+    return location.name + ">"
   },
   pop: function() {
     path.pop();
@@ -32,6 +32,7 @@ var location;
 
 class Proto {
   constructor(filelist) {
+    this.name = "Proto";
     this.filelist = filelist;
     this.load(filelist)
   }
@@ -81,6 +82,7 @@ function generateprompt(stack_path)
 // mandatory function for CLI
 function interpret(cmdline)
 {
+  //prompt = "some>";
   var cmdargs = cmdline.split(" ");
   if (cmdargs[0] == "exit")
     return null;
@@ -100,7 +102,9 @@ function interpret(cmdline)
     print("exist");
     state.path.push(cmdargs[0]);
   }
-  prompt = state.getPrompt();
+  prompt = "some>";
+  //prompt = state.getPrompt();
+  print(state.getPrompt());
 }
 
 // tab completion callback
