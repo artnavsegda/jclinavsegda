@@ -67,11 +67,12 @@ class Face {
     this.name = this.schema.title;
   }
   list() {
-    print(JSON.stringify(this.schema.properties));
-    return this.schema.properties;
+    //print(JSON.stringify(this.schema.properties));
+    //return this.schema.properties;
   }
   printlist() {
     print("interface list");
+    print(JSON.stringify(this.schema.properties));
   }
 }
 
