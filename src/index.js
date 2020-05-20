@@ -78,6 +78,7 @@ class Face {
   list() {
     //print(JSON.stringify(this.schema.properties));
     //return this.schema.properties;
+    Object.getOwnPropertyNames(this.schema.properties);
   }
   printlist() {
     print("option list");
@@ -89,6 +90,11 @@ class Option {
   constructor(schema) {
     this.schema = schema;
     this.name = this.schema.title;
+  }
+  list() {
+    //print(JSON.stringify(this.schema.properties));
+    //return this.schema.properties;
+    Object.getOwnPropertyNames(this.schema.properties);
   }
   printlist() {
     print("option list");
