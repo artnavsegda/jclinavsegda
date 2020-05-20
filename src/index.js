@@ -8,11 +8,14 @@ var path = [];
 var stringpath = "/"
 
 class Proto {
-  constructor(schema) {
-    this.schema = schema;
+  // constructor(schema) {
+  //   this.schema = schema;
+  // }
+  constructor(mylist) {
+    this.mylist = mylist;
   }
   list() {
-    this.mylist = ["one", "two", "three"];
+    // this.mylist = ["one", "two", "three"];
     print(this.mylist);
     return this.mylist;
   }
@@ -93,7 +96,8 @@ print("starting CLI");
 globalstate = acquire("./list.sh");
 
 //print(JSON.stringify(jsonpointer.get(globalstate.data, "/one")));
-var mytest = new Proto("hello");
+// var mytest = new Proto("hello");
+var mytest = new Proto(["one", "two", "three"]);
 if (mytest instanceof Proto)
   print("all good");
 mytest.list();
