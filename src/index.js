@@ -66,6 +66,7 @@ class Face {
     return this.schema.properties;
   }
   printlist() {
+    print("interface list");
   }
 }
 
