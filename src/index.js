@@ -19,6 +19,11 @@ var state = {
     return this.location.name + ">"
   },
   pop: function() {
+    if (this.path.length == 1)
+    {
+      print("already at root");
+      return;
+    }
     this.path.pop();
     this.location = this.path[this.path.length-1];
   },
