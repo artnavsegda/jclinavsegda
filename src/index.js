@@ -117,15 +117,17 @@ globalstate = acquire("./list.sh");
 
 //print(JSON.stringify(jsonpointer.get(globalstate.data, "/one")));
 
-var myproto = new Proto(["one", "two", "three"]);
-myproto.add(new Proto("test"));
-myproto.add(new Face("test"));
-myproto.list();
+// var myproto = new Proto(["one", "two", "three"]);
+// myproto.add(new Proto("test"));
+// myproto.add(new Face("test"));
+// myproto.list();
 //
 // JSON.parse(IRZ.pipe("./list.sh")).forEach((element) => {
 //   print(JSON.parse(IRZ.cat(element)));
 // });
 
+
+var myface = new Face("./one.json");
 
 
 
