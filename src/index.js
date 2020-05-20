@@ -31,15 +31,15 @@ class Proto {
 }
 
 class Face {
-  constructor(myfaces) {
-    this.myfaces = myfaces;
-  }
-  add(newface) {
-    this.myfaces.push(newface);
+  constructor(schema) {
+    this.schema = schema;
   }
   list() {
-    print(this.myfaces);
-    return this.myfaces;
+    //print(this.myfaces);
+    //print(this.myfaces);
+    //print(JSON.stringify(this.myfaces));
+    print(JSON.stringify(this.schema.properties));
+    return this.schema.properties;
   }
 }
 
@@ -127,7 +127,10 @@ globalstate = acquire("./list.sh");
 // });
 
 
-var myface = new Face("./one.json");
+//var myface = new Face("./one.json");
+var myface = new Face(JSON.parse(IRZ.cat("./one.json")));
+
+myface.list();
 
 
 
