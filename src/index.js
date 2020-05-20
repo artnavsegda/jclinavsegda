@@ -7,6 +7,8 @@ var globalstate;
 var path = [];
 var stringpath = "/"
 
+var location;
+
 class Proto {
   constructor(filelist) {
     this.filelist = filelist;
@@ -85,7 +87,7 @@ function complete(userinput)
 {
   if (userinput) {
     var completion;
-    Object.getOwnPropertyNames(globalstate.schema).forEach((element) => {
+    location.list().forEach((element) => {
       if (element.startsWith(userinput))
         completion = element;
     });
@@ -94,7 +96,7 @@ function complete(userinput)
   else {
     print("");
     //Object.getOwnPropertyNames(globalstate.schema).forEach((element) => print(element));
-    root.printlist();
+    location.printlist();
     return null;
   }
 }
@@ -143,7 +145,7 @@ var root = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
 
 print(root.list());
 
-
+location = root;
 
 // if (myproto instanceof Proto)
 //   print("all good");
