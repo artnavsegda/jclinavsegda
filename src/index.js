@@ -116,17 +116,10 @@ print("starting CLI");
 globalstate = acquire("./list.sh");
 
 //print(JSON.stringify(jsonpointer.get(globalstate.data, "/one")));
-// var mytest = new Proto("hello");
 
-var myface = new Proto("test");
 var myproto = new Proto(["one", "two", "three"]);
-myproto.add(myface);
+myproto.add(new Proto("test"));
 myproto.list();
 
-
-// var myproto = new Proto(["one", "two", "three"]);
 // if (myproto instanceof Proto)
 //   print("all good");
-// myproto.add("four");
-// myproto.add(myface);
-// myproto.list();
