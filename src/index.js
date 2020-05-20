@@ -76,6 +76,13 @@ class Face {
   }
 }
 
+class Option {
+  constructor(schema) {
+    this.schema = schema;
+    this.name = this.schema.title;
+  }
+}
+
 function generateprompt(stack_path)
 {
   if (stack_path[0]){
