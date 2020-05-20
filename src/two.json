@@ -2,9 +2,15 @@
   "title": "two",
   "description": "two interfaces list",
   "something": "two",
-  "properties": {
-    "something": {
-      "type": "string"
+  "type": "object",
+  "patternProperties": {
+    "^test": {
+      "type": "object",
+      "properties": {
+        "something": {
+          "type": "string"
+        }
+      }    
     }
   }
 }

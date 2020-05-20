@@ -78,11 +78,11 @@ class Face {
   list() {
     //print(JSON.stringify(this.schema.properties));
     //return this.schema.properties;
-    return Object.getOwnPropertyNames(this.schema.properties);
+    //return Object.getOwnPropertyNames(this.schema.properties);
   }
   printlist() {
     print("face list");
-    print(JSON.stringify(this.schema.properties));
+    //print(JSON.stringify(this.schema.properties));
   }
 }
 
