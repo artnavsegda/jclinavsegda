@@ -14,6 +14,9 @@ class Proto {
   constructor(mylist) {
     this.mylist = mylist;
   }
+  add(newelement) {
+    this.mylist.push(newelement);
+  }
   list() {
     // this.mylist = ["one", "two", "three"];
     print(this.mylist);
@@ -100,4 +103,5 @@ globalstate = acquire("./list.sh");
 var mytest = new Proto(["one", "two", "three"]);
 if (mytest instanceof Proto)
   print("all good");
+mytest.add("four");
 mytest.list();
