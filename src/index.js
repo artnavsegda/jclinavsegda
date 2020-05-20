@@ -19,6 +19,12 @@ class Proto {
   }
   list() {
     // this.mylist = ["one", "two", "three"];
+
+    //this.mylist.forEach((element) => {
+    //  //print(element.name);
+    //  print(Object.keys(element)[0]);
+    //});
+
     print(this.mylist);
     return this.mylist;
   }
@@ -111,8 +117,10 @@ globalstate = acquire("./list.sh");
 
 //print(JSON.stringify(jsonpointer.get(globalstate.data, "/one")));
 // var mytest = new Proto("hello");
-var mytest = new Proto(["one", "two", "three"]);
-if (mytest instanceof Proto)
+var myproto = new Proto(["one", "two", "three"]);
+if (myproto instanceof Proto)
   print("all good");
-mytest.add("four");
-mytest.list();
+myproto.add("four");
+var myface = new Proto("test");
+myproto.add(myface);
+myproto.list();
