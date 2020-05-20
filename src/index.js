@@ -20,7 +20,7 @@ var state = {
   },
   pop: function() {
     this.path.pop();
-    this.location = path[path.length-1];
+    this.location = this.path[this.path.length-1];
   },
   push: function(element) {
     this.path.push(element);
@@ -93,7 +93,7 @@ function interpret(cmdline)
   else if (cmdargs[0] == "/")
     state.location = state.root;
   else if (cmdargs[0] == "..")
-    state.path.pop();
+    state.pop();
 
   if(state.location.traverse(cmdargs[0]))
   {
@@ -170,11 +170,8 @@ globalstate = acquire("./list.sh");
 //three.list();
 
 state.root = new Proto(JSON.parse(IRZ.pipe("./list.sh")),"cli");
-//print(state.root.list());
-state.location = state.root;
+state.push(state.root);
 prompt = state.getPrompt();
-
-//print(state.location.name);
 
 // if (myproto instanceof Proto)
 //   print("all good");
