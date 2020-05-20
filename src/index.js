@@ -11,7 +11,16 @@ var globalstate;
 var state = {
   path: [],
   location: {},
-  pop : function() {
+  getLocation: function(){
+
+  },
+  getPath: function(){
+
+  },
+  pop: function() {
+  },
+  push: function(element) {
+
   }
 };
 
