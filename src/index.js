@@ -57,6 +57,9 @@ class Proto {
      print(element.schema.title);
     });
   }
+  traverse(command) {
+    return this.facelist.find((element) => element.schema.title == command);
+  }
 }
 
 class Face {
@@ -92,7 +95,7 @@ function interpret(cmdline)
     state.path.pop();
   if(state.location.traverse(cmdargs[0]))
   {
-
+    print("go " + cmdargs[0]);
   }
   // if (state.location.schema[cmdargs[0]])
   // {
