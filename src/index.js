@@ -22,10 +22,16 @@ class Proto {
     });
   }
   list() {
+    var protolist = [];
+    this.facelist.forEach((element) => {
+     protolist.push(element.schema.title);
+    });
+    return protolist;
+  }
+  printlist() {
     this.facelist.forEach((element) => {
      print(element.schema.title);
     });
-    return this.filelist;
   }
 }
 
@@ -88,7 +94,7 @@ function complete(userinput)
   else {
     print("");
     //Object.getOwnPropertyNames(globalstate.schema).forEach((element) => print(element));
-    root.list();
+    root.printlist();
     return null;
   }
 }
@@ -135,7 +141,7 @@ var three = new Face(JSON.parse(IRZ.cat("./three.json")));
 
 var root = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
 
-root.list();
+print(root.list());
 
 
 
