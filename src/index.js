@@ -31,8 +31,8 @@ var state = {
 var location;
 
 class Proto {
-  constructor(filelist) {
-    this.name = "Proto";
+  constructor(filelist, protoname) {
+    this.name = protoname;
     this.filelist = filelist;
     this.load(filelist)
   }
@@ -164,11 +164,10 @@ globalstate = acquire("./list.sh");
 //two.list();
 //three.list();
 
-state.root = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
-
-print(state.root.list());
-
+state.root = new Proto(JSON.parse(IRZ.pipe("./list.sh")),"cli");
+//print(state.root.list());
 state.location = state.root;
+prompt = state.getPrompt();
 
 //print(state.location.name);
 
