@@ -9,6 +9,7 @@ var stringpath = "/"
 var globalstate;
 
 var state = {
+  root: {},
   path: [],
   location: {},
   getLocation: function(){
@@ -83,18 +84,18 @@ function interpret(cmdline)
 
   if (cmdargs[0] == "/")
   {
-    location = root;
+    state.location = state.root;
   }
 
   if (cmdargs[0] == "..")
   {
-    path.pop();
+    state.path.pop();
   }
 
   if (globalstate.schema[cmdargs[0]])
   {
     print("exist");
-    path.push(cmdargs[0]);
+    state.path.push(cmdargs[0]);
   }
   prompt = generateprompt(path);
 }
@@ -104,7 +105,7 @@ function complete(userinput)
 {
   if (userinput) {
     var completion;
-    location.list().forEach((element) => {
+    state.location.list().forEach((element) => {
       if (element.startsWith(userinput))
         completion = element;
     });
@@ -113,7 +114,7 @@ function complete(userinput)
   else {
     print("");
     //Object.getOwnPropertyNames(globalstate.schema).forEach((element) => print(element));
-    location.printlist();
+    state.location.printlist();
     return null;
   }
 }
@@ -158,11 +159,11 @@ var three = new Face(JSON.parse(IRZ.cat("./three.json")));
 //two.list();
 //three.list();
 
-var root = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
+state.root = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
 
-print(root.list());
+print(state.root.list());
 
-location = root;
+state.location = state.root;
 
 // if (myproto instanceof Proto)
 //   print("all good");
