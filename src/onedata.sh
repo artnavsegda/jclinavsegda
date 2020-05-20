@@ -1,6 +1,5 @@
 #!/bin/sh
 
-echo "{
-  \"something\": \"somevalue\"
-}"
-
+echo '{
+  "something": "somevalue"
+}'
