@@ -74,6 +74,9 @@ class Face {
   constructor(schema) {
     this.schema = schema;
     this.name = this.schema.title;
+    if (this.schema.acquire) {
+      this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire));
+    }
   }
   list() {
     //print(JSON.stringify(this.schema.properties));
@@ -82,7 +85,7 @@ class Face {
   }
   printlist() {
     print("face list");
-    //print(JSON.stringify(this.schema.properties));
+    print(JSON.stringify(this.data));
   }
 }
 
@@ -90,6 +93,9 @@ class Option {
   constructor(schema) {
     this.schema = schema;
     this.name = this.schema.title;
+    if (this.schema.acquire) {
+      this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire));
+    }
   }
   list() {
     //print(JSON.stringify(this.schema.properties));

@@ -2,6 +2,7 @@
   "title": "two",
   "description": "two interfaces list",
   "something": "two",
+  "acquire": "twodata.sh",
   "type": "object",
   "patternProperties": {
     "^test": {
@@ -10,7 +11,7 @@
         "something": {
           "type": "string"
         }
-      }    
+      }
     }
   }
 }
