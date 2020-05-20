@@ -46,7 +46,16 @@ class Proto {
   }
   load(filelist) {
     this.facelist = [];
-    this.filelist.forEach((filename) => this.facelist.push(new Face(JSON.parse(IRZ.cat(filename)))));
+    this.filelist.forEach((filename) => {
+      var data = JSON.parse(IRZ.cat(filename))
+      if (data.properties)
+      {
+        this.facelist.push(new Option(data))
+      }
+      else {
+        this.facelist.push(new Face(data))
+      }
+    });
   }
   list() {
     var protolist = [];
@@ -71,7 +80,7 @@ class Face {
     //return this.schema.properties;
   }
   printlist() {
-    print("interface list");
+    print("option list");
     print(JSON.stringify(this.schema.properties));
   }
 }
@@ -80,6 +89,10 @@ class Option {
   constructor(schema) {
     this.schema = schema;
     this.name = this.schema.title;
+  }
+  printlist() {
+    print("option list");
+    print(JSON.stringify(this.schema.properties));
   }
 }
 
