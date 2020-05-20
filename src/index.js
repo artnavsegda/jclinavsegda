@@ -19,6 +19,8 @@ var state = {
     return "cli>";
   },
   pop: function() {
+    path.pop();
+    location = path[path.length-1];
   },
   push: function(element) {
     path.push(element);
