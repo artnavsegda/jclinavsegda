@@ -11,7 +11,14 @@ class Proto {
   constructor(schema) {
     this.schema = schema;
   }
+  list() {
+    this.mylist = ["one", "two", "three"];
+    print(this.mylist);
+    return this.mylist;
+  }
 }
+
+
 
 function generateprompt(stack_path)
 {
@@ -87,3 +94,6 @@ globalstate = acquire("./list.sh");
 
 //print(JSON.stringify(jsonpointer.get(globalstate.data, "/one")));
 var mytest = new Proto("hello");
+if (mytest instanceof Proto)
+  print("all good");
+mytest.list();
