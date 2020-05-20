@@ -13,17 +13,16 @@ class Proto {
   // }
   constructor(filelist) {
     this.filelist = filelist;
-    this.facelist = [];
-
-    filelist.forEach((filename) => {
-      this.facelist.push(new Face(JSON.parse(IRZ.cat(filename))));
-    });
+    this.load(filelist)
   }
   add(newelement) {
     this.filelist.push(newelement);
   }
-  test() {
-    print("test");
+  load(filelist) {
+    this.facelist = [];
+    this.filelist.forEach((filename) => {
+      this.facelist.push(new Face(JSON.parse(IRZ.cat(filename))));
+    });
   }
   list() {
     this.facelist.forEach((element) => {
@@ -34,7 +33,7 @@ class Proto {
 
     print(this.filelist);
     print(this.facelist);
-    this.test();
+    this.load();
     return this.filelist;
   }
 }
