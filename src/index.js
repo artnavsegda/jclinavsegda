@@ -24,7 +24,7 @@ var state = {
   },
   push: function(element) {
     this.path.push(element);
-    this.location = this.path[path.length-1];
+    this.location = this.path[this.path.length-1];
   }
 };
 
@@ -65,6 +65,7 @@ class Proto {
 class Face {
   constructor(schema) {
     this.schema = schema;
+    this.name = this.schema.title;
   }
   list() {
     print(JSON.stringify(this.schema.properties));
@@ -93,9 +94,13 @@ function interpret(cmdline)
     state.location = state.root;
   else if (cmdargs[0] == "..")
     state.path.pop();
+
   if(state.location.traverse(cmdargs[0]))
   {
     print("go " + cmdargs[0]);
+    //print(JSON.stringify(state.location.traverse(cmdargs[0])));
+    state.push(state.location.traverse(cmdargs[0]));
+    //print(JSON.stringify(state.location));
   }
   // if (state.location.schema[cmdargs[0]])
   // {
