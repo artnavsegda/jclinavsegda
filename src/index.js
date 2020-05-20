@@ -22,6 +22,9 @@ class Proto {
   add(newelement) {
     this.filelist.push(newelement);
   }
+  test() {
+    print("test");
+  }
   list() {
     this.facelist.forEach((element) => {
      print(JSON.stringify(element));
@@ -31,6 +34,7 @@ class Proto {
 
     print(this.filelist);
     print(this.facelist);
+    this.test();
     return this.filelist;
   }
 }
