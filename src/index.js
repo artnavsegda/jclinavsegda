@@ -86,22 +86,19 @@ function interpret(cmdline)
   var cmdargs = cmdline.split(" ");
   if (cmdargs[0] == "exit")
     return null;
-
-  if (cmdargs[0] == "/")
-  {
+  else if (cmdargs[0] == "/")
     state.location = state.root;
-  }
-
-  if (cmdargs[0] == "..")
-  {
+  else if (cmdargs[0] == "..")
     state.path.pop();
-  }
-
-  if (globalstate.schema[cmdargs[0]])
+  if(state.location.traverse(cmdargs[0]))
   {
-    print("exist");
-    state.path.push(cmdargs[0]);
+
   }
+  // if (state.location.schema[cmdargs[0]])
+  // {
+  //   print("go " + cmdargs[0]);
+  //   state.path.push(cmdargs[0]);
+  // }
   prompt = state.getPrompt();
 }
 
