@@ -16,12 +16,13 @@ var state = {
 
   },
   getPath: function(){
-
+    return "cli>";
   },
   pop: function() {
   },
   push: function(element) {
-
+    path.push(element);
+    location = path[path.length-1];
   }
 };
 
@@ -97,7 +98,7 @@ function interpret(cmdline)
     print("exist");
     state.path.push(cmdargs[0]);
   }
-  prompt = generateprompt(path);
+  prompt = state.getPath();
 }
 
 // tab completion callback
@@ -151,9 +152,9 @@ globalstate = acquire("./list.sh");
 
 
 //var myface = new Face("./one.json");
-var one = new Face(JSON.parse(IRZ.cat("./one.json")));
-var two = new Face(JSON.parse(IRZ.cat("./two.json")));
-var three = new Face(JSON.parse(IRZ.cat("./three.json")));
+//var one = new Face(JSON.parse(IRZ.cat("./one.json")));
+//var two = new Face(JSON.parse(IRZ.cat("./two.json")));
+//var three = new Face(JSON.parse(IRZ.cat("./three.json")));
 
 //one.list();
 //two.list();
