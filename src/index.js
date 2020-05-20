@@ -7,6 +7,12 @@ var globalstate;
 var path = [];
 var stringpath = "/"
 
+class Proto {
+  constructor(schema) {
+    this.schema = schema;
+  }
+}
+
 function generateprompt(stack_path)
 {
   if (stack_path[0]){
@@ -80,3 +86,4 @@ print("starting CLI");
 globalstate = acquire("./list.sh");
 
 //print(JSON.stringify(jsonpointer.get(globalstate.data, "/one")));
+var mytest = new Proto("hello");
