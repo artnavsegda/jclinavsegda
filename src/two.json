@@ -1,5 +1,10 @@
 {
   "title": "two",
   "description": "two interfaces list",
-  "something": "two"
+  "something": "two",
+  "properties": {
+    "something": {
+      "type": "string"
+    }
+  }
 }

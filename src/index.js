@@ -128,9 +128,13 @@ globalstate = acquire("./list.sh");
 
 
 //var myface = new Face("./one.json");
-var myface = new Face(JSON.parse(IRZ.cat("./one.json")));
+var one = new Face(JSON.parse(IRZ.cat("./one.json")));
+var two = new Face(JSON.parse(IRZ.cat("./two.json")));
+var three = new Face(JSON.parse(IRZ.cat("./three.json")));
 
-myface.list();
+one.list();
+two.list();
+three.list();
 
 
 
