@@ -24,7 +24,18 @@ class Proto {
   }
 }
 
-
+class Face {
+  constructor(myfaces) {
+    this.myfaces = myfaces;
+  }
+  add(newface) {
+    this.myfaces.push(newface);
+  }
+  list() {
+    print(this.myfaces);
+    return this.myfaces;
+  }
+}
 
 function generateprompt(stack_path)
 {
