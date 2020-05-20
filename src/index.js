@@ -117,10 +117,16 @@ globalstate = acquire("./list.sh");
 
 //print(JSON.stringify(jsonpointer.get(globalstate.data, "/one")));
 // var mytest = new Proto("hello");
-var myproto = new Proto(["one", "two", "three"]);
-if (myproto instanceof Proto)
-  print("all good");
-myproto.add("four");
+
 var myface = new Proto("test");
+var myproto = new Proto(["one", "two", "three"]);
 myproto.add(myface);
 myproto.list();
+
+
+// var myproto = new Proto(["one", "two", "three"]);
+// if (myproto instanceof Proto)
+//   print("all good");
+// myproto.add("four");
+// myproto.add(myface);
+// myproto.list();
