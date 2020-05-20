@@ -41,21 +41,15 @@ class Proto {
   }
   load(filelist) {
     this.facelist = [];
-    this.filelist.forEach((filename) => {
-      this.facelist.push(new Face(JSON.parse(IRZ.cat(filename))));
-    });
+    this.filelist.forEach((filename) => this.facelist.push(new Face(JSON.parse(IRZ.cat(filename)))));
   }
   list() {
     var protolist = [];
-    this.facelist.forEach((element) => {
-     protolist.push(element.schema.title);
-    });
+    this.facelist.forEach((element) => protolist.push(element.schema.title));
     return protolist;
   }
   printlist() {
-    this.facelist.forEach((element) => {
-     print(element.schema.title);
-    });
+    this.facelist.forEach((element) => print(element.schema.title));
   }
   traverse(command) {
     return this.facelist.find((element) => element.schema.title == command);
@@ -70,6 +64,8 @@ class Face {
   list() {
     print(JSON.stringify(this.schema.properties));
     return this.schema.properties;
+  }
+  printlist() {
   }
 }
 
