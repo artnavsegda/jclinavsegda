@@ -16,15 +16,15 @@ var state = {
 
   },
   getPrompt: function(){
-    return location.name + ">"
+    return this.location.name + ">"
   },
   pop: function() {
-    path.pop();
-    location = path[path.length-1];
+    this.path.pop();
+    this.location = path[path.length-1];
   },
   push: function(element) {
-    path.push(element);
-    location = path[path.length-1];
+    this.path.push(element);
+    this.location = this.path[path.length-1];
   }
 };
 
@@ -102,9 +102,7 @@ function interpret(cmdline)
     print("exist");
     state.path.push(cmdargs[0]);
   }
-  prompt = "some>";
-  //prompt = state.getPrompt();
-  print(state.getPrompt());
+  prompt = state.getPrompt();
 }
 
 // tab completion callback
@@ -171,6 +169,8 @@ state.root = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
 print(state.root.list());
 
 state.location = state.root;
+
+//print(state.location.name);
 
 // if (myproto instanceof Proto)
 //   print("all good");
