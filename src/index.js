@@ -15,13 +15,8 @@ var state = {
   getLocation: function(){
 
   },
-  getPath: function(){
-    if (path[0]){
-      return "cli/" + path[0] + ">";
-    }
-    else {
-      return "cli>";
-    }
+  getPrompt: function(){
+    return "cli>";
   },
   pop: function() {
   },
@@ -103,7 +98,7 @@ function interpret(cmdline)
     print("exist");
     state.path.push(cmdargs[0]);
   }
-  prompt = state.getPath();
+  prompt = state.getPrompt();
 }
 
 // tab completion callback
