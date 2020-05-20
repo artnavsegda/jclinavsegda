@@ -3,9 +3,17 @@ import * as jsonpointer from "jsonpointer.js";
 var IRZ = require ('irz_module');
 
 var prompt = "cli>"
-var globalstate;
 var path = [];
 var stringpath = "/"
+
+var globalstate;
+
+var state = {
+  path: [],
+  location: {},
+  pop : function() {
+  }
+};
 
 var location;
 
@@ -66,7 +74,7 @@ function interpret(cmdline)
 
   if (cmdargs[0] == "/")
   {
-    path = [];
+    location = root;
   }
 
   if (cmdargs[0] == "..")
