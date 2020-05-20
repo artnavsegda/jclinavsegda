@@ -8,9 +8,6 @@ var path = [];
 var stringpath = "/"
 
 class Proto {
-  // constructor(schema) {
-  //   this.schema = schema;
-  // }
   constructor(filelist) {
     this.filelist = filelist;
     this.load(filelist)
@@ -26,14 +23,8 @@ class Proto {
   }
   list() {
     this.facelist.forEach((element) => {
-     print(JSON.stringify(element));
      print(element.schema.title);
-     //print(Object.keys(element)[0]);
     });
-
-    print(this.filelist);
-    print(this.facelist);
-    this.load();
     return this.filelist;
   }
 }
@@ -43,9 +34,6 @@ class Face {
     this.schema = schema;
   }
   list() {
-    //print(this.myfaces);
-    //print(this.myfaces);
-    //print(JSON.stringify(this.myfaces));
     print(JSON.stringify(this.schema.properties));
     return this.schema.properties;
   }
@@ -99,7 +87,8 @@ function complete(userinput)
   }
   else {
     print("");
-    Object.getOwnPropertyNames(globalstate.schema).forEach((element) => print(element));
+    //Object.getOwnPropertyNames(globalstate.schema).forEach((element) => print(element));
+    root.list();
     return null;
   }
 }
@@ -140,13 +129,13 @@ var one = new Face(JSON.parse(IRZ.cat("./one.json")));
 var two = new Face(JSON.parse(IRZ.cat("./two.json")));
 var three = new Face(JSON.parse(IRZ.cat("./three.json")));
 
-one.list();
-two.list();
-three.list();
+//one.list();
+//two.list();
+//three.list();
 
-var myproto = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
+var root = new Proto(JSON.parse(IRZ.pipe("./list.sh")));
 
-myproto.list();
+root.list();
 
 
 
