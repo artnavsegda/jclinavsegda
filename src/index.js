@@ -16,7 +16,12 @@ var state = {
 
   },
   getPath: function(){
-    return "cli>";
+    if (path[0]){
+      return "cli/" + path[0] + ">";
+    }
+    else {
+      return "cli>";
+    }
   },
   pop: function() {
   },
