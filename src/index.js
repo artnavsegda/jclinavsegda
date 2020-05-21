@@ -140,11 +140,6 @@ function complete(userinput)
 {
   if (userinput) {
     var completion;
-    // state.location.list().forEach((element) => {
-    //   if (element.startsWith(userinput))
-    //     completion = element;
-    // });
-
     var complist = state.location.list().filter(word => word.startsWith(userinput));
     var completion = sharedStart(complist);
     if(complist.length > 1)
@@ -157,7 +152,6 @@ function complete(userinput)
   }
   else {
     print("");
-    //Object.getOwnPropertyNames(globalstate.schema).forEach((element) => print(element));
     state.location.printlist();
     return null;
   }
