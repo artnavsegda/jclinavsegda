@@ -128,6 +128,13 @@ function interpret(cmdline)
   prompt = state.getPrompt();
 }
 
+function sharedStart(array){
+    var A= array.concat().sort(),
+    a1= A[0], a2= A[A.length-1], L= a1.length, i= 0;
+    while(i<L && a1.charAt(i)=== a2.charAt(i)) i++;
+    return a1.substring(0, i);
+}
+
 // tab completion callback
 function complete(userinput)
 {
@@ -137,7 +144,19 @@ function complete(userinput)
       if (element.startsWith(userinput))
         completion = element;
     });
+
+    // var locode = sharedStart(state.location.list());
+
+
+
+    // state.location.list().filter(
+    //
+    // )
+
     return completion;
+    // sharedStart(state.location.list());
+    // print
+    // return null;
   }
   else {
     print("");
