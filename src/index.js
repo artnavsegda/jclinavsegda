@@ -140,25 +140,20 @@ function complete(userinput)
 {
   if (userinput) {
     var completion;
-    state.location.list().forEach((element) => {
-      if (element.startsWith(userinput))
-        completion = element;
-    });
+    // state.location.list().forEach((element) => {
+    //   if (element.startsWith(userinput))
+    //     completion = element;
+    // });
 
-    print(state.location.list().filter(word => word.startsWith(userinput)));
-
-    // var locode = sharedStart(state.location.list());
-
-
-
-    // state.location.list().filter(
-    //
-    // )
-
+    var complist = state.location.list().filter(word => word.startsWith(userinput));
+    var completion = sharedStart(complist);
+    if(complist.length > 1)
+    {
+      print("");
+      print(complist);
+      return "@" + completion;
+    }
     return completion;
-    // sharedStart(state.location.list());
-    // print
-    // return null;
   }
   else {
     print("");

@@ -122,7 +122,13 @@ static int jcli_completion(int count, int key)
     else if (jerry_value_is_string(ret_val))
     {
       jerry_char_t *string_buffer_p = allocate_string(ret_val);
-      rl_insert_text(&string_buffer_p[rl_point]);
+      if (string_buffer_p[0] == '@')
+      {
+        rl_insert_text(&string_buffer_p[rl_point+1]);
+        rl_on_new_line();
+      }
+      else
+        rl_insert_text(&string_buffer_p[rl_point]);
       free (string_buffer_p);
     }
     jerry_release_value(ret_val);
