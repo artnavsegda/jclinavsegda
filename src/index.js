@@ -73,14 +73,9 @@ class Face {
     }
   }
   list() {
-    //print(JSON.stringify(this.schema.properties));
-    //return this.schema.properties;
-    //return Object.getOwnPropertyNames(this.schema.properties);
     return Object.getOwnPropertyNames(this.data);
   }
   printlist() {
-    //print("face list");
-    //print(Object.getOwnPropertyNames(this.data));
     Object.getOwnPropertyNames(this.data).forEach((element) => print(element));
   }
 }
@@ -116,15 +111,8 @@ function interpret(cmdline)
   if(state.location.traverse(cmdargs[0]))
   {
     print("go " + cmdargs[0]);
-    //print(JSON.stringify(state.location.traverse(cmdargs[0])));
     state.push(state.location.traverse(cmdargs[0]));
-    //print(JSON.stringify(state.location));
   }
-  // if (state.location.schema[cmdargs[0]])
-  // {
-  //   print("go " + cmdargs[0]);
-  //   state.path.push(cmdargs[0]);
-  // }
   prompt = state.getPrompt();
 }
 
@@ -157,22 +145,6 @@ function complete(userinput)
   }
 }
 
-// function acquire(commandname)
-// {
-//   var state = { schema: {}, data: {} };
-//   JSON.parse(IRZ.pipe(commandname)).forEach((element) => {
-//     var somejson = JSON.parse(IRZ.cat(element));
-//     Object.defineProperty(state.schema, somejson.title, {value: somejson});
-//     if (somejson.acquire === undefined){}
-//     else {
-//       var pipedata = IRZ.pipe("./" + somejson.acquire);
-//       var somejsondata = JSON.parse(pipedata);
-//       Object.defineProperty(state.data, somejson.title, {value: somejsondata});
-//     }
-//   });
-//   return state;
-// }
-
 print("starting CLI");
 
 print(IRZ.getenv("USER"));
@@ -180,6 +152,3 @@ print(IRZ.getenv("USER"));
 state.root = new Proto(JSON.parse(IRZ.pipe("./list.sh")),"cli");
 state.push(state.root);
 prompt = state.getPrompt();
-
-// if (myproto instanceof Proto)
-//   print("all good");
