@@ -26,8 +26,7 @@ static jerry_value_t module_cat_handler(const jerry_value_t function_object, con
     {
       struct stat sb;
       fstat(filetoread, &sb);
-      char *filecontent = malloc(sb.st_size);
-
+      char * filecontent = malloc(sb.st_size+1);
       int length = read(filetoread,filecontent,sb.st_size);
       filecontent[length] = '\0';
       close(filetoread);
@@ -56,10 +55,12 @@ static jerry_value_t module_system_handler(const jerry_value_t function_object, 
   return jerry_create_undefined();
 }
 
-#define CHUNK 10
+#define CHUNK 1024
 static char * allocate_stream(FILE * stream)
 {
   char * buf = malloc(CHUNK+1);
+  if (!buf)
+    return NULL;
   int chunkcounter, totalcounter = 0, limit = CHUNK;
 
   while (1)
@@ -86,17 +87,23 @@ static jerry_value_t module_pipe_handler(const jerry_value_t function_object, co
 {
   if (arguments_count > 0)
   {
-    jerry_value_t string_value = jerry_value_to_string (arguments[0]);
-    jerry_char_t buffer[256];
-    jerry_size_t copied_bytes = jerry_string_to_utf8_char_buffer (string_value, buffer, sizeof (buffer) - 1);
-    buffer[copied_bytes] = '\0';
-    jerry_release_value (string_value);
-    FILE * filetoread = popen(buffer, "r");
-    char * filecontent = allocate_stream(filetoread);
-    pclose(filetoread);
-    jerry_value_t returnvalue = jerry_create_string (filecontent);
-    free(filecontent);
-    return returnvalue;
+    if (jerry_value_is_string(arguments[0]))
+    {
+      jerry_value_t string_value = jerry_value_to_string (arguments[0]);
+      jerry_char_t buffer[256];
+      jerry_size_t copied_bytes = jerry_string_to_utf8_char_buffer (string_value, buffer, sizeof (buffer) - 1);
+      buffer[copied_bytes] = '\0';
+      jerry_release_value (string_value);
+      FILE * filetoread = popen(buffer, "r");
+      if (filetoread)
+      {
+        char * filecontent = allocate_stream(filetoread);
+        pclose(filetoread);
+        jerry_value_t returnvalue = jerry_create_string (filecontent);
+        free(filecontent);
+        return returnvalue;
+      }
+    }
   }
   return jerry_create_undefined();
 }

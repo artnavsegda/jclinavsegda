@@ -76,10 +76,11 @@ class Face {
     //print(JSON.stringify(this.schema.properties));
     //return this.schema.properties;
     //return Object.getOwnPropertyNames(this.schema.properties);
+    return Object.getOwnPropertyNames(this.data);
   }
   printlist() {
     print("face list");
-    print(JSON.stringify(this.data));
+    print(Object.getOwnPropertyNames(this.data));
   }
 }
 
@@ -92,14 +93,11 @@ class Option {
     }
   }
   list() {
-    //print(JSON.stringify(this.schema.properties));
-    //return this.schema.properties;
     return Object.getOwnPropertyNames(this.schema.properties);
   }
   printlist() {
     print("option list");
     print(Object.getOwnPropertyNames(this.schema.properties))
-    //print(JSON.stringify(this.schema.properties));
   }
 }
 

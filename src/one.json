@@ -7,6 +7,9 @@
   "properties": {
     "something": {
       "type": "string"
+    },
+    "someone": {
+      "type": "string"
     }
   }
 }

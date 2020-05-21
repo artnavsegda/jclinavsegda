@@ -1,5 +1,6 @@
 #!/bin/sh
 
 echo '{
-  "something": "somevalue"
+  "something": "somevalue",
+  "someone": "somewhere"
 }'
