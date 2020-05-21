@@ -2,7 +2,9 @@
   "title": "two",
   "description": "two interfaces list",
   "something": "two",
-  "acquire": "twodata.sh",
+  "acquire": {
+    "exec": "twodata.sh"
+  },
   "type": "object",
   "patternProperties": {
     "^test": {

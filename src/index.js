@@ -68,8 +68,8 @@ class Face {
   constructor(schema) {
     this.schema = schema;
     this.name = this.schema.title;
-    if (this.schema.acquire) {
-      this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire));
+    if (this.schema.acquire.exec) {
+      this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
     }
   }
   list() {
@@ -97,8 +97,7 @@ class Option {
     return Object.getOwnPropertyNames(this.schema.properties);
   }
   printlist() {
-    print("option list");
-    print(Object.getOwnPropertyNames(this.schema.properties))
+    Object.getOwnPropertyNames(this.schema.properties).forEach((element) => print(element));
   }
 }
 

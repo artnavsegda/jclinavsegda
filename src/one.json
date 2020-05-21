@@ -2,7 +2,9 @@
   "title": "one",
   "description": "one interfaces list",
   "something": "one",
-  "acquire": "onedata.sh",
+  "acquire": {
+    "exec": "onedata.sh"
+  },
   "type": "object",
   "properties": {
     "something": {
