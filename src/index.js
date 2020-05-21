@@ -146,7 +146,7 @@ function complete(userinput)
     if(complist.length > 1)
     {
       print("");
-      print(complist);
+      complist.forEach((element) => print(element));
       return "@" + completion;
     }
     return completion;
