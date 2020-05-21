@@ -22,31 +22,20 @@ static jerry_value_t module_cat_handler(const jerry_value_t function_object, con
 
     int filetoread = open(buffer,O_RDONLY);
 
-    char *filecontent = NULL;
-
     if (filetoread != -1)
     {
       struct stat sb;
       fstat(filetoread, &sb);
-      filecontent = malloc(sb.st_size);
+      char *filecontent = malloc(sb.st_size);
 
       int length = read(filetoread,filecontent,sb.st_size);
       filecontent[length] = '\0';
       close(filetoread);
-    }
-    else
-    {
-      filecontent = "empty";
-    }
-
-    jerry_value_t returnvalue = jerry_create_string (filecontent);
-
-    if (filetoread != -1)
+      jerry_value_t returnvalue = jerry_create_string (filecontent);
       free(filecontent);
-
-    return returnvalue;
+      return returnvalue;
+    }
   }
-
   return jerry_create_undefined();
 }
 
@@ -112,6 +101,22 @@ static jerry_value_t module_pipe_handler(const jerry_value_t function_object, co
   return jerry_create_undefined();
 }
 
+static jerry_value_t module_getenv_handler(const jerry_value_t function_object, const jerry_value_t function_this, const jerry_value_t arguments[], const jerry_length_t arguments_count)
+{
+  if (arguments_count > 0)
+  {
+    jerry_value_t string_value = jerry_value_to_string (arguments[0]);
+    jerry_char_t buffer[256];
+    jerry_size_t copied_bytes = jerry_string_to_utf8_char_buffer (string_value, buffer, sizeof (buffer) - 1);
+    buffer[copied_bytes] = '\0';
+    jerry_release_value (string_value);
+    char * env_val = getenv(buffer);
+    if (env_val)
+      return jerry_create_string (env_val);
+  }
+  return jerry_create_undefined();
+}
+
 static void register_module_js_function (jerry_value_t module, const char *name_p, jerry_external_handler_t handler_p)
 {
   jerry_value_t func_obj = jerry_create_external_function (handler_p);
@@ -126,6 +131,7 @@ static jerry_value_t irz_module_on_resolve (void)
   register_module_js_function(object, "cat", module_cat_handler);
   register_module_js_function(object, "system", module_system_handler);
   register_module_js_function(object, "pipe", module_pipe_handler);
+  register_module_js_function(object, "getenv", module_getenv_handler);
 
   return object;
 }
