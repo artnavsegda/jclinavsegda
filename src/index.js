@@ -79,8 +79,9 @@ class Face {
     return Object.getOwnPropertyNames(this.data);
   }
   printlist() {
-    print("face list");
-    print(Object.getOwnPropertyNames(this.data));
+    //print("face list");
+    //print(Object.getOwnPropertyNames(this.data));
+    Object.getOwnPropertyNames(this.data).forEach((element) => print(element));
   }
 }
 
