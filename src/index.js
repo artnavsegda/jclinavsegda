@@ -177,6 +177,8 @@ function complete(userinput)
 
 print("starting CLI");
 
+print(IRZ.getenv("USER"));
+
 state.root = new Proto(JSON.parse(IRZ.pipe("./list.sh")),"cli");
 state.push(state.root);
 prompt = state.getPrompt();
