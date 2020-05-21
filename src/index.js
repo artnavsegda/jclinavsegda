@@ -2,7 +2,7 @@ import * as jsonpointer from "jsonpointer.js";
 
 var IRZ = require ('irz_module');
 
-var prompt = "cli>"
+var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +">";
 
 var state = {
   root: {},
@@ -12,7 +12,7 @@ var state = {
 
   },
   getPrompt: function(){
-    return this.location.name + ">"
+    return IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") + "/" + this.location.name + ">"
   },
   pop: function() {
     if (this.path.length == 1)
@@ -100,16 +100,6 @@ class Option {
     print("option list");
     print(Object.getOwnPropertyNames(this.schema.properties))
     //print(JSON.stringify(this.schema.properties));
-  }
-}
-
-function generateprompt(stack_path)
-{
-  if (stack_path[0]){
-    return "cli/" + stack_path[0] + ">";
-  }
-  else {
-    return "cli>";
   }
 }
 
