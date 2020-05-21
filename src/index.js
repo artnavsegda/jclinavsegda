@@ -145,6 +145,8 @@ function complete(userinput)
         completion = element;
     });
 
+    print(state.location.list().filter(word => word.startsWith(userinput)));
+
     // var locode = sharedStart(state.location.list());
 
 
