@@ -49,19 +49,34 @@ class Proto {
     this.facelist.push(newelement);
   }
   load(filepath, filelist) {
-    this.facelist = [];
-    filelist.forEach((filename) => {
-      var path = filename.split('/');
-      if (path.length == 2)
-      {
-        print(filename);
-        var data = JSON.parse(IRZ.cat(filepath + filename))
-        if (data.properties)
-          this.add(new Option(data, basename(filename)));
-        else
-          this.add(new Face(data, basename(filename)));
-      }
-    });
+    if (filelist) {
+      this.facelist = [];
+      filelist.forEach((filename) => {
+        var path = filename.split('/');
+        var attachproto = this;
+        path.forEach((item, i) => {
+          if (i > 0) {
+            if (i == path.length-1)
+              attachproto.load(filepath + filename);
+            else {
+              var attachmaybe = attachproto.traverse(item);
+              if (!attachmaybe)
+              {
+                attachmaybe = new Proto(item);
+                attachproto.facelist.push(attachmaybe);
+              }
+              attachproto = attachmaybe;
+            }
+          }
+        });
+      });
+    } else {
+      var data = JSON.parse(IRZ.cat(filepath))
+      if (data.properties)
+        this.facelist.push(new Option(data, basename(filepath)));
+      else
+        this.facelist.push(new Face(data, basename(filepath)));
+    }
   }
   list() {
     var protolist = [];
