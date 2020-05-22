@@ -85,7 +85,7 @@ class Option {
     this.schema = schema;
     this.name = this.schema.title;
     if (this.schema.acquire) {
-      this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire));
+      this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
     }
   }
   list() {
