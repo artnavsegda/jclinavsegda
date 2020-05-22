@@ -2,7 +2,7 @@ import * as jsonpointer from "jsonpointer.js";
 
 var IRZ = require ('irz_module');
 
-const horizont_path = "/usr/share/horizont/";
+const horizont_path = "/home/art/Coding/horizont/files/";
 const script_list_path = horizont_path + "/script/list";
 const schema_path = horizont_path + "schema"
 
@@ -161,6 +161,6 @@ print(IRZ.getenv("USER"));
 //   var this_schema = JSON.parse(this_schema_contents);
 // });
 
-state.root = new Proto(JSON.parse(IRZ.pipe(script_list_path)).list,"cli");
+state.root = new Proto(JSON.parse(IRZ.cat("./list.txt")).list,"cli");
 state.push(state.root);
 prompt = state.getPrompt();
