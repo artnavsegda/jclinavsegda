@@ -65,9 +65,6 @@ class Proto {
     this.facelist.forEach((element) => protolist.push(element.name));
     return protolist;
   }
-  printlist() {
-    this.facelist.sort.forEach((element) => print(element.name));
-  }
   traverse(command) {
     return this.facelist.find((element) => element.name == command);
   }
@@ -83,9 +80,6 @@ class Face {
   }
   list() {
     return Object.getOwnPropertyNames(this.data);
-  }
-  printlist() {
-    Object.getOwnPropertyNames(this.data).forEach((element) => print(element));
   }
 }
 
