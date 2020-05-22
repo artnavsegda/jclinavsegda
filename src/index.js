@@ -2,7 +2,9 @@ import * as jsonpointer from "jsonpointer.js";
 
 var IRZ = require ('irz_module');
 
-const script_list = "/usr/share/horizont/script/list"
+const horizont_path = "/usr/share/horizont/";
+const script_list_path = horizont_path + "/script/list";
+const schema_path = horizont_path + "schema"
 
 var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +">";
 
@@ -43,7 +45,7 @@ class Proto {
   load(filelist) {
     this.facelist = [];
     this.filelist.forEach((filename) => {
-      var data = JSON.parse(IRZ.cat(filename))
+      var data = JSON.parse(IRZ.cat(schema_path + filename))
       if (data.properties)
       {
         this.facelist.push(new Option(data))
@@ -70,9 +72,9 @@ class Face {
   constructor(schema) {
     this.schema = schema;
     this.name = this.schema.title;
-    if (this.schema.acquire.exec) {
-      this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
-    }
+    //if (this.schema.acquire.exec) {
+      //this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
+    //}
   }
   list() {
     return Object.getOwnPropertyNames(this.data);
@@ -86,9 +88,9 @@ class Option {
   constructor(schema) {
     this.schema = schema;
     this.name = this.schema.title;
-    if (this.schema.acquire) {
-      this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
-    }
+    //if (this.schema.acquire.exec) {
+      //this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
+    //}
   }
   list() {
     return Object.getOwnPropertyNames(this.schema.properties);
@@ -151,6 +153,14 @@ print("starting CLI");
 
 print(IRZ.getenv("USER"));
 
-state.root = new Proto(JSON.parse(IRZ.pipe("./list.sh")),"cli");
+// var script_list_contents = IRZ.pipe(script_list_path);
+// var script_list = JSON.parse(script_list_contents);
+// script_list.list.forEach(path => {
+//   var this_schema_path = schema_path + path;
+//   var this_schema_contents = IRZ.cat(this_schema_path);
+//   var this_schema = JSON.parse(this_schema_contents);
+// });
+
+state.root = new Proto(JSON.parse(IRZ.pipe(script_list_path)).list,"cli");
 state.push(state.root);
 prompt = state.getPrompt();
