@@ -2,10 +2,6 @@ import * as jsonpointer from "jsonpointer.js";
 
 var IRZ = require ('irz_module');
 
-const horizont_path = "/home/art/Coding/horizont/files/";
-const script_list_path = horizont_path + "/script/list";
-const schema_path = horizont_path + "schema"
-
 var config = JSON.parse(IRZ.cat("./config.json"));
 
 var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +">";
@@ -54,7 +50,7 @@ class Proto {
   load(filelist) {
     this.facelist = [];
     this.filelist.forEach((filename) => {
-      var data = JSON.parse(IRZ.cat(schema_path + filename))
+      var data = JSON.parse(IRZ.cat(config.schema_path + filename))
       if (data.properties)
       {
         this.facelist.push(new Option(data, basename(filename)))
@@ -170,6 +166,6 @@ print(IRZ.getenv("USER"));
 //   var this_schema = JSON.parse(this_schema_contents);
 // });
 
-state.root = new Proto(JSON.parse(IRZ.cat("./list.txt")).list,"cli");
+state.root = new Proto(JSON.parse(IRZ.pipe(config.script_list_path)).list,"cli");
 state.push(state.root);
 prompt = state.getPrompt();
