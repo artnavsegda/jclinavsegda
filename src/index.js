@@ -33,6 +33,13 @@ var state = {
   }
 };
 
+function basename(filename)
+{
+  var path = filename.split('/');
+  var basename = path[path.length-1].split('.')
+  return basename[0];
+}
+
 class Proto {
   constructor(filelist, protoname) {
     this.name = protoname;
@@ -48,10 +55,10 @@ class Proto {
       var data = JSON.parse(IRZ.cat(schema_path + filename))
       if (data.properties)
       {
-        this.facelist.push(new Option(data))
+        this.facelist.push(new Option(data, basename(filename)))
       }
       else {
-        this.facelist.push(new Face(data))
+        this.facelist.push(new Face(data, basename(filename)))
       }
     });
   }
@@ -61,17 +68,17 @@ class Proto {
     return protolist;
   }
   printlist() {
-    this.facelist.forEach((element) => print(element.schema.title));
+    this.facelist.sort.forEach((element) => print(element.name));
   }
   traverse(command) {
-    return this.facelist.find((element) => element.schema.title == command);
+    return this.facelist.find((element) => element.name == command);
   }
 }
 
 class Face {
-  constructor(schema) {
+  constructor(schema, name) {
     this.schema = schema;
-    this.name = this.schema.title;
+    this.name = name;
     //if (this.schema.acquire.exec) {
       //this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
     //}
@@ -85,9 +92,9 @@ class Face {
 }
 
 class Option {
-  constructor(schema) {
+  constructor(schema, name) {
     this.schema = schema;
-    this.name = this.schema.title;
+    this.name = name;
     //if (this.schema.acquire.exec) {
       //this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
     //}
