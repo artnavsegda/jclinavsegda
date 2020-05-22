@@ -6,7 +6,7 @@ const horizont_path = "/home/art/Coding/horizont/files/";
 const script_list_path = horizont_path + "/script/list";
 const schema_path = horizont_path + "schema"
 
-config = JSON.parse(IRZ.cat("./config.json"));
+var config = JSON.parse(IRZ.cat("./config.json"));
 
 var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +">";
 
