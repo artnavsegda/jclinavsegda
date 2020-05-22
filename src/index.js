@@ -52,12 +52,9 @@ class Proto {
     this.filelist.forEach((filename) => {
       var data = JSON.parse(IRZ.cat(config.schema_path + filename))
       if (data.properties)
-      {
         this.add(new Option(data, basename(filename)));
-      }
-      else {
+      else
         this.add(new Face(data, basename(filename)));
-      }
     });
   }
   list() {
