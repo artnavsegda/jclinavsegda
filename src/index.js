@@ -151,7 +151,7 @@ function complete(userinput)
   }
   else {
     print("");
-    state.location.list().forEach((element) => print(element));
+    state.location.list().sort().forEach((element) => print(element));
     return null;
   }
 }
