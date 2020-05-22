@@ -45,7 +45,7 @@ class Proto {
     this.load(filelist)
   }
   add(newelement) {
-    this.filelist.push(newelement);
+    this.facelist.push(newelement);
   }
   load(filelist) {
     this.facelist = [];
@@ -53,10 +53,10 @@ class Proto {
       var data = JSON.parse(IRZ.cat(config.schema_path + filename))
       if (data.properties)
       {
-        this.facelist.push(new Option(data, basename(filename)))
+        this.add(new Option(data, basename(filename)));
       }
       else {
-        this.facelist.push(new Face(data, basename(filename)))
+        this.add(new Face(data, basename(filename)));
       }
     });
   }
