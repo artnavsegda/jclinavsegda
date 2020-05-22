@@ -2,6 +2,8 @@ import * as jsonpointer from "jsonpointer.js";
 
 var IRZ = require ('irz_module');
 
+const script_list = "/usr/share/horizont/script/list"
+
 var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +">";
 
 var state = {
