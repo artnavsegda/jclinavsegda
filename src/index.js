@@ -39,22 +39,27 @@ function basename(filename)
 }
 
 class Proto {
-  constructor(filelist, protoname) {
+  constructor(filelist, protoname, filepath) {
     this.name = protoname;
     this.filelist = filelist;
-    this.load(filelist)
+    this.load(filepath, filelist)
   }
   add(newelement) {
     this.facelist.push(newelement);
   }
-  load(filelist) {
+  load(filepath, filelist) {
     this.facelist = [];
     this.filelist.forEach((filename) => {
-      var data = JSON.parse(IRZ.cat(config.schema_path + filename))
-      if (data.properties)
-        this.add(new Option(data, basename(filename)));
-      else
-        this.add(new Face(data, basename(filename)));
+      var path = filename.split('/');
+      if (path.length == 2)
+      {
+        print(filename);
+        var data = JSON.parse(IRZ.cat(filepath + filename))
+        if (data.properties)
+          this.add(new Option(data, basename(filename)));
+        else
+          this.add(new Face(data, basename(filename)));
+      }
     });
   }
   list() {
@@ -157,6 +162,6 @@ print(IRZ.getenv("USER"));
 //   var this_schema = JSON.parse(this_schema_contents);
 // });
 
-state.root = new Proto(JSON.parse(IRZ.pipe(config.script_list_path)).list,"cli");
+state.root = new Proto(JSON.parse(IRZ.pipe(config.script_list_path)).list,"cli", config.schema_path);
 state.push(state.root);
 prompt = state.getPrompt();
