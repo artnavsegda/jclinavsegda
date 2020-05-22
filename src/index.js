@@ -64,7 +64,7 @@ class Proto {
   }
   list() {
     var protolist = [];
-    this.facelist.forEach((element) => protolist.push(element.schema.title));
+    this.facelist.forEach((element) => protolist.push(element.name));
     return protolist;
   }
   printlist() {
@@ -151,7 +151,7 @@ function complete(userinput)
   }
   else {
     print("");
-    state.location.printlist();
+    state.location.list().forEach((element) => print(element));
     return null;
   }
 }
