@@ -39,17 +39,18 @@ function basename(filename)
 }
 
 class Proto {
-  constructor(filelist, protoname, filepath) {
+  constructor(protoname, filelist, filepath) {
+    this.facelist = [];
     this.name = protoname;
-    this.filelist = filelist;
-    this.load(filepath, filelist)
+    if (filelist)
+      this.load(filepath, filelist)
   }
   add(newelement) {
     this.facelist.push(newelement);
   }
   load(filepath, filelist) {
     this.facelist = [];
-    this.filelist.forEach((filename) => {
+    filelist.forEach((filename) => {
       var path = filename.split('/');
       if (path.length == 2)
       {
@@ -162,6 +163,8 @@ print(IRZ.getenv("USER"));
 //   var this_schema = JSON.parse(this_schema_contents);
 // });
 
-state.root = new Proto(JSON.parse(IRZ.pipe(config.script_list_path)).list,"cli", config.schema_path);
+state.root = new Proto("cli");
+state.root.load(config.schema_path, JSON.parse(IRZ.pipe(config.script_list_path)).list);
+//state.root = new Proto("cli", JSON.parse(IRZ.pipe(config.script_list_path)).list, config.schema_path);
 state.push(state.root);
 prompt = state.getPrompt();
