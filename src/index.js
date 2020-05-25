@@ -176,7 +176,6 @@ function execute(cmdarg)
     state.push(state.location.traverse(cmdarg));
     return true;
   } else {
-    print("no command >" + cmdarg + "<");
     return false;
   }
 }
@@ -194,8 +193,9 @@ function interpret(cmdline)
     state.pop();
   else {
     cmdargs.forEach((cmdarg, i) => {
-      if (execute(cmdarg) == false)
-        state.location = state.root;
+      if (execute(cmdarg) == false) {
+        // something
+      }
     });
   }
   prompt = state.getPrompt();
