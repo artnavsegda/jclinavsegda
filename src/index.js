@@ -114,7 +114,17 @@ class Face {
   traverse(command) {
     if (this.schema.namesake) {
       var dataname = Object.getOwnPropertyNames(this.data).find((element) => command == this.data[element][this.schema.namesake])
-      print(dataname);
+      if (this.data[dataname]) {
+        //print("data: " + JSON.stringify(this.data[command]));
+        var schema_section;
+        Object.getOwnPropertyNames(this.schema.patternProperties).forEach((pattern) => {
+          let re = new RegExp(pattern);
+          if (re.test(dataname))
+            schema_section = this.schema.patternProperties[pattern];
+        });
+        //print("schema: " + JSON.stringify(schema_section));
+        return new Option(schema_section, command, this.data[dataname])
+      }
     } else {
       if (this.data[command]) {
         //print("data: " + JSON.stringify(this.data[command]));
