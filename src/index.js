@@ -34,6 +34,18 @@ var state = {
   }
 };
 
+function builtin(command)
+{
+  if (command == "exit")
+    return null;
+  else if (command == "/") {
+    state.path = [ state.root ];
+    state.location = state.root;
+  } else if (command == "..")
+    state.pop();
+  return true;
+}
+
 // mandatory function for CLI
 function interpret(cmdline)
 {
@@ -50,13 +62,8 @@ function interpret(cmdline)
 
   var cmdargs = cmdline.split(" ");
 
-  if (cmdargs[0] == "exit")
+  if(!builtin(cmdargs[0]))
     return null;
-  else if (cmdargs[0] == "/") {
-    state.path = [ state.root ];
-    state.location = state.root;
-  } else if (cmdargs[0] == "..")
-    state.pop();
   else {
     cmdargs.forEach((cmdarg, i) => {
       if (execute(cmdarg) == false) {
