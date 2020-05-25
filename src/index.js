@@ -1,18 +1,12 @@
 import * as jsonpointer from "jsonpointer.js";
-
 var IRZ = require ('irz_module');
-
 var config = JSON.parse(IRZ.cat("./config.json"));
-
-var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +">";
+var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +"/>";
 
 var state = {
   root: {},
   path: [],
   location: {},
-  getLocation: function(){
-
-  },
   getPrompt: function(){
     var gen_prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME");
     if (this.path.length == 1) {
@@ -26,8 +20,7 @@ var state = {
     return gen_prompt + ">";
   },
   pop: function() {
-    if (this.path.length == 1)
-    {
+    if (this.path.length == 1) {
       print("already at root");
       return;
     }
