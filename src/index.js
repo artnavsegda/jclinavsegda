@@ -103,6 +103,11 @@ class Face {
   list() {
     return Object.getOwnPropertyNames(this.data);
   }
+  traverse(command) {
+    print("schema: " + JSON.stringify(this.schema));
+    print("data: " + JSON.stringify(this.data[command]));
+    return undefined;
+  }
 }
 
 class Option {
