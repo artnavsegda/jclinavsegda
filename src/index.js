@@ -120,9 +120,6 @@ class Option {
   list() {
     return Object.getOwnPropertyNames(this.schema.properties);
   }
-  printlist() {
-    Object.getOwnPropertyNames(this.schema.properties).forEach((element) => print(element));
-  }
 }
 
 // mandatory function for CLI
