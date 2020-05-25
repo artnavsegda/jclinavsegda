@@ -87,8 +87,13 @@ function complete(userinput)
   var location = state.path[state.path.length-1];
 
   if (userinput) {
+    var cmdargs = userinput.split(" ");
+    var oldpath = [...state.path];
+    var newpath = execute(cmdargs, oldpath);
+    location = newpath[newpath.length-1];
+
     var completion;
-    var complist = location.list().filter(word => word.startsWith(userinput));
+    var complist = location.list().filter(word => word.startsWith(cmdargs[cmdargs.length-1]));
     var completion = sharedStart(complist);
     if(complist.length > 1)
     {
