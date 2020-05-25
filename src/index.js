@@ -101,7 +101,13 @@ class Face {
     }
   }
   list() {
-    return Object.getOwnPropertyNames(this.data);
+    if (this.schema.namesake) {
+      var facelist = [];
+      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push(this.data[element][this.schema.namesake]));
+      return facelist;
+    }
+    else
+      return Object.getOwnPropertyNames(this.data);
   }
   traverse(command) {
     print("schema: " + JSON.stringify(this.schema));
