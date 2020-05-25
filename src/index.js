@@ -105,9 +105,13 @@ class Option {
   constructor(schema, name) {
     this.schema = schema;
     this.name = name;
-    //if (this.schema.acquire.exec) {
-      //this.data = JSON.parse(IRZ.pipe("./" + this.schema.acquire.exec));
-    //}
+    if (this.schema.acquire) {
+      var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
+      print("piping " + now_script_path);
+      var now_data = IRZ.pipe(now_script_path);
+      if (now_data)
+        this.data = JSON.parse(now_data);
+    }
   }
   list() {
     return Object.getOwnPropertyNames(this.schema.properties);
