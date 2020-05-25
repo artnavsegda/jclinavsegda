@@ -92,11 +92,9 @@ class Face {
   constructor(schema, name, data) {
     this.schema = schema;
     this.name = name;
-    if (data)
-    {
+    if (data) {
       this.data = data;
-    }
-    else if (this.schema.acquire) {
+    } else if (this.schema.acquire) {
       var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
       //print("piping " + now_script_path);
       var now_data = IRZ.pipe(now_script_path);
@@ -114,21 +112,28 @@ class Face {
       return Object.getOwnPropertyNames(this.data);
   }
   traverse(command) {
-    // print("schema: " + JSON.stringify(this.schema));
-    // print("data: " + JSON.stringify(this.data[command]));
-    if (this.schema.namesake) {
-    }
-    else {
+    if (this.data[command]) {
+      //print("data: " + JSON.stringify(this.data[command]));
+      var schema_section;
+      Object.getOwnPropertyNames(this.schema.patternProperties).forEach((pattern) => {
+        let re = new RegExp(pattern);
+        if (re.test(command))
+          schema_section = this.schema.patternProperties[pattern];
+      });
+      //print("schema: " + JSON.stringify(schema_section));
+      return new Option(schema_section, command, this.data[command])
     }
     return undefined;
   }
 }
 
 class Option {
-  constructor(schema, name) {
+  constructor(schema, name, data) {
     this.schema = schema;
     this.name = name;
-    if (this.schema.acquire) {
+    if (data) {
+      this.data = data;
+    } else if (this.schema.acquire) {
       var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
       //print("piping " + now_script_path);
       var now_data = IRZ.pipe(now_script_path);
