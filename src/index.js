@@ -170,19 +170,20 @@ class Option {
 // mandatory function for CLI
 function interpret(cmdline)
 {
-  //prompt = "some>";
   var cmdargs = cmdline.split(" ");
+
   if (cmdargs[0] == "exit")
     return null;
   else if (cmdargs[0] == "/")
     state.location = state.root;
   else if (cmdargs[0] == "..")
     state.pop();
-
-  if(state.location.traverse(cmdargs[0]))
-  {
-    print("go " + cmdargs[0]);
-    state.push(state.location.traverse(cmdargs[0]));
+  else {
+    if(state.location.traverse(cmdargs[0]))
+    {
+      print("go " + cmdargs[0]);
+      state.push(state.location.traverse(cmdargs[0]));
+    }
   }
   prompt = state.getPrompt();
 }
