@@ -33,13 +33,6 @@ var state = {
   }
 };
 
-function basename(filename)
-{
-  var path = filename.split('/');
-  var basename = path[path.length-1].split('.')
-  return basename[0];
-}
-
 class Proto {
   constructor(protoname, filelist, filepath) {
     this.facelist = [];
@@ -49,6 +42,12 @@ class Proto {
   }
   add(newelement) {
     this.facelist.push(newelement);
+  }
+  basename(filename)
+  {
+    var path = filename.split('/');
+    var basename = path[path.length-1].split('.')
+    return basename[0];
   }
   load(filepath, filelist) {
     if (filelist) {
@@ -75,9 +74,9 @@ class Proto {
     } else {
       var data = JSON.parse(IRZ.cat(filepath))
       if (data.properties)
-        this.facelist.push(new Option(data, basename(filepath)));
+        this.facelist.push(new Option(data, this.basename(filepath)));
       else
-        this.facelist.push(new Face(data, basename(filepath)));
+        this.facelist.push(new Face(data, this.basename(filepath)));
     }
   }
   list() {
@@ -125,14 +124,17 @@ class Face {
       //print("schema: " + JSON.stringify(schema_section));
       return schema_section;
     }
+    return undefined
   }
   traverse(command) {
     if (this.schema.namesake) {
       var dataname = Object.getOwnPropertyNames(this.data).find((element) => command == this.data[element][this.schema.namesake])
-      return new Option(this.resolve(dataname), command, this.data[dataname])
+      if (this.resolve(dataname))
+        return new Option(this.resolve(dataname), command, this.data[dataname])
     }
     else
-      return new Option(this.resolve(command), command, this.data[command])
+      if (this.resolve(command))
+        return new Option(this.resolve(command), command, this.data[command])
     return undefined;
   }
 }
@@ -162,27 +164,28 @@ class Option {
   }
 }
 
-function execute(cmdarg)
-{
-  if(state.location.traverse(cmdarg)){
-    print("go " + cmdarg + ">");
-    state.push(state.location.traverse(cmdarg));
-    return true;
-  } else {
-    return false;
-  }
-}
-
 // mandatory function for CLI
 function interpret(cmdline)
 {
+  function execute(cmdarg)
+  {
+    if(state.location.traverse(cmdarg)){
+      print("go " + cmdarg + ">");
+      state.push(state.location.traverse(cmdarg));
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   var cmdargs = cmdline.split(" ");
 
   if (cmdargs[0] == "exit")
     return null;
-  else if (cmdargs[0] == "/")
+  else if (cmdargs[0] == "/") {
+    state.path = [ state.root ];
     state.location = state.root;
-  else if (cmdargs[0] == "..")
+  } else if (cmdargs[0] == "..")
     state.pop();
   else {
     cmdargs.forEach((cmdarg, i) => {
@@ -194,16 +197,16 @@ function interpret(cmdline)
   prompt = state.getPrompt();
 }
 
-function sharedStart(array){
-    var A= array.concat().sort(),
-    a1= A[0], a2= A[A.length-1], L= a1.length, i= 0;
-    while(i<L && a1.charAt(i)=== a2.charAt(i)) i++;
-    return a1.substring(0, i);
-}
-
 // tab completion callback
 function complete(userinput)
 {
+  function sharedStart(array){
+      var A= array.concat().sort(),
+      a1= A[0], a2= A[A.length-1], L= a1.length, i= 0;
+      while(i<L && a1.charAt(i)=== a2.charAt(i)) i++;
+      return a1.substring(0, i);
+  }
+
   if (userinput) {
     // var cmdargs = userinput.split(" ");
     // cmdargs.forEach((cmdarg, i) => {
