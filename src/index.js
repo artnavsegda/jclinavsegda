@@ -14,7 +14,16 @@ var state = {
 
   },
   getPrompt: function(){
-    return IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") + "/" + this.location.name + ">"
+    var gen_prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME");
+    if (this.path.length == 1) {
+      gen_prompt += "/"
+    } else {
+      this.path.forEach((item, i) => {
+      if (item.name)
+        gen_prompt += "/" + item.name;
+      });
+    }
+    return gen_prompt + ">";
   },
   pop: function() {
     if (this.path.length == 1)
@@ -234,18 +243,9 @@ function complete(userinput)
 }
 
 print("starting CLI");
-
 print(IRZ.getenv("USER"));
 
-// var script_list_contents = IRZ.pipe(script_list_path);
-// var script_list = JSON.parse(script_list_contents);
-// script_list.list.forEach(path => {
-//   var this_schema_path = schema_path + path;
-//   var this_schema_contents = IRZ.cat(this_schema_path);
-//   var this_schema = JSON.parse(this_schema_contents);
-// });
-
-state.root = new Proto("cli");
+state.root = new Proto("");
 state.root.load(config.schema_path, JSON.parse(IRZ.pipe(config.script_list_path)).list);
 //state.root = new Proto("cli", JSON.parse(IRZ.pipe(config.script_list_path)).list, config.schema_path);
 state.push(state.root);
