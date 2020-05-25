@@ -167,6 +167,18 @@ class Option {
   }
 }
 
+function execute(cmdarg)
+{
+  if(state.location.traverse(cmdarg)){
+    print("go " + cmdarg + ">");
+    state.push(state.location.traverse(cmdarg));
+    return true;
+  } else {
+    print("no command >" + cmdarg + "<");
+    return false;
+  }
+}
+
 // mandatory function for CLI
 function interpret(cmdline)
 {
@@ -179,11 +191,10 @@ function interpret(cmdline)
   else if (cmdargs[0] == "..")
     state.pop();
   else {
-    if(state.location.traverse(cmdargs[0]))
-    {
-      print("go " + cmdargs[0]);
-      state.push(state.location.traverse(cmdargs[0]));
-    }
+    cmdargs.forEach((cmdarg, i) => {
+      if (execute(cmdarg) == false)
+        state.location = state.root;
+    });
   }
   prompt = state.getPrompt();
 }
@@ -199,6 +210,11 @@ function sharedStart(array){
 function complete(userinput)
 {
   if (userinput) {
+    // var cmdargs = userinput.split(" ");
+    // cmdargs.forEach((cmdarg, i) => {
+    //   execute(cmdarg);
+    // });
+
     var completion;
     var complist = state.location.list().filter(word => word.startsWith(userinput));
     var completion = sharedStart(complist);
