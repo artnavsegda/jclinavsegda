@@ -112,16 +112,21 @@ class Face {
       return Object.getOwnPropertyNames(this.data);
   }
   traverse(command) {
-    if (this.data[command]) {
-      //print("data: " + JSON.stringify(this.data[command]));
-      var schema_section;
-      Object.getOwnPropertyNames(this.schema.patternProperties).forEach((pattern) => {
-        let re = new RegExp(pattern);
-        if (re.test(command))
-          schema_section = this.schema.patternProperties[pattern];
-      });
-      //print("schema: " + JSON.stringify(schema_section));
-      return new Option(schema_section, command, this.data[command])
+    if (this.schema.namesake) {
+      var dataname = Object.getOwnPropertyNames(this.data).find((element) => command == this.data[element][this.schema.namesake])
+      print(dataname);
+    } else {
+      if (this.data[command]) {
+        //print("data: " + JSON.stringify(this.data[command]));
+        var schema_section;
+        Object.getOwnPropertyNames(this.schema.patternProperties).forEach((pattern) => {
+          let re = new RegExp(pattern);
+          if (re.test(command))
+            schema_section = this.schema.patternProperties[pattern];
+        });
+        //print("schema: " + JSON.stringify(schema_section));
+        return new Option(schema_section, command, this.data[command])
+      }
     }
     return undefined;
   }
