@@ -89,10 +89,14 @@ class Proto {
 }
 
 class Face {
-  constructor(schema, name) {
+  constructor(schema, name, data) {
     this.schema = schema;
     this.name = name;
-    if (this.schema.acquire) {
+    if (data)
+    {
+      this.data = data;
+    }
+    else if (this.schema.acquire) {
       var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
       //print("piping " + now_script_path);
       var now_data = IRZ.pipe(now_script_path);
@@ -110,8 +114,12 @@ class Face {
       return Object.getOwnPropertyNames(this.data);
   }
   traverse(command) {
-    print("schema: " + JSON.stringify(this.schema));
-    print("data: " + JSON.stringify(this.data[command]));
+    // print("schema: " + JSON.stringify(this.schema));
+    // print("data: " + JSON.stringify(this.data[command]));
+    if (this.schema.namesake) {
+    }
+    else {
+    }
     return undefined;
   }
 }
