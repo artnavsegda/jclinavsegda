@@ -126,6 +126,22 @@ class Option {
     //print("schema: " + JSON.stringify(this.schema.properties[command]));
     //print("data: " + this.data[command]);
     //print(this.data[command]);
+    //return undefined;
+    return new Setting(this.schema.properties[command], command, this.data[command]);
+  }
+}
+
+class Setting {
+  constructor(schema, name, data) {
+    this.schema = schema;
+    this.name = name;
+    this.data = data;
+  }
+  list() {
+    return this.data;
+  }
+  traverse(command) {
+    this.data = command;
     return undefined;
   }
 }
