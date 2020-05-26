@@ -1,0 +1,240 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "interface",
+  "description": "Logical interfaces list",
+  "type": "object",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "Interface entity",
+      "properties": {
+        "disabled": {
+          "type": "boolean",
+          "description": "Disable the interface",
+          "default": false
+        },
+
+        "device": {
+          "type": "string",
+          "description": "Physical device name",
+          "cue": ["/network/vlan", "/network/wireless/interface", "/switch/master"]
+        },
+
+        "proto": {
+          "type": "string",
+          "description": "Interface type",
+          "enum": ["none", "static", "dhcp", "pppoe"],
+          "default": "none"},
+
+        "defaultroute": {
+          "type": "boolean",
+          "hidden": true,
+          "description": "Set default route via interface",
+          "modificator": [
+            {"if": [{"proto": "dhcp"}], "then": {"hidden": false}},
+            {"if": [{"proto": "pppoe"}], "then": {"hidden": false}},
+            {"if": [{"proto": "static"}, {"gateway": "!"}], "then": {"hidden": false}}]},
+
+        "peerdns": {
+          "type": "boolean", 
+          "hidden": true, 
+          "description": "Use peer-assigned DNS server",
+          "modificator": [
+            {"if": [{"proto": "pppoe"}], "then": {"hidden": false}},
+            {"if": [{"proto": "dhcp"}], "then": {"hidden": false}}
+          ]
+        },
+
+        "metric": {
+          "type": "number",
+          "description": "Specifies route metric to use (min: 100)",
+          "minimum": 100
+        },
+
+        "mtu": {
+          "type": "number",
+          "description": "MTU",
+          "maximum": 1500,
+          "minimum": 500,
+          "default": 1500
+        },
+
+        "zone": {
+          "type": "string",
+          "title": "Firewall Zone",
+          "description": "Firewall zone to which this interface should be added",
+          "cue": ["/firewall/zone"]
+        },
+
+        "dns": {
+          "type": "array", 
+          "description": "DNS servers" ,
+          "hidden": true,
+          "items": {
+            "type": "string"
+          }
+        },        
+
+        "ipaddr": { 
+          "type": "array", 
+          "hidden": true, 
+          "description": "IP addresses", 
+          "uniqueItems": true, 
+          "items": {"type": "string"},
+          "modificator": [
+            {"if": [{"proto": "static"}], "then": {"hidden": false}}
+          ]
+        },
+
+        "gateway": { 
+          "type": "string", 
+          "hidden": true, 
+          "description": "Default gateway",
+          "modificator": [
+            {"if": [{"proto": "static"}], "then": {"hidden": false}}
+          ]
+        },
+
+        "username": { 
+          "type": "string", 
+          "hidden": true, 
+          "description": "Username for PAP/CHAP authentication",
+          "modificator": [
+            {"if": [{"proto": "pppoe"}], "then": {"hidden": false}}
+          ]
+        },
+
+        "password": { 
+          "type": "string", 
+          "hidden": true, 
+          "description": "Password for PAP/CHAP authentication",
+          "modificator": [
+            {"if": [{"proto": "pppoe"}], "then": {"hidden": false}}
+          ]
+        },
+
+        "ac": { 
+          "type": "string", 
+          "hidden": true, 
+          "description": "Specifies the Access Concentrator to connect to. If unset, pppd uses the first discovered one",
+          "modificator": [
+            {"if": [{"proto": "pppoe"}], "then": {"hidden": false}}
+          ]
+        },
+        
+        "service": {
+          "type": "string", 
+          "hidden": true, 
+          "description": "Specifies the Service Name to connect to, If unset, pppd uses the first discovered one",
+          "modificator": [
+            {"if": [{"proto": "pppoe"}], "then": {"hidden": false}}
+          ]
+        },
+        
+        "keepalive": {
+          "type": "string", 
+          "hidden": true, 
+          "description": "The numbers must be separated by a space. (pppd: 'lcp-echo-interval lcp-echo-failure'", 
+          "pattern": "^[1-9]([0-9]+)?\\ [1-9]([0-9]+)?$",
+          "modificator": [
+            {"if": [{"proto": "pppoe"}], "then": {"hidden": false}}
+          ]
+        },
+        
+        "pppd_options": {
+          "type": "array",
+          "hidden": true,
+          "description": "Additional command line arguments to pass to the pppd" ,
+          "items": {"type": "string"},
+          "modificator": [
+            {"if": [{"proto": "pppoe"}], "then": {"hidden": false}}
+          ]
+        },
+
+        "hostname": {
+          "type": "string", 
+          "hidden": true, 
+          "description": "Hostname to include in DHCP requests",
+          "modificator": [
+            {"if": [{"proto": "dhcp"}], "then": {"hidden": false}}
+          ]
+        },
+        
+        "clientid": {
+          "type": "string", 
+          "hidden": true, 
+          "description": "Override client identifier in DHCP requests",
+          "modificator": [
+            {"if": [{"proto": "dhcp"}], "then": {"hidden": false}}
+          ]
+        },
+        
+        "vendorid": {
+          "type": "string", 
+          "hidden": true, 
+          "description": "Override the vendor class in DHCP requests",
+          "modificator": [
+            {"if": [{"proto": "dhcp"}], "then": {"hidden": false}}
+          ]
+        }
+      }
+    },  
+    "actions": {
+      "delete": {
+        "exec": "handler",
+        "args": ["delete", "network-interface"],
+        "reload": true},        
+
+      "apply": {
+        "exec": "handler",
+        "args": ["apply", "network-interface"]
+      }
+    }
+  },
+
+  "actions": {
+    "add": {
+      "exec": "handler",
+      "description": "add new entry (params: <name>)",
+      "args": ["add", "network-interface"],
+      "merge": true,
+      "schema": {
+        "required": ["name"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"}
+        }
+      }},
+
+    "clean": {
+      "exec": "handler",
+      "args": ["clean", "network-interface"],
+      "confirm": true,
+      "reload": true
+	},
+    "apply": {
+      "exec": "handler",
+      "args": ["apply", "network-interface"]
+    }
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "network-interface"]
+  },    
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "network-interface"],
+    "reload": true
+  },    
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "network-interface"]
+  },    
+
+  "acquire": {
+    "exec": "handler",
+    "args": ["get", "network-interface"]
+  }
+}

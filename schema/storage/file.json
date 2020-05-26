@@ -1,0 +1,168 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "file",
+	"description": "Storage Files",
+	"type": "object",
+	"definitions": {
+		"name": {
+			"type": "string",
+			"description": "File Name",
+			"title": "File Name",
+			"pattern": "^[a-zA-Z0-9\\_\\-\\.]+$"
+		},
+		"upload": {
+			"type": "string",
+			"isFile": true,
+			"title": "File Name",
+			"default": "untitled-file"
+		},			
+		"url": {
+			"type": "string",
+			"title": "URL",
+			"description": "enter URL"
+		}
+
+	},
+	"namesake": "name",
+	"patternProperties": {
+		".*": {
+			"type": "object",
+			"title": "Route entity",
+			"properties": {
+				"name": {
+					"$ref": "#/definitions/name"
+				},
+
+				"executable": {
+					"type": "boolean",
+					"description": "Enable execute this file"
+				},
+				
+				"file_size": {
+					"type": "number",
+					"description": "File Size (bytes)",
+					"title": "file size",
+					"readOnly": true
+				},
+
+				"last_change": {
+					"type": "string",
+					"description": "Last Change File Date",
+					"title": "Last change file",
+					"readOnly": true
+				},
+
+				"last_access": {
+					"type": "string",
+					"description": "Last Access File Date",
+					"title": "last Access file",
+					"readOnly": true
+				},
+
+				"file_type": {
+					"type": "string",
+					"description": "File type",
+					"title": "file type",
+					"readOnly": true
+				},
+
+				"hash_md5": {
+					"type": "string",
+					"description": "File MD5 Checksumm",
+					"title": "MD5",
+					"readOnly": true
+				},
+				"hash_sha256": {
+					"type": "string",
+					"description": "File SHA256 Checksumm",
+					"title": "SHA256",
+					"readOnly": true
+				}
+
+			}
+		},
+		"actions": {
+            "delete": {
+                "exec": "handler",
+                "args": ["delete", "storage-file"],
+                "reload": true
+            },
+
+    		"view": {
+				"exec": "handler",
+		        "args": ["view", "storage-file"],
+		        "schema": {
+		        	"properties": {
+		        		"body": {
+		        			"type": "string",
+		        			"multiline": true,
+		        			"readOnly": true
+		        		}
+		        	}
+		        }
+			},
+
+			"edit": {
+				"exec": "handler",
+	            "args": ["edit", "storage-file"],
+		        "schema": {
+		        	"properties": {
+		        		"body": {
+		        			"type": "string",
+		        			"multiline": true
+		        		}
+		        	}
+		        }
+			}
+        
+		}
+	},
+	"actions": {
+		"add": {
+			"exec": "handler",
+            "args": ["add", "storage-file"],
+        	"description": "<new-file-name>",
+            "merge": true,
+            "schema": {
+            	"required": ["name"],
+            	"properties": {
+            		"name": {
+						"description": "Choose file or enter new name",
+						"$ref": "#/definitions/upload"
+            		}
+            	}
+            }
+		},		
+		"download": {
+			"exec": "handler",
+            "args": ["download", "storage-file"],
+			"description": "download <url> <new-file-name> [wget options]",
+			"merge": true,
+            "schema": {
+            	"required": ["url"],
+            	"properties": {
+            		"url": { "$ref": "#/definitions/url" },
+            		"name": { "$ref": "#/definitions/name" }
+        		}
+        	}
+		}
+	},
+	"commands": {
+
+		"rename": {
+			"exec": "handler",
+            "args": ["rename", "storage-file"],
+            "reload": true
+		}
+	},
+
+	"set": {
+	    "exec": "handler",
+	    "args": ["set", "storage-file"]
+	},
+
+	"acquire": {
+		"exec": "handler",
+		"args": ["get", "storage-file"]
+	}
+}

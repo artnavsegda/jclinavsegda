@@ -1,0 +1,113 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "zone",
+	"description": "Firewall Zones",
+	"type": "object",
+	"definitions": {
+		"name": {
+			"type": "string",
+			"description": "Zone name",
+			"pattern": "^[a-zA-Z0-9_\\-]+$"					
+		}
+	},
+	"namesake": "name",
+	"patternProperties": {
+		".*": {
+			"type": "object",
+			"title": "Zone entity",
+			"properties": {
+				"name": {
+					"hidden": true,
+					"$ref": "#/definitions/name"
+				},
+
+				"network": {
+					"type": "array",
+					"description": "Match incoming traffic using the given protocol",
+					"items": {
+						"type": "string",
+						"cue": ["/network/interface", "/network/bridge",  "/network/loopback", "/wwan/mobile", "tunnels"]
+					}
+				},
+
+				"enabled": {
+					"type": "boolean",
+					"description": "Enable or disable zone"
+				},
+
+				"masq": {
+					"type": "boolean",
+					"description": "Specifies whether outgoing zone traffic should be masqueraded"
+				},
+				"mtu_fix": {
+					"type": "boolean",
+					"description": "Enable MSS clamping for outgoing zone traffic"
+				},
+
+				"input": {
+					"type": "string",
+					"description": "Default policy for incoming zone traffic",
+					"enum": ["ACCEPT", "REJECT", "DROP"]
+				},
+				"output": {
+					"type": "string",
+					"description": "Default policy for outgoing zone traffic",
+					"enum": ["ACCEPT", "REJECT", "DROP"]
+				},
+				"forward": {
+					"type": "string",
+					"description": "Default policy for forwarded zone traffic",
+					"enum": ["ACCEPT", "REJECT", "DROP"]
+				},
+
+				"family": {
+					"type": "string",
+					"description": "The protocol family ",
+					"enum": ["ipv4", "ipv6", "any"]
+				}
+			}
+		},
+		"actions": {
+			"delete": {
+				"exec": "handler",
+				"args": ["delete", "firewall-zone"],
+				"reload": true
+			},
+
+			"apply": {
+				"exec": "handler",
+				"args": ["apply", "firewall-zone"]
+			}
+		}
+	},
+	"actions": {
+		"add": {
+			"exec": "handler",
+			"args": ["add", "firewall-zone"],
+			"merge": true,
+			"schema": {
+				"required": ["name"],
+				"properties": {
+					"name": {"$ref": "#/definitions/name"}
+				}
+			}
+		},
+
+    	"clean": {
+			"exec": "handler",
+            "args": ["clean", "firewall.rule.schema", "firewall-rule"],    		
+            "reload": true,
+            "confirm": true
+    	}
+	},
+
+	"set": {
+        "exec": "handler",
+        "args": ["set", "firewall-zone"],
+        "wait": true
+	},
+	"acquire": {
+		"exec": "handler",
+		"args": ["get", "firewall-zone"]
+	}
+}

@@ -1,0 +1,128 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "static",
+	"description": "Static routes list",
+	"type": "object",
+	"definitions": {
+		"name": {
+			"type": "string",
+			"description": "Route name",
+			"pattern": "^[a-zA-Z0-9_\\-]+$"
+		}
+	},
+	"namesake": "name",
+	"patternProperties": {
+		".*": {
+			"type": "object",
+			"title": "Route entity",
+			"required": ["target", "gateway", "interface"],
+			"properties": {
+				"name": {
+					"hidden": true,
+					"$ref": "#/definitions/name"
+				},
+
+				"target": {
+					"type": "string",
+					"description": "IP/Network address value",
+					"example": "10.0.0.0/24"
+				},
+				"gateway": {
+					"type": "string",
+					"description": "Gateway IP address value"
+				},
+				"metric": {
+					"type": "number",
+					"description": "Defines a specific route metric to use"
+				},
+
+				"mtu": {
+					"type": "number",
+					"description": "Defines a specific MTU for this route"
+				},
+				"table": {
+					"type": "number",
+					"description": "Defines the table ID to use for the route",
+					"minimum": 256,
+					"maximum": 65535
+				},
+				"source": {
+					"type": "string",
+					"description": "The preferred source address when sending to destinations covered by the target"
+				},
+
+				"type": {
+					"type": "string",
+					"description": " Routing type",
+					"enum": ["unicast", "local", "broadcast", "multicast", "unreachable", "prohibit", "blackhole", "anycast"],
+					"default": "unicast"
+				},
+
+				"interface": {
+					"type": "string",
+					"description": "Interface",
+					"cue": ["/network/interface", "/network/bridge", "/wwan/mobile", "/tunnels", "/network/loopback"]
+				}
+
+			}
+		},
+		"actions": {
+			"delete": {
+				"exec": "handler",
+				"args": ["delete", "routing-static"],
+				"reload": true
+			},
+			
+			"apply": {
+				"exec": "handler",
+				"args": ["apply", "routing-static"]
+			}
+		}
+	},
+	"actions": {
+		"add": {
+			"exec": "handler",
+			"args": ["add", "routing-static"],
+			"merge": true,
+			"schema": {
+				"required": ["name"],
+				"properties": {
+					"name": {"$ref": "#/definitions/name"}
+				}
+			}
+		},
+
+		"clean": {
+            "exec": "handler",
+            "args": ["clean", "routing-static"],
+            "reload": true,
+            "confirm": true
+        },
+
+		"apply": {
+			"exec": "handler",
+			"args": ["apply", "routing-static"]
+		}
+	},
+
+	"set": {
+        "exec": "handler",
+        "args": ["set", "routing-static"]
+	},
+
+	"revert": {
+		"exec": "handler",
+		"args": ["revert", "routing-static"],
+		"reload": true
+	},
+
+	"commit": {
+		"exec": "handler",
+		"args": ["commit", "routing-static"]
+	},
+
+	"acquire": {
+		"exec": "handler",
+		"args": ["get", "routing-static"]
+	}
+}

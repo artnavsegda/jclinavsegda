@@ -1,0 +1,205 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "rule",
+	"description": "Firewall Rules",
+	"type": "object",
+	"namesake": "name",
+	"patternProperties": {
+		".*": {
+			"type": "object",
+			"title": "Rule entity",
+			"required": ["name"],
+			"properties": {
+				"enabled": {
+					"type": "boolean",
+					"name": "Enable or disable rule"
+				},
+
+				"name": {
+					"$ref": "#/definitions/name"
+				},
+
+				"proto": {
+					"type": "string",
+					"description": "Match incoming traffic using the given protocol",
+					"enum": ["tcp", "udp", "tcpudp", "udplite", "icmp", "esp", "ah", "sctp", "all"]
+				},
+
+				"icmp_type": {
+					"hidden": true,
+					"$ref": "#/definitions/icmp_type",
+					"modificator": [
+						{"if": [{"proto": "icmp"}], "then": {"hidden": false}}
+					]
+				},
+
+				"src": {
+					"type": "string",
+					"description": "Specifies the traffic source zone",
+					"cue": ["/firewall/zone"]
+				},
+				"src_ip": {
+					"type": "string",
+					"description": "Match incoming traffic from the specified source ip address"
+				},
+				"src_port": {
+					"type": "array",
+					"description": "Match incoming traffic from the specified source port or ports range",
+					"uniqueItems": true,
+					"items": {
+						"type": "string"
+					}
+				},
+				"dest": {
+					"type": "string",
+					"description": "Specifies the traffic destination zone",
+					"cue": ["/firewall/zone"]
+				},
+				"dest_ip": {
+					"type": "string",
+					"description": "Match incoming traffic directed to the specified destination ip address."
+				},
+				"dest_port": {
+					"type": "array",
+					"description": "Match incoming traffic directed at the given destination port or port range",
+					"uniqueItems": true,
+					"items": {
+						"type": "string"
+					}
+				},
+
+				"mark": {
+					"type": "string",
+					"description": "Match traffic against the given firewall mark, e.g. 0xFF to match mark 255 or 0x0/0x1 to match any even mark value"
+				},
+
+				"target": {
+					"type": "string",
+					"enum": ["ACCEPT", "REJECT", "DROP", "MARK", "NOTRACK"]
+				},
+
+				"set_mark": {
+					"type": "string",
+					"description": "Zeroes out the bits given by mask and ORs value into the packet mark. If mask is omitted, 0xFFFFFFFF is assumed",
+					"hidden": true
+				},
+
+				"family": {
+					"type": "string",
+					"enum": ["ipv4", "ipv6", "any"]
+				}
+				
+			}
+		},
+
+		"actions": {
+			"delete": {
+				"exec": "handler",
+				"args": ["delete", "firewall-rule"],
+				"reload": true
+			},
+
+			"apply": {
+				"exec": "handler",
+				"args": ["apply", "firewall-rule"]
+			}
+
+		}
+	},
+	"actions": {
+		"apply": {
+			"exec": "handler",
+			"args": ["apply", "firewall-rule"]
+		},		
+
+
+		"add": {
+			"exec": "handler",
+			"args": ["add", "firewall-rule"],
+			"merge": true,
+			"schema": {
+				"required": ["name"],
+				"properties": {
+					"name": {"$ref": "#/definitions/name"}
+				}
+			}
+		},
+
+    	"clean": {
+			"exec": "handler",
+            "args": ["clean", "firewall-rule"],    		
+            "confirm": true,
+            "reload": true
+    	}
+
+	},
+
+	"set": {
+        "exec": "handler",
+        "args": ["set", "firewall-rule"]
+	},
+
+	"reorder": {
+        "exec": "handler",
+        "args": ["reorder", "firewall-rule"]
+	},
+
+	"acquire": {
+		"exec": "handler",
+		"args": ["get", "firewall-rule"]
+	},
+
+	"definitions": {
+		"name": {"type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$"},
+		"icmp_type": {
+			"type": "array",
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"enum": [
+					"address-mask-reply",
+					"host-redirect",
+					"pong",
+					"time-exceeded",
+					"address-mask-request",
+					"host-unknown",
+					"port-unreachable",
+					"timestamp-reply",
+					"any",
+					"host-unreachable",
+					"precedence-cutoff",
+					"timestamp-request",
+					"communication-prohibited",
+					"ip-header-bad",
+					"protocol-unreachable",
+					"TOS-host-redirect",
+					"destination-unreachable",
+					"network-prohibited",
+					"redirect",
+					"TOS-host-unreachable",
+					"echo-reply",
+					"network-redirect",
+					"required-option-missing",
+					"TOS-network-redirect",
+					"echo-request",
+					"network-unknown",
+					"router-advertisement",
+					"TOS-network-unreachable",
+					"fragmentation-needed",
+					"network-unreachable",
+					"router-solicitation",
+					"ttl-exceeded",
+					"host-precedence-violation",
+					"parameter-problem",
+					"source-quench",
+					"ttl-zero-during-reassembly",
+					"host-prohibited",
+					"ping",
+					"source-route-failed",
+					"ttl-zero-during-transit"
+				]
+			}
+		}
+	}
+	
+}

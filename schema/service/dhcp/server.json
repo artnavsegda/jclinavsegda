@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "server",
+  "description": "DHCP servers list",
+  "type": "object",
+  "definitions": {
+    "name": {
+      "type": "string", 
+      "pattern": "^[a-zA-Z0-9_]+$"
+    }
+  },
+  "namesake": "name",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "DHCP server entity",
+      "properties": {
+        "name": {
+          "hidden": true,
+          "$ref": "#/definitions/name"
+        },
+
+        "ra": {
+          "type": "string",
+          "description": "Specifies whether Router Advertisements",
+          "enum": ["disabled", "server", "relay"]
+        },
+
+        "interface": {
+          "type": "string",
+          "description": "Specifies the interface associated with this DHCP address pool",
+          "cue": ["/network/interface", "/network/bridge"]
+        },
+        "leasetime": {
+          "type": "string",
+          "description": "Specifies the lease time of addresses",
+          "enum": ["30m", "1h", "4h", "12h", "24h", "7d"]
+        },
+
+        "dhcp_option": {
+          "type": "array",
+          "description": "The ID dhcp_option here must be with written with an underscore",
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "start": {
+          "type": "number",
+          "description": "Specifies the offset from the network address"
+        },
+
+        "limit": {
+          "type": "number",
+          "description": "Specifies the size of the address pool"
+        },
+
+        "force": {
+          "type": "boolean",
+          "hidden": true,
+          "default": true
+        },
+        "dhcpv6": {
+          "type": "string",
+          "hidden": true,
+          "default": "disabled"
+        },
+        "dhcpv4": {
+          "type": "string",
+          "hidden": true,
+          "default": "disabled"
+        }
+
+      }
+    },
+    "actions": {
+      "delete": {
+        "exec": "handler",
+        "args": ["delete", "dhcp-server"],
+        "reload": true
+      },
+
+      "apply": {
+        "exec": "handler",
+        "args": ["apply", "dhcp-server"]
+      }
+    }
+  },
+
+  "actions": {
+    "add": {
+      "exec": "handler",
+      "description": "add new entry (params: <name>)",
+      "args": ["add", "dhcp-server"],
+      "merge": true,
+      "schema": {
+        "required": ["name"],
+        "properties": {
+          "name": {"$ref": "#/definitions/name"}
+        }
+      }
+    },
+
+    "apply": {
+      "exec": "handler",
+      "args": ["apply", "dhcp-server"]
+    },
+
+    "clean": {
+      "exec": "handler",
+      "args": ["clean", "dhcp-server"],
+      "reload": true,
+      "confirm": true
+    }
+
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "dhcp-server"]
+  },    
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "dhcp-server"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "dhcp-server"]
+  },
+
+  "acquire": {
+    "exec": "handler",
+    "args": ["get", "dhcp-server"]
+  }
+}

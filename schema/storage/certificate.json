@@ -1,0 +1,122 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "certificate",
+	"description": "Storage Files",
+	"type": "object",
+	"definitions": {
+		"name": {
+			"type": "string",
+			"description": "File Name",
+			"title": "File Name",
+			"pattern": "^[a-zA-Z0-9\\_\\-\\.]+$"
+		},
+		"upload": {
+			"type": "string",
+			"isFile": true,
+			"title": "File Name"
+		},			
+		"url": {
+			"type": "string",
+			"title": "URL",
+			"description": "enter URL"
+		}
+
+	},
+	"namesake": "name",
+	"patternProperties": {
+		".*": {
+			"type": "object",
+			"title": "Route entity",
+			"properties": {
+				"name": {
+					"$ref": "#/definitions/name"
+				},
+				
+				"hash_md5": {
+					"type": "string",
+					"description": "File MD5 Checksumm",
+					"title": "MD5",
+					"readOnly": true
+				},
+				"hash_sha256": {
+					"type": "string",
+					"description": "File SHA256 Checksumm",
+					"title": "SHA256",
+					"readOnly": true
+				}
+
+			}
+		},
+		"actions": {
+            "delete": {
+                "exec": "handler",
+                "args": ["delete", "storage-certificate"],
+                "reload": true
+            },
+
+    		"view": {
+				"exec": "handler",
+		        "args": ["view", "storage-certificate"],
+		        "schema": {
+		        	"properties": {
+		        		"body": {
+		        			"type": "string",
+		        			"multiline": true,
+		        			"readOnly": true
+		        		}
+		        	}
+		        }
+			}
+        
+		}
+	},
+	"actions": {
+		"add": {
+			"exec": "handler",
+            "args": ["add", "storage-certificate"],
+        	"description": "<new-file-name>",
+            "merge": true,
+            "schema": {
+            	"required": ["name"],
+            	"properties": {
+            		"name": {
+						"description": "Choose file...",
+						"readOnly": true,
+						"$ref": "#/definitions/upload"
+            		}
+            	}
+            }
+		},		
+		"download": {
+			"exec": "handler",
+            "args": ["download", "storage-certificate"],
+			"description": "download <url> <new-file-name> [wget options]",
+			"merge": true,
+            "schema": {
+            	"required": ["url"],
+            	"properties": {
+            		"url": { "$ref": "#/definitions/url" },
+            		"name": { "$ref": "#/definitions/name" }
+        		}
+        	}
+		}
+	},
+	"commands": {
+
+		"rename": {
+			"exec": "handler",
+            "args": ["rename", "storage-certificate"],
+            "reload": true
+		}
+	},
+
+	"set": {
+	    "exec": "handler",
+	    "args": ["set", "storage-certificate"]
+	},
+
+	"acquire": {
+		"exec": "handler",
+		"args": ["get", "storage-certificate"]
+	}
+}

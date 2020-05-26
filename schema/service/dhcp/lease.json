@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "lease",
+  "description": "DHCP static leases list",
+  "type": "object",
+  "definitions": {
+    "name": {
+      "type": "string", 
+      "description": "Hostname to assign",    
+      "pattern": "^[a-zA-Z0-9_\\-]+$"
+    }
+  },
+  "namesake": "name",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "Static lease entity",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/name"
+        },
+        "ip": {
+          "type": "string",
+          "description": "IP address to be used for this host or 'ignore'"
+        },
+        "mac": {
+          "type": "string",
+          "description": "The hardware address of this host"
+        },
+        "dns": {
+          "type": "boolean",
+          "description": "Add static forward and reverse DNS entries for this host"
+        },
+        "leasetime": {
+          "type": "string",
+          "description": "Host-specific lease time",
+          "enum": ["none", "30m", "1h", "4h", "12h", "24h", "7d"],
+          "default": "none"
+        }
+      }
+    },
+    "actions": {
+      "delete": {
+        "exec": "handler",
+        "args": ["delete", "dhcp-lease"],
+        "reload": true
+      },
+
+      "apply": {
+          "exec": "handler",
+          "args": ["apply", "dhcp-lease"]
+      }
+
+    }
+  },
+
+  "actions": {
+    "add": {
+        "exec": "handler",
+        "description": "add new entry (params: <hostname>)",
+        "args": ["add", "dhcp-lease"],
+        "merge": true,
+        "schema": {
+          "required": ["name"],
+          "properties": {
+            "name": {"$ref": "#/definitions/name"}
+          }
+        }
+    },
+
+    "apply": {
+        "exec": "handler",
+        "args": ["apply", "dhcp-lease"]
+    },
+
+    "clean": {
+        "exec": "handler",
+        "args": ["clean", "dhcp-lease"],
+        "reload": true
+    }
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "dhcp-lease"]
+  },    
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "dhcp-lease"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "dhcp-lease"]
+  },
+
+  "acquire": {
+    "exec": "handler",
+    "args": ["get", "dhcp-lease"]
+  }
+}

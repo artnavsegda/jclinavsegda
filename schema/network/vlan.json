@@ -1,0 +1,138 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "title": "vlan",
+    "description": "VLAN enties list",
+    "type": "object",
+    "namesake": "name",
+    "definitions": {
+        "vid": {
+            "type": "number",
+            "description": "VLAN ID",
+            "minimum": 1,
+            "maximum": 4094
+        },
+
+        "master_port": {
+            "type": "string",
+            "description": "Master port",
+            "cue": ["/switch/master"]
+        }
+    },
+    "patternProperties": {
+        ".*": {
+            "type": "object",
+            "title": "VLAN entity",
+            "required": ["vid", "master_port", "name"],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "hidden": true
+                },
+
+                "master_port": {
+                    "$ref": "#/definitions/master_port"
+                },
+
+                "vid": {
+                    "readOnly": true,
+                    "$ref": "#/definitions/vid"
+                },
+
+                "ports": {
+                    "type": "array",
+                    "description": "Untagged ports",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "cue": ["/switch/port"]
+                    }
+                },
+
+                "tagged_ports": {
+                    "type": "array",
+                    "description": "Tagged ports",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "cue": ["/switch/port"]
+                    }
+                },
+
+                "macaddr": {
+                    "type": "string",
+                    "description": "MAC address"
+                }
+
+            }
+        },
+        "actions": {
+            "delete": {
+                "exec": "handler",
+                "args": ["delete", "network-vlan"],
+                "reload": true
+            },
+    
+            "apply": {
+                "exec": "handler",
+                "args": ["apply", "network-vlan"]
+            }
+
+        }
+    },
+
+    "actions": {
+        "add": {
+            "exec": "handler",
+            "description": "add new entry (params: <master_port> <vid>)",
+            "args": ["add", "network-vlan"],
+            "merge": true,
+            "schema": {
+                "required": ["master_port", "vid"],
+                "properties": {
+                    "master_port": {
+                        "$ref": "#/definitions/master_port"
+                    },
+                    "vid": {
+                        "$ref": "#/definitions/vid"
+                    }
+                }
+            }
+        },
+
+        "apply": {
+            "exec": "handler",
+            "args": ["apply", "network-vlan"]
+        },
+
+        "clean": {
+            "exec": "handler",
+            "args": ["clean", "network-vlan"],
+            "reload": true,
+            "confirm": true
+        }
+
+
+    },  
+
+    "set": {
+        "exec": "handler",
+        "args": ["set", "network-vlan"]
+    },  
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "network-vlan"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "network-vlan"]
+  },
+
+
+    "acquire": {
+        "exec": "handler",
+        "args": ["get", "network-vlan"]
+    }
+}

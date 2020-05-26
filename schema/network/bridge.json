@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "bridge",
+  "description": "LAN interfaces list",
+  "type": "object",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "Bridge Interface entity",
+      "properties": {
+        "disabled": {
+          "type": "boolean",
+          "description": "Disable the interface"
+        },
+
+        "slave":{
+          "type": "array",
+          "uniqueItems": true,
+          "description": "Slave device list",
+          "items": {
+            "type": "string",
+            "cue": ["/network/vlan", "/network/wireless/interface", "/switch/master"]
+          }
+        },
+
+        "zone": {
+          "type": "string",
+          "description": "Firewall zone to which this interface should be added",
+          "cue": ["/firewall/zone"]
+        },
+
+        "ipaddr": {
+          "type": "array",
+          "description": "IP Addresses",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "macaddr": {
+          "type": "string",
+          "description": "MAC address"
+        },
+
+        "mtu": {
+          "type": "number",
+          "description": "MTU",
+          "maximum": 1500,
+          "minimum": 500,
+          "default": 1500
+        },
+
+        "igmp_snooping": {
+          "type": "boolean",
+          "description": "Sets the multicast_snooping kernel setting for a bridge"
+        },
+
+        "multicast_querier": {
+          "type": "boolean",
+          "description": "Sets the multicast_querier kernel setting for a bridge"
+        },
+
+
+        "bridge_empty": {
+          "type": "boolean",
+          "hidden": true
+        },
+
+        "force_link": {
+          "type": "boolean"
+        },
+
+        "stp": {
+          "type": "boolean",
+          "description": "Enables the Spanning Tree Protocol",
+          "title": "Enable STP",
+          "default": false
+        }
+      }
+    },
+    "actions": {
+        "delete": {
+          "exec": "handler",
+          "args": ["delete", "network-bridge"],
+          "reload": true
+        },
+
+        "apply": {
+          "exec": "handler",
+          "args": ["apply", "network-bridge"]
+        }
+    }
+
+  },
+  "actions": {
+      "add": {
+        "exec": "handler",
+        "description": "add new entry (params: <name>)",
+        "args": ["add", "network-bridge"],
+        "merge": true,
+        "schema": {
+          "required": ["name"],
+          "properties": {
+            "name": {"type": "string", "pattern": "^[a-zA-Z0-9_]+$"}
+          }
+        }
+      },
+ 
+      "apply": {
+          "exec": "handler",
+          "args": ["apply", "network-bridge"]
+      },
+
+      "clean": {
+          "exec": "handler",
+          "args": ["clean", "network-bridge"],
+          "reload": true,
+          "confirm": true
+      }
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "network-bridge"]
+  },    
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "network-bridge"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "network-bridge"]
+  },
+
+  "acquire": {
+    "exec": "handler",
+    "args": ["get", "network-bridge"]
+  }
+}

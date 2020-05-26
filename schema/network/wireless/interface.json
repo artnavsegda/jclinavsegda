@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "interface",
+  "description": "WiFi Interfaces list",
+  "type": "object",
+  "namesake": "ifname",
+  "definitions": {
+    "device": {
+      "type": "string",
+      "description": "Radio PHY device",
+      "title": "Wireless PHY",
+      "cue": ["/network/wireless/phy"]
+    }
+  },
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "Wireless Interface entity",
+      "required": ["device", "mode"],
+      "properties": {
+
+        "ifname": {
+          "type": "string",
+          "hidden": true          
+        },
+
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disabled WiFi Interface"
+        },
+
+        "device": {
+          "$ref": "#/definitions/device"
+        },
+
+        "mode": {
+          "type": "string",
+          "description": "Interface mode",
+          "enum": ["ap", "sta", "monitor"]
+        },
+
+        "encryption": {
+          "type": "string",
+          "description": "Encryption type",
+          "enum": ["open", "psk-mixed+ccmp", "wpa-mixed+ccmp"]
+        },
+
+        "ssid": {
+          "type": "string",
+          "title": "SSID",
+          "description": "SSID name"
+        },
+
+        "key": {
+          "type": "string",
+          "description": "WPA/WPA2 key",
+          "minLength": 8
+        },
+
+        "hidden": {
+          "type": "boolean",
+          "title": "Hidden SSID",
+          "description": "Turns off SSID broadcasting"
+        },
+
+        "macaddr": {
+          "type": "string",
+          "title": "MAC Address",
+          "description": "MAC address"
+        },
+
+        "isolate": {
+          "type": "boolean",
+          "title": "Isolate Clients",
+          "description": "Isolate wireless clients from each other, only applicable in ap mode"
+        },
+
+        "network": {
+          "type": "string",
+          "description": "Select bridge interface",
+          "title": "Bridge With",
+          "cue": ["/network/bridge"]
+        }
+
+      }
+    },
+
+    "actions": {
+      "delete": {
+        "exec": "handler",
+        "args": ["delete", "wireless-interface"],
+        "reload": true
+      },
+
+      "apply": {
+        "exec": "handler",
+        "args": ["apply", "wireless-interface"]
+      }
+    }
+  },
+
+  "actions": {
+    "add": {
+      "exec": "handler",
+      "args": ["add", "wireless-interface"],
+      "description": "add new entry (params: <device>)",
+      "merge": true,
+      "schema": {
+        "required": ["device"],
+        "properties": {
+          "device": {"$ref": "#/definitions/device"}
+        }
+      }
+    },
+
+    "clean": {
+        "exec": "handler",
+        "args": ["clean", "wireless-interface"],
+        "confirm": true,
+        "reload": true
+    },
+
+    "apply": {
+        "exec": "handler",
+        "args": ["apply", "wireless-interface"]
+    }
+
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "wireless-interface"]
+  },    
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "wireless-interface"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "wireless-interface"]
+  },
+
+  "acquire": {
+    "exec": "handler",
+    "args": ["get", "wireless-interface"]
+  }  
+}

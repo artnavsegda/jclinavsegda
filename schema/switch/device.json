@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "device",
+  "description": "Switch device",
+  "type": "object",
+  "namesake": "name",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "HW port entity",
+      "properties": {
+        "name": {
+          "type": "string",
+          "hidden": true
+        },
+
+       "reset": {
+        "type": "boolean",
+        "description": "Reset switch on init/reconfigure",
+        "default": true
+       },
+
+       "enanle_mirror_rx": {
+        "type": "boolean",
+        "description": "Mirror received packets",
+        "default": false
+       },
+
+       "mirror_source_port": {
+        "type": "string",
+        "description": "Switch port from which packets are mirrored",
+        "hidden": true,
+        "cue": ["/switch/port"],
+        "modificator": [
+          {"if": [{"enanle_mirror_rx": "true"}], "then": {"hidden": false}}
+        ]
+       },
+
+       "enanle_mirror_tx": {
+        "type": "boolean",
+        "description": "Mirror transmitted packets",
+        "default": false
+       },
+
+       "mirror_monitor_port": {
+        "type": "string",
+        "description": "Switch port to which packets are mirrored",
+        "hidden": true,
+        "cue": ["/switch/port"],
+        "modificator": [
+          {"if": [{"enanle_mirror_tx": "true"}], "then": {"hidden": false}}
+        ]
+       }
+       
+      }
+    },
+    "actions": {
+      "apply": {
+        "exec": "handler",
+        "args": ["apply", "switch-device"]
+      }
+    }
+  },
+  "actions": {
+    
+    "apply": {
+      "exec": "handler",
+      "args": ["apply", "switch-device"]
+    }
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "switch-device"]
+  },
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "switch-device"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "switch-device"]
+  },
+
+
+  "acquire": {
+     "exec": "handler",
+     "args": ["get", "switch-device"]
+   }
+}

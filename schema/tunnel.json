@@ -1,0 +1,579 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "tunnel",
+  "description": "VPN Tunnels",
+  "type": "object",
+  "definitions": {
+    "proto": {
+      "type": "string",
+      "enum": ["l2tp", "eoip", "gre", "pptp", "atunnel"]
+    },
+
+    "tos": {
+      "type": "number",
+      "title": "ToS",
+      "description": "ToS value",
+      "minimum": 0,
+      "maximum": 255
+    },
+
+    "tunlink": {
+      "type": "string",
+      "description": "source interface",
+      "cue": ["/network/bridge", "/network/interface", "/wwan/mobile", "/network/loopback"]
+    },
+
+    "disabled": {
+      "type": "boolean",
+      "description": "disabled tunnel",
+      "default": true
+    },
+
+    "ipaddr": {
+      "type": "string",
+      "description": "ip address",
+      "title": "IP address"
+    },
+
+    "zone": {
+      "type": "string",
+      "description": "firewall zone",
+      "cue": ["/firewall/zone"]
+    },
+
+    "bridge-with": {
+      "hidden": true,
+      "$ref": "#/definitions/bridge-with",
+      "type": "string",
+      "description": "Specified interface for bridging",
+      "title": "Add to bridge",
+      "cue": ["/network/bridge"]
+    },
+
+    "remote_addr": {
+      "type": "string",
+      "title": "Peer Address",
+      "description": "Remote Peer Address"
+    },
+
+    "mtu": {
+      "type": "number",
+      "title": "MTU",
+      "description": "MTU for Tunnel Interface",
+      "minimum": 400,
+      "maximum": 50000
+    },
+
+    "ttl": {
+      "type": "number",
+      "title": "TTL",
+      "description": "TTL for Tunnel Interface",
+      "minimum": 1,
+      "maximum": 255
+    }
+
+  },
+  "patternProperties": {
+    "^eoip": {
+      "type": "object",
+      "title": "EoIP tunnels",
+      "properties": {
+        "proto": {
+          "hidden": true,
+          "$ref": "#/definitions/proto"
+        },
+
+        "name": {
+          "type": "string",
+          "hidden": true
+        },
+
+        "disabled": {
+          "$ref": "#/definitions/disabled"
+        },
+
+        "remote_addr": {
+          "$ref": "#/definitions/remote_addr",
+          "description": "destination address"
+        },
+                
+        "tunlink": {
+          "$ref": "#/definitions/tunlink"
+        },
+
+        "tunnel_id": {
+          "type": "number",
+          "description": "tunnel id",
+          "title": "Tunnel ID",
+          "minimum": 1,
+          "maximum": 65535
+        },
+
+        "ipaddr": {
+          "$ref": "#/definitions/ipaddr",
+          "hidden": false,
+          "modificator": [
+            {"if": [{"bridge-with": "!"}],"then": {"hidden": true}}
+          ]
+        },
+
+        "zone": {
+          "$ref": "#/definitions/zone",
+          "hidden": false,
+          "modificator": [
+            {"if": [{"bridge-with": "!"}],"then": {"hidden": true}}
+          ]
+        },
+
+        "bridge-with": {
+          "$ref": "#/definitions/bridge-with"
+        },
+
+        "tos": {
+          "$ref": "#/definitions/tos"
+        },
+
+
+        "mtu": {
+          "$ref": "#/definitions/mtu"
+        },
+
+        "ttl": {
+          "$ref": "#/definitions/ttl"
+        }
+
+      }
+    },
+
+    "^l2tp": {
+      "type": "object",
+      "title": "L2TPv3 tunnels",
+      "properties": {
+        "proto": {
+          "hidden": true,
+          "$ref": "#/definitions/proto"
+        },
+
+        "name": {
+          "type": "string",
+          "hidden": true
+        },
+
+        "disabled": {
+          "$ref": "#/definitions/disabled"
+        },
+        
+        "tunlink": {
+          "$ref": "#/definitions/tunlink"
+        },
+
+        "ipaddr": {
+          "$ref": "#/definitions/ipaddr"
+        },
+
+
+        "zone": {
+          "$ref": "#/definitions/zone"
+        },
+
+        "bridge-with": {
+          "$ref": "#/definitions/bridge-with"
+        },
+
+        "remote_addr": {
+          "$ref": "#/definitions/remote_addr",
+          "description": "destination address"
+        },
+
+        "mtu": {
+          "$ref": "#/definitions/mtu"
+        },
+
+        "ttl": {
+          "$ref": "#/definitions/ttl"
+        },
+
+        "l2spec": {
+          "type": "string",
+          "description": "L2 Specific Header Type",
+          "enum": ["none", "default"],
+          "default": "default"
+        },
+
+        "tunnel_id": {
+          "type": "number",
+          "description": "Local Tunnel ID",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+
+        "peer_tunnel_id": {
+          "type": "number",
+          "description": "Remove Tunnel ID",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+
+        "session_id": {
+          "type": "number",
+          "description": "Local Session ID",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+
+        "peer_session_id": {
+          "type": "number",
+          "description": "Remote Session ID",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+
+        "df": {
+          "type": "boolean",
+          "description": "Do Not Fragment",
+          "default": true
+        },
+
+        "encap": {
+          "type": "string",
+          "description": "Encapsulation type",
+          "enum": ["ip", "udp"],
+          "default": "ip"
+        },
+
+        "udp_dport": {
+          "type": "number",
+          "description": "Destination Port (UDP Encapsulation)",
+          "minimum": 1024,
+          "maximum": 65535
+        },
+        "udp_sport": {
+          "type": "number",
+          "description": "Source Port (UDP Encapsulation)",
+          "minimum": 1024,
+          "maximum": 65535
+        }
+      }
+    },
+
+    "^gre": {
+      "type": "object",
+      "title": "GRE tunnels",
+      "properties": {
+        "proto": {
+          "hidden": true,
+          "$ref": "#/definitions/proto"
+        },
+
+        "name": {
+          "type": "string",
+          "hidden": true
+        },
+
+        "disabled": {
+          "$ref": "#/definitions/disabled"
+        },
+
+        "remote_addr": {
+          "$ref": "#/definitions/remote_addr",
+          "description": "destination address"
+        },
+        
+        "tunlink": {
+          "$ref": "#/definitions/tunlink"
+        },
+
+        "ipaddr": {
+          "$ref": "#/definitions/ipaddr"
+        },
+
+        "key": {
+          "type": "number",
+          "description": "GRE Tunnel Key",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+
+        "zone": {
+          "$ref": "#/definitions/zone"
+        },
+
+        "mtu": {
+          "$ref": "#/definitions/mtu"
+        },
+
+        "ttl": {
+          "$ref": "#/definitions/ttl"
+        },
+
+        "tos": {
+          "$ref": "#/definitions/tos"
+        },
+
+        "df": {
+          "type": "boolean",
+          "description": "Do Not Fragment",
+          "title": "Don't Fragment",
+          "default": true
+        }
+      }
+    },
+
+    "^pptp": {
+      "type": "object",
+      "title": "PPtP tunnels",
+      "properties": {
+        "proto": {
+          "hidden": true,
+          "$ref": "#/definitions/proto"
+        },
+
+        "name": {
+          "type": "string",
+          "hidden": true
+        },
+
+        "disabled": {
+          "$ref": "#/definitions/disabled"
+        },
+
+        "server": {
+          "$ref": "#/definitions/remote_addr"
+        },
+
+        "zone": {
+          "$ref": "#/definitions/zone"
+        },
+
+        "username": {
+          "type": "string",
+          "description": "Username for connection"
+        },
+        "password": {
+          "type": "string",
+          "description": "Password for connection"
+        },
+        "auth": {
+          "type": "string",
+          "description": "Authentication Type",
+          "enum": ["any", "pap", "chap"]
+        },
+
+        "use_mppe": {
+          "type": "boolean",
+          "description": "Use MPPE-128 encryption"
+        },
+
+        "defaultroute": {
+          "type": "boolean",
+          "description": "Use as Defaultroute"
+        },
+
+        "metric": {
+          "type": "number",
+          "description": "Mertic value for Interface and Routes"
+        }
+      }
+    },
+
+    "^atun": {
+      "type": "object",
+      "title": "ATunnel Tunnels",
+      "properties": {
+        "proto": {
+          "hidden": true,
+          "$ref": "#/definitions/proto"
+        },
+
+        "name": {
+          "type": "string",
+          "hidden": true
+        },
+
+        "disabled": {
+          "$ref": "#/definitions/disabled"
+        },
+
+        "random_selection": {
+          "type": "boolean",
+          "description": "Random Server Selection",
+          "title": "Random Server Selection"
+        },
+
+        "host": {
+          "type": "array",
+          "description": "Remote Server Addresses",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "port": {
+          "type": "number",
+          "description": "Default Server Port",
+          "minimum": 1024,
+          "maximum": 65535
+        },
+
+        "uplink": {
+          "type": "array",
+          "description": "Source Interfaces List",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "cue": ["/network/bridge", "/network/interface", "/wwan/mobile"]
+          }
+        },
+
+        "mode": {
+          "type": "string",
+          "description": "ATunnel Mode",
+          "enum": ["af", "rr"],
+          "default": "af"
+        },
+
+        "reconnect": {
+          "type": "number",
+          "description": "Reconnect Timeout (sec.)",
+          "minimum": 0,
+          "maximum": 3600
+        },
+
+        "keepalive": {
+          "type": "number",
+          "description": "Keepalive Interval (sec.)",
+          "minimum": 1,
+          "maximum": 60
+        },
+
+        "init_timeout": {
+          "type": "number",
+          "description": "Initialization Timeout (sec.)"
+        },
+
+        "transport": {
+          "type": "string",
+          "description": "ATunnel Transport Protocol",
+          "enum": ["tcp", "tls"],
+          "default": "tcp"
+        },
+
+        "ipaddr": {
+          "$ref": "#/definitions/ipaddr"
+        },
+
+        "mtu": {
+          "$ref": "#/definitions/mtu"
+        },
+
+        "gateway": {
+          "type": "string",
+          "description": "Gateway Address (if 'defaultroute' set)"
+        },
+
+        "defaultroute": {
+          "type": "boolean",
+          "description": "Use as Defaultroute"
+        },
+
+        "l3_mode": {
+          "type": "boolean",
+          "description": "Layer-3 Mode"
+        },
+
+        "auto_ip_prefix": {
+          "type": "number",
+          "description": "IP Address Prefix 1-st Octect (for 'l3_mode' and 'ipaddr' omitted)",
+          "minimum": 1,
+          "maximum": 255,
+          "default": 10
+        },
+
+        "bridge-with": {
+          "hidden": true,
+          "$ref": "#/definitions/bridge-with",
+          "modificator": [
+            {"if": [{"l3_mode": "false"}],"then": {"hidden": false}}
+          ]
+        },
+
+        "zone": {
+          "$ref": "#/definitions/zone",
+          "modificator": [
+            {"if": [{"bridge-with": "!"}],"then": {"hidden": true}}
+          ]
+        },
+
+        "peerdns": {
+          "type": "boolean",
+          "description": "Use DNS from DHCP (if 'ipaddr' omitted)"
+        }
+
+      }    
+    },
+
+    "actions": {
+      "apply": {
+        "exec": "handler",
+        "args": ["apply", "tunnel"]
+      },
+
+      "delete": {
+        "exec": "handler",
+        "args": ["delete", "tunnel"],
+        "reload": true
+      }
+
+    }
+
+  },
+  "actions": {
+    "add": {
+        "exec": "handler",
+        "description": "add new entry (params: <proto> <index>)",
+        "args": ["add", "tunnel"],
+        "merge": true,
+        "schema": {
+          "required": ["proto"],
+          "properties": {
+            "proto": {"$ref": "#/definitions/proto"}
+          }
+        }
+    },
+
+    "apply": {
+        "exec": "handler",
+        "args": ["apply", "tunnel"]
+    },
+
+    "clean": {
+        "exec": "handler",
+        "args": ["clean", "tunnel"],
+        "confirm": true,
+        "reload": true
+    }
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "tunnel"]
+  },    
+
+  "acquire": {
+    "exec": "handler",
+    "args": ["get", "tunnel"]
+  },
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "tunnel"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "tunnel"]
+  }
+
+}

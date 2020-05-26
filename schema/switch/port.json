@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "definitions": {
+    "port_speed": {
+      "type": "string",
+      "enum": ["auto", "10", "100", "1000"]
+    }
+  },
+  "title": "port",
+  "description": "switch ports list",
+  "type": "object",
+  "namesake": "name",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "HW port entity",
+      "properties": {
+        "name": {
+          "type": "string",
+          "hidden": true
+        },
+
+        "disabled": {
+          "type": "boolean",
+          "description": "Disabled port",
+          "default": false
+        },
+
+        "device": {
+          "type": "string",
+          "description": "Defines which switch to configure",
+          "cue": ["/switch/device"],
+          "readOnly": true
+        },
+
+        "port": {
+          "type": "number",
+          "description": "The port index to configure ",
+          "readOnly": true
+        },
+        "speed": {
+          "type": "string",
+          "description": "Port speed",
+          "default": "auto",
+          "$ref": "#/definitions/port_speed"
+        },
+        "duplex": {
+          "type": "string",
+          "description": "Duplex",
+          "default": "full",
+          "enum": ["half", "full"]
+        }
+      }
+    },
+    
+    "actions": {
+      "apply": {
+        "exec": "handler",
+        "args": ["apply", "switch-port"],
+        "argpass": true
+      }
+    }
+    
+  },
+  "actions": {
+    "apply": {
+      "exec": "handler",
+      "args": ["apply", "switch-port"]
+    }
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "switch-port"]
+  },
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "switch-port"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "switch-port"]
+  },
+
+  "acquire": {
+     "exec": "handler",
+     "args": ["get", "switch-port"]
+   }
+}

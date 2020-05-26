@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "loopback",
+  "description": "Loopback interfaces list",
+  "type": "object",
+  "definitions": {
+    "description": {
+      "type": "string", 
+      "pattern": "^[a-zA-Z0-9_\\-]+$"
+    }
+  },
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "Interface entity",
+      "properties": {
+        "description": {
+          "$ref": "#/definitions/description"
+        },
+
+        "ipaddr": {
+          "type": "string",
+          "description": "IP address value"
+        },
+
+        "mtu": {
+          "type": "number",
+          "description": "MTU value",
+          "title": "MTU value",
+          "maximum": 1500,
+          "minimum": 500,
+          "default": 1500
+        },
+
+        "zone": {
+          "type": "string",
+          "description": "Firewall zone to which this interface should be added",
+          "cue": ["/firewall/zone"]
+        }
+      }
+    },
+
+    "actions": {
+      "delete": {
+        "exec": "handler",
+        "args": ["delete", "network-loopback"],
+        "reload": true
+      },
+
+      "apply": {
+        "exec": "handler",
+        "args": ["apply", "network-loopback"]
+      }
+    }
+  },
+
+  "actions": {
+    "add": {
+      "exec": "handler",
+      "description": "add new entry (params: <name>)",
+      "args": ["add", "network-loopback"],
+      "merge": true,
+      "schema": {
+        "required": ["name"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[a-zA-Z0-9]+$"}
+        }
+      }
+    },
+
+    "apply": {
+      "exec": "handler",
+      "args": ["apply", "network-loopback"]
+    },      
+
+    "clean": {
+      "exec": "handler",
+      "args": ["clean", "network-loopback"],
+      "confirm": true,
+      "reload": true
+    }
+
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "network-loopback"]
+  },    
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "network-loopback"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "network-loopback"]
+  },
+
+  "acquire": {
+    "exec": "handler",
+    "args": ["get", "network-loopback"]
+  }
+}

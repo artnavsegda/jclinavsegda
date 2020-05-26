@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "device",
+  "description": "Modem list",
+  "type": "object",
+  "patternProperties": {
+    "^modem": {
+      "type": "object",
+      "title": "Interface entity",
+
+      "required": ["device_number"],
+      "properties": {
+
+        "device_number": {
+          "type": "number",
+          "readOnly": true
+        },
+        "imei": {
+          "type": "string",
+          "readOnly": true
+        },
+        "module": {
+          "type": "string",
+          "readOnly": true
+        },
+        "revision": {
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "actions": {
+      "restart": {
+        "exec": "handler",
+        "args": ["restart", "wwan-device"],
+        "argpass": true
+      }
+    }
+  },
+
+  "acquire": {
+     "exec": "handler",
+     "args": ["get", "wwan-device"]
+   }
+}

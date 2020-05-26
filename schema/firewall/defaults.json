@@ -1,0 +1,91 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "defaults",
+	"description": "Firewall Default Settings",
+	"type": "object",
+	"title": "Settings entity",
+	"properties": {
+		"input": {
+			"type": "string",
+			"description": "Default policy for incoming zone traffic",
+			"enum": ["ACCEPT", "REJECT", "DROP"]
+		},
+		"output": {
+			"type": "string",
+			"description": "Default policy for outgoing zone traffic",
+			"enum": ["ACCEPT", "REJECT", "DROP"]
+		},
+		"forward": {
+			"type": "string",
+			"description": "Default policy for forwarded zone traffic",
+			"enum": ["ACCEPT", "REJECT", "DROP"]
+		},
+
+		"drop_invalid": {
+			"type": "boolean",
+			"description": "Drop invalid packets"
+		},
+
+		"synflood": {
+			"type": "boolean",
+			"description": "Enable SYN flood protection",
+			"default": false
+		},
+		"synflood_rate": {
+			"type": "number",
+			"description": "SYN flood rate limit (packets/second)",
+			"default": 25
+		},
+		"synflood_burst": {
+			"type": "number",
+			"description": "SYN flood burst limit",
+			"default": 50
+		},
+
+		"tcp_syncookies": {
+			"type": "boolean",
+			"description": "Enable the use of SYN cookies",
+			"default": true
+		},
+
+		"tcp_ecn": {
+			"type": "boolean",
+			"description": "Enable Explicit Congestion Notification",
+			"default": false
+		},
+
+		"tcp_window_scaling": {
+			"type": "boolean",
+			"description": "Enable TCP window scaling",
+			"default": true
+		},
+
+		"disable_ipv6": {
+			"type": "boolean",
+			"description": "Disable IPv6 rules",
+			"default": false
+		},
+
+		"flow_offloading": {
+			"type": "boolean",
+			"description": "Enable software flow offloading for connections",
+			"default": false
+		}
+
+	},
+	"actions": {
+    	"apply": {
+			"exec": "handler",
+			"args": ["apply", "firewall-defaults"]
+     	}
+	},
+
+	"set": {
+        "exec": "handler",
+        "args": ["set", "firewall-defaults"]
+	},
+	"acquire": {
+		"exec": "handler",
+		"args": ["get", "firewall-defaults"]
+	}
+}

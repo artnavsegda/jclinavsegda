@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "phy",
+  "definitions": {
+    "htmode_5": {
+      "enum": ["VHT20", "VHT40", "VHT80", "VHT160" , "default"]
+    },
+    "htmode_2": {
+      "enum": [ "HT20", "HT40-", "HT40+", "HT40", "default"]
+    },
+    "band": {
+      "type": "string",
+      "description": "Specifies the band to use (2.4GHz:802.11b/g/n, 5GHz:802.11a/ac/na)",
+      "enum": ["2.4GHz", "5GHz"]
+    },
+    "country": {
+      "type": "string",
+      "description": "Specifies the country code",
+      "enum": ["default", "ru", "cn", "us"]
+    },
+
+    "txpower_5": {"type": "string", "enum": ["1dbm", "5dbm", "12dbm", "21dbm", "default"]},
+    "txpower_2": {"type": "string", "enum": ["1dbm", "5dbm", "12dbm", "21dbm", "default"]},
+    
+    "chann_5_default": {"type": "string", "enum": ["40","44","48","149", "auto"] },
+    "chann_2_default": {"type": "string", "enum": ["1","2","3","4","5","6","7","8","9","10","11", "auto"] },
+    "chann_5_ru": {"type": "string", "enum": ["36","40","44","48","149","153","157","161","165", "auto"] },
+    "chann_2_ru": {"type": "string", "enum": ["1","2","3","4","5","6","7","8","9","10","11","12","13", "auto"] },
+    "chann_5_cn": {"type": "string", "enum": ["auto"]},
+    "chann_2_cn": {"type": "string", "enum": ["auto"]},
+    "chann_5_us": {"type": "string", "enum": ["auto"]},
+    "chann_2_us": {"type": "string", "enum": ["auto"]}
+
+
+  },
+  "description": "WiFi PHY list",
+  "type": "object",
+  "patternProperties": {
+    ".*": {
+      "type": "object",
+      "title": "Radio PHY entity",
+      "properties": {
+        "disabled": {
+          "type": "boolean",
+          "description": "Disable adapter",
+          "default": false
+        },
+
+        "country": {
+          "$ref": "#/definitions/country"
+        },
+
+        "freq": {
+          "$ref": "#/definitions/band"
+        },
+
+        "channel": {
+          "type": "string",
+          "description": "Specifies the wireless channel to use",
+          "enum": ["auto"],
+          "default": "auto",
+          "modificator": [
+            {"if":[{"country": "ru", "freq": "2.4GHz"}], "then": {"$ref": "#/definitions/chann_2_ru"}},
+            {"if":[{"country": "ru", "freq": "5GHz"}], "then": {"$ref": "#/definitions/chann_5_ru"}},
+            {"if":[{"country": "us", "freq": "2.4GHz"}], "then": {"$ref": "#/definitions/chann_2_us"}},
+            {"if":[{"country": "us", "freq": "5GHz"}], "then": {"$ref": "#/definitions/chann_5_us"}},
+            {"if":[{"country": "cn", "freq": "2.4GHz"}], "then": {"$ref": "#/definitions/chann_2_cn"}},
+            {"if":[{"country": "cn", "freq": "5GHz"}], "then": {"$ref": "#/definitions/chann_5_cn"}},
+            {"if":[{"country": "default", "freq": "2.4GHz"}], "then": {"$ref": "#/definitions/chann_2_default"}},
+            {"if":[{"country": "default", "freq": "5GHz"}], "then": {"$ref": "#/definitions/chann_5_default"}}
+          ]
+        },
+
+        "txpower": {
+          "type": "string",
+          "description": "Specifies the transmission power in dBm",
+          "title": "Transmit Power",
+          "enum": ["default"],
+          "modificator": [
+            {"if":[{"freq": "2.4GHz"}], "then": {"$ref": "#/definitions/txpower_2"}},
+            {"if":[{"freq": "5GHz"}], "then": {"$ref": "#/definitions/txpower_5"}}
+          ]
+        },
+
+        "legacy_rates": {
+          "type": "boolean",
+          "title": "Allow Legacy Rate",
+          "description": "Enables 802.11b data rates"
+        },
+
+        "htmode": {
+          "type": "string",
+          "title": "HT Mode",
+          "description": "Specifies the channel width in 802.11n and 802.11ac mode",
+          "enum": ["default"],
+          "default": "default",
+          "modificator": [
+            {"if": [{"freq": "2.4GHz"}], "then": {"$ref": "#/definitions/htmode_2"}},
+            {"if": [{"freq": "5GHz"}], "then": {"$ref": "#/definitions/htmode_5"}}
+          ]
+        },
+
+        "capabilities": {
+          "type": "array",
+          "title": "Capabilities",
+          "description": "Specifies the available capabilities of the radio",
+          "items": {
+            "type": "string",
+            "enum": ["LDPC", "DELAYED-BA", "MAX-AMSDU-7935", "DSSS_CCK-40", "40-INTOLERANT", "LSIG-TXOP-PROT", "GF", "SHORT-GI-20", "SHORT-GI-40", "TX-STBC", "RX-STBC1", "RX-STBC12", "RX-STBC123"]
+          }
+        },
+
+        "bandwidth": {
+          "type": "number",
+          "description": "Specifies a narrow channel width in MHz",
+          "enum": [5, 10, 20],
+          "default": 20
+        }
+
+      }
+    },
+
+    "actions": {      
+      "apply": {
+        "exec": "handler",
+        "args": ["apply", "wireless-phy"]
+      }
+
+    }
+
+  },
+  
+  "actions": {
+      "apply": {
+          "exec": "handler",
+          "args": ["apply", "wireless-phy"]
+      }
+  },
+
+  "set": {
+    "exec": "handler",
+    "args": ["set", "wireless-phy"]
+  },
+
+  "revert": {
+    "exec": "handler",
+    "args": ["revert", "wireless-phy"],
+    "reload": true
+  },
+
+  "commit": {
+    "exec": "handler",
+    "args": ["commit", "wireless-phy"]
+  },
+
+  "acquire": {
+    "exec": "handler",
+    "args": ["get", "wireless-phy"]
+  }  
+}

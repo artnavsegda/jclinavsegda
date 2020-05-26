@@ -1,0 +1,173 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "rule",
+	"description": "Static routes list",
+	"type": "object",
+	"definitions": {
+		"name": {
+			"type": "string",
+			"description": "Route name",
+			"pattern": "^[a-zA-Z0-9_\\-]+$"
+		},
+
+		"interface": {
+			"type": "string",
+			"cue": ["/network/interface", "/network/bridge", "/tunnels", "/network/loopback", "/wwan/mobile"]
+		},
+
+		"cidr_address": {
+			"type": "string",
+			"_pattern": "^()$"
+		},
+
+		"action": {
+			"type": "string",
+			"description": "routing action",
+			"title": "Routing Action",
+			"enum": ["prohibit", "unreachable", "blackhole", "throw"]
+		}
+	},
+	"namesake": "name",
+	"patternProperties": {
+		".*": {
+			"type": "object",
+			"title": "Rule entity",
+			"properties": {
+				"name": {
+					"hidden": true,
+					"$ref": "#/definitions/name"
+				},
+
+				"in": {
+					"description": "Specifies the incoming logical interface name",
+					"title": "Incomming Interface",
+					"$ref": "#/definitions/interface"
+				},
+
+				"out": {
+					"description": "Specifies the outgoing logical interface name",
+					"title": "Outgoing Interface",
+					"$ref": "#/definitions/interface"
+				},
+
+				"src": {
+					"title": "Source Subnet",
+					"description": "Specifies the source subnet to match (IPv4/IPv6)",
+					"$ref": "#/definitions/cidr_address"
+				},
+
+				"dest": {
+					"title": "Destination Subnet",
+					"description": "Specifies the destination subnet to match (IPv4/IPv6)",
+					"$ref": "#/definitions/cidr_address"
+				},
+
+			    "invert": {
+			    	"type": "boolean",
+			    	"description": "if setted, the match options is inverted",
+			    	"title": "Invert Match Options"
+			    },
+
+			    "tos": {
+			      "type": "number",
+			      "title": "ToS",
+			      "description": "ToS value",
+			      "minimum": 0,
+			      "maximum": 255
+			    },
+
+			    "mark": {
+			    	"type": "string",
+			    	"description": "Specifies the fwmark and optionally its mask to match"
+			    },
+
+			    "suppress_prefixlength": {
+			      "type": "number",
+			      "title": "Suppress Prefix length",
+			      "description": "Reject routing decisions that have a prefix length less than or equal to the specified value"
+			    },
+
+			    "priority": {
+			    	"type": "number",
+			    	"description": "Controls the order of the IP rules, by default the priority is auto-assigned",
+			    	"title": "Priority"
+			    },
+
+			    "lookup": {
+			    	"type": "string",
+			    	"description": "The rule target is a table lookup, the ID can be either a numeric table index ranging from 0 to 65535",
+			    	"title": "Lookip in"
+			    },
+
+			    "goto": {
+			    	"type": "numeric",
+			    	"description": "the rule target is a jump to another rule specified by its priority value",
+			    	"title": "Go To Priority"
+			    },
+
+			    "action": {
+			    	"$ref": "#/definitions/action"
+			    }
+
+			}
+		},
+		"actions": {
+			"delete": {
+				"exec": "handler",
+				"args": ["delete", "routing-rule"],
+				"reload": true
+			},
+			
+			"apply": {
+				"exec": "handler",
+				"args": ["apply", "routing-rule"]
+			}
+		}
+	},
+	"actions": {
+		"add": {
+			"exec": "handler",
+			"args": ["add", "routing-rule"],
+			"merge": true,
+			"schema": {
+				"required": ["name"],
+				"properties": {
+					"name": {"$ref": "#/definitions/name"}
+				}
+			}
+		},
+
+		"clean": {
+            "exec": "handler",
+            "args": ["clean", "routing-rule"],
+            "reload": true,
+            "confirm": true
+        },
+
+		"apply": {
+			"exec": "handler",
+			"args": ["apply", "routing-rule"]
+		}
+	},
+
+	"set": {
+        "exec": "handler",
+        "args": ["set", "routing-rule"]
+	},
+
+	"revert": {
+		"exec": "handler",
+		"args": ["revert", "routing-rule"],
+		"reload": true
+	},
+
+	"commit": {
+		"exec": "handler",
+		"args": ["commit", "routing-rule"]
+	},
+
+	"acquire": {
+		"exec": "handler",
+		"args": ["get", "routing-rule"]
+	}
+}

@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "firmware",
+  "type": "object",
+  "definitions": {
+    "file-name": {
+      "type": "string",
+      "isFile": true,
+      "title": "File Name",
+      "readOnly": true,
+      "description": "Choose file..."
+    }
+  },
+
+  "actions": {
+    
+    "reboot": {
+      "title": "reboot system",
+      "exec": "handler",
+      "args": ["reboot", "system-management"],
+      "description": "reboot system",
+      "confirm": true
+    },
+
+    "reset": {
+      "title": "reset system to factory settings",
+      "exec": "handler",
+      "args": ["reset", "system-management"],
+      "description": "reset to factory settings",
+      "confirm": true
+    },
+
+    "backup": {
+      "title": "backup system config",
+      "exec": "handler",
+      "args": ["backup", "system-management"],
+      "description": "backup settings"
+    },
+
+    "restore": {
+      "title": "restore system config",
+      "exec": "handler",
+      "args": ["restore", "system-management"],
+      "description": "restore settings",
+      "schema": {
+        "required": ["name"],
+        "properties": {
+          "name": {"$ref": "#/definitions/file-name"}
+        }
+      }
+    },
+    
+    "upgrade": {
+      "title": "upgrade system firmware",
+      "exec": "handler",
+      "args": ["upgrade", "system-management"],
+      "description": "upgrade firmware from file",
+      "schema": {
+        "required": ["name"],
+        "properties": {
+          "name": {"$ref": "#/definitions/file-name"}
+        }
+      }
+    }
+
+  }
+  
+}

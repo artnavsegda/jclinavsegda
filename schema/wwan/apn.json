@@ -1,0 +1,93 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "apn",
+	"description": "APN profiles list",
+	"type": "object",
+	"definitions": {
+		"apn": {
+			"type": "string",
+			"description": "APN value"
+		},
+		"mccmnc": {
+			"type": "string",
+			"description": "PLMN (MCC+MNC) operator code"
+		}
+	},
+	"namesake": "mccmnc",
+	"patternProperties": {
+		".*": {
+			"type": "object",
+			"title": "APN profile entity",
+			"required": ["mccmnc", "apn"],
+			"properties": {
+				"mccmnc": {
+					"$ref": "#/definitions/mccmnc"
+				},
+				"apn": {
+					"$ref": "#/definitions/apn"
+				},
+				"username": {
+					"type": "string",
+					"description": "Username",
+					"maxLength": 39
+				},
+				"password": {
+					"type": "string",
+					"description": "Password"
+				},
+				"auth": {
+					"type": "string",
+					"description": "Auth method",
+					"enum": ["any", "eap", "pap", "chap"],
+					"default": "any"
+				},
+				"mode": {
+					"type": "string",
+					"description": "Network mode",
+					"enum": ["auto", "edge", "umts", "lte"],
+					"default": "auto"
+				}
+			}
+		},
+
+		"actions": {
+			"delete": {
+				"exec": "handler",
+				"args": ["delete", "wwan-apn"],
+				"reload": true
+			}
+		}
+	},
+	"actions": {	
+		"clean": {
+			"exec": "handler",
+			"args": ["clean", "wwan-apn"],
+			"confirm": true,
+			"reload": true
+		},
+
+		"add": {
+			"exec": "handler",
+			"args": ["add", "wwan-apn"],
+			"description": "add new entry (params: <mccmnc> <apn>)",
+			"merge": true,
+			"schema": {
+				"required": ["mccmnc", "apn"],
+				"properties": {
+					"mccmnc": {"$ref": "#/definitions/mccmnc"},
+					"apn": {"$ref": "#/definitions/apn"}
+				}
+			}
+		}
+	},
+
+	"set": {
+		"exec": "handler",
+		"args": ["set", "wwan-apn"]
+	},
+
+	"acquire": {
+		"exec": "handler",
+		"args": ["get", "wwan-apn"]
+	}
+}
