@@ -62,7 +62,7 @@ class Proto extends Traversable {
   }
   list() {
     var protolist = [];
-    this.facelist.forEach((element) => protolist.push({name: element.name}));
+    this.facelist.forEach((element) => protolist.push({name: element.name, help: "Help"}));
     return protolist;
   }
   traverse(command) {
@@ -88,13 +88,13 @@ class Face extends Traversable {
   list() {
     var facelist = [];
     if (this.schema.namesake) {
-      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: this.data[element][this.schema.namesake]}));
+      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: this.data[element][this.schema.namesake], help: "Help"}));
     }
     else
     {
-      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: element}));
+      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: element, help: "Help"}));
     }
-    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => facelist.push({name: element}));
+    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => facelist.push({name: element, help: "Help"}));
 
     return facelist;
   }
@@ -143,8 +143,8 @@ class Option extends Traversable {
   }
   list() {
     var optionlist = [];
-    Object.getOwnPropertyNames(this.schema.properties).forEach((element) => optionlist.push({name: element}));
-    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => optionlist.push({name: element}));
+    Object.getOwnPropertyNames(this.schema.properties).forEach((element) => optionlist.push({name: element, help: "Help"}));
+    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => optionlist.push({name: element, help: "Help"}));
     return optionlist;
   }
   traverse(command) {

@@ -122,7 +122,12 @@ function complete_help(userinput)
     if(complist.length > 1)
     {
       print("");
-      complist.forEach((element) => print(element.name));
+      complist.forEach((element) => {
+        if (element.help)
+          print(element.name + ": " + element.help)
+        else
+          print(element.name)
+      });
       cmdargs.pop();
       cmdargs.push(completion);
       return "@" + cmdargs.join(" ");
