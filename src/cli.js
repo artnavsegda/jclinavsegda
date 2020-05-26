@@ -129,8 +129,8 @@ class Option {
     //print("schema: " + JSON.stringify(this.schema.properties[command]));
     //print("data: " + this.data[command]);
     //print(this.data[command]);
-    //return undefined;
-    return new Setting(this.schema.properties[command], command, this.data[command]);
+    return undefined;
+    //return new Setting(this.schema.properties[command], command, this.data[command]);
   }
 }
 

@@ -139,6 +139,8 @@ function complete(userinput)
     var cmdargs = userinput.split(" ");
     var newpath = translate([...cmdargs], [...state.path]);
     var complist = newpath[newpath.length-1].list().filter(word => word.startsWith(cmdargs[cmdargs.length-1]));
+    if (complist.length == 0)
+      return userinput + " "
     var completion = sharedStart(complist);
     if(complist.length > 1)
     {
