@@ -145,7 +145,7 @@ class Setting {
     return this.data;
   }
   traverse(command) {
-    this.data = command;
+    //this.data = command;
     return undefined;
   }
   execute(commandlist) {

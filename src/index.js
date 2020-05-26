@@ -21,35 +21,71 @@ var state = {
   }
 };
 
+// function execute(cmdargs, path)
+// {
+//   if (cmdargs.length == 0)
+//     return path;
+//
+//   var location = path[path.length-1].traverse(cmdargs[0]);
+//   if (location) {
+//     path.push(location)
+//     cmdargs.shift();
+//     return execute(cmdargs,path);
+//   }
+//   else
+//     return undefined;
+// }
+
 function execute(cmdargs, path)
 {
-  if (cmdargs.length == 0)
-    return path;
-
-  var location = path[path.length-1].traverse(cmdargs[0]);
-  if (location) {
-    path.push(location)
-    cmdargs.shift();
-    return execute(cmdargs,path);
+  var args = [...cmdargs];
+  var command;
+  for (command of cmdargs) {
+    var result = path[path.length-1].traverse(command);
+    if (result) {
+      args.shift();
+      if (result.traversable)
+        path.push(result)
+      else {
+        result.execute(args);
+        return undefined;
+      }
+    }
+    else {
+      print("command not exist");
+      return undefined;
+    }
   }
-  else
-    return undefined;
+  return path;
 }
 
 function translate(cmdargs, path)
 {
-  if (cmdargs.length == 0)
-    return path;
-
-  var location = path[path.length-1].traverse(cmdargs[0]);
-  if (location) {
-    path.push(location)
-    cmdargs.shift();
-    return translate(cmdargs,path);
+  var command;
+  for (command of cmdargs) {
+    var result = path[path.length-1].traverse(command);
+    if (result)
+      path.push(result)
+    else
+      break;
   }
-  else
-    return path;
+  return path;
 }
+
+// function translate(cmdargs, path)
+// {
+//   if (cmdargs.length == 0)
+//     return path;
+//
+//   var location = path[path.length-1].traverse(cmdargs[0]);
+//   if (location) {
+//     path.push(location)
+//     cmdargs.shift();
+//     return translate(cmdargs,path);
+//   }
+//   else
+//     return path;
+// }
 
 // mandatory function for CLI
 function interpret(cmdline)
