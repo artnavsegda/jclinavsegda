@@ -112,14 +112,17 @@ function complete(userinput)
     var completion;
     var cmdargs = userinput.split(" ");
     var newpath = translate([...cmdargs], [...state.path]);
-    var complist = newpath[newpath.length-1].list().filter(word => word.startsWith(cmdargs[cmdargs.length-1]));
+    var complist = newpath[newpath.length-1].list().filter(word => word.name.startsWith(cmdargs[cmdargs.length-1]));
+
     if (complist.length == 0)
       return userinput + " "
-    var completion = sharedStart(complist);
+
+    var completion = sharedStart(complist.map(e => e.name));
+
     if(complist.length > 1)
     {
       print("");
-      complist.forEach((element) => print(element));
+      complist.forEach((element) => print(element.name));
       cmdargs.pop();
       cmdargs.push(completion);
       return "@" + cmdargs.join(" ");
@@ -130,7 +133,7 @@ function complete(userinput)
   }
   else {
     print("");
-    state.path[state.path.length-1].list().sort().forEach((element) => print(element));
+    state.path[state.path.length-1].list().map(e => e.name).sort().forEach((element) => print(element));
     return null;
   }
 }

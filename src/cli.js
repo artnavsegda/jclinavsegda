@@ -1,3 +1,6 @@
+var IRZ = require ('irz_module');
+import * as config from "config.js";
+
 class Traversable {
   constructor() {
     this.traversable = true;
@@ -59,7 +62,7 @@ class Proto extends Traversable {
   }
   list() {
     var protolist = [];
-    this.facelist.forEach((element) => protolist.push(element.name));
+    this.facelist.forEach((element) => protolist.push({name: element.name}));
     return protolist;
   }
   traverse(command) {
@@ -85,13 +88,13 @@ class Face extends Traversable {
   list() {
     var facelist = [];
     if (this.schema.namesake) {
-      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push(this.data[element][this.schema.namesake]));
+      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: this.data[element][this.schema.namesake]}));
     }
     else
     {
-      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push(element));
+      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: element}));
     }
-    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => facelist.push(element));
+    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => facelist.push({name: element}));
 
     return facelist;
   }
@@ -140,8 +143,8 @@ class Option extends Traversable {
   }
   list() {
     var optionlist = [];
-    Object.getOwnPropertyNames(this.schema.properties).forEach((element) => optionlist.push(element));
-    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => optionlist.push(element));
+    Object.getOwnPropertyNames(this.schema.properties).forEach((element) => optionlist.push({name: element}));
+    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => optionlist.push({name: element}));
     return optionlist;
   }
   traverse(command) {
@@ -171,6 +174,7 @@ class Command extends Executable {
     return undefined;
   }
   execute(commandlist) {
+    print("executing " + config.script_path + "/" + this.schema.exec + " " + this.schema.args.join(" "));
     if (commandlist.length > 0)
     {
       print("executing " + commandlist);
