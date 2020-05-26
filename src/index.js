@@ -138,7 +138,12 @@ function complete_help(userinput)
   }
   else {
     print("");
-    state.path[state.path.length-1].list().map(e => e.name).sort().forEach((element) => print(element));
+    state.path[state.path.length-1].list().forEach((element) => {
+      if (element.help)
+        print(element.name + ": " + element.help);
+      else
+        print(element.name);
+    });
     return null;
   }
 }

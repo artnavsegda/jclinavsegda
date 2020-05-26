@@ -16,6 +16,8 @@ class Executable {
 class Proto extends Traversable {
   constructor(protoname, filelist, filepath) {
     super();
+    //this.help = "Help";
+    this.help = "";
     this.facelist = [];
     this.name = protoname;
     if (filelist)
@@ -62,7 +64,7 @@ class Proto extends Traversable {
   }
   list() {
     var protolist = [];
-    this.facelist.forEach((element) => protolist.push({name: element.name, help: "Help"}));
+    this.facelist.forEach((element) => protolist.push({name: element.name, help: element.help}));
     return protolist;
   }
   traverse(command) {
@@ -74,6 +76,7 @@ class Face extends Traversable {
   constructor(schema, name, data) {
     super();
     this.schema = schema;
+    this.help = this.schema.description;
     this.name = name;
     if (data) {
       this.data = data;
@@ -129,6 +132,7 @@ class Option extends Traversable {
   constructor(schema, name, data, actions) {
     super();
     this.schema = schema;
+    this.help = this.schema.description;
     this.name = name;
     this.actions = actions;
     if (data) {
