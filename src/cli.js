@@ -141,6 +141,7 @@ class Option extends Traversable {
   list() {
     var optionlist = [];
     Object.getOwnPropertyNames(this.schema.properties).forEach((element) => optionlist.push(element));
+    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => optionlist.push(element));
     return optionlist;
   }
   traverse(command) {
