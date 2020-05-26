@@ -151,23 +151,23 @@ class Option extends Traversable {
     //return undefined;
     if (this.schema.properties[command])
       return new Setting(this.schema.properties[command], command, this.data);
+    else if (this.schema.properties[actions])
+      return new Setting(this.schema.actions[command], command);
     else
       return undefined;
   }
 }
 
 class Command extends Executable {
-  constructor(schema, name, data) {
+  constructor(schema, name) {
     super();
     this.schema = schema;
     this.name = name;
-    this.data = data;
   }
   list() {
-    return this.data;
+    return undefined;
   }
   traverse(command) {
-    //this.data = command;
     return undefined;
   }
   execute(commandlist) {
