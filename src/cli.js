@@ -72,13 +72,15 @@ class Face {
     }
   }
   list() {
+    var facelist = [];
     if (this.schema.namesake) {
-      var facelist = [];
       Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push(this.data[element][this.schema.namesake]));
-      return facelist;
     }
     else
-      return Object.getOwnPropertyNames(this.data);
+    {
+      return Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push(element));
+    }
+    return facelist;
   }
   resolve(dataname) {
     if (this.data[dataname]) {
