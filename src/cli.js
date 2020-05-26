@@ -142,6 +142,34 @@ class Option {
   }
 }
 
+class Command {
+  constructor(schema, name, data) {
+    this.traversable = false;
+    this.schema = schema;
+    this.name = name;
+    this.data = data;
+  }
+  list() {
+    return this.data;
+  }
+  traverse(command) {
+    //this.data = command;
+    return undefined;
+  }
+  execute(commandlist) {
+    if (commandlist.length > 0)
+    {
+      print("executing " + commandlist);
+    }
+    else
+    {
+      print("executing without arguments" + commandlist);
+    }
+  }
+}
+
+export { Proto, Face, Option };
+
 class Setting {
   constructor(schema, name, data) {
     this.traversable = false;
