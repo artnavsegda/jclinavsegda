@@ -66,13 +66,15 @@ function interpret(cmdline)
 {
   var cmdargs = cmdline.split(" ");
 
-  var builtins = ["exit", "/", ".."];
+  var builtins = ["exit", "/", "..", "list"];
 
   function builtin(command)
   {
     if (command == "exit")
       return null;
-    else if (command == "/") {
+    else if (command == "list") {
+      print(state.path[state.path.length-1].list().map(e => e.name));
+    } else if (command == "/") {
       state.path = [ state.root ];
     } else if (command == "..") {
       if (state.path.length == 1)
