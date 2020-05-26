@@ -1,7 +1,7 @@
 import * as jsonpointer from "jsonpointer.js";
 import * as CLI from "cli.js";
+import * as config from "config.js";
 var IRZ = require ('irz_module');
-var config = JSON.parse(IRZ.cat("./config.json"));
 var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +"/>";
 
 var state = {
