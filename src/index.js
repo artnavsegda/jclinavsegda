@@ -36,6 +36,21 @@ function execute(cmdargs, path)
     return undefined;
 }
 
+function translate(cmdargs, path)
+{
+  if (cmdargs.length == 0)
+    return path;
+
+  var location = path[path.length-1].traverse(cmdargs[0]);
+  if (location) {
+    path.push(location)
+    cmdargs.shift();
+    return translate(cmdargs,path);
+  }
+  else
+    return path;
+}
+
 // mandatory function for CLI
 function interpret(cmdline)
 {
@@ -64,8 +79,7 @@ function interpret(cmdline)
   if (builtins.find((element) => element == cmdargs[0])) {
     retval = builtin(cmdargs[0]);
   } else {
-    var oldpath = [...state.path]
-    var newpath = execute(cmdargs, oldpath);
+    var newpath = execute(cmdargs, [...state.path]);
     if (newpath)
       state.path = newpath;
   }
@@ -84,11 +98,11 @@ function complete(userinput)
       return a1.substring(0, i);
   }
 
-  var location = state.path[state.path.length-1];
-
   if (userinput) {
     var completion;
-    var complist = location.list().filter(word => word.startsWith(userinput));
+    var cmdargs = userinput.split(" ");
+    var newpath = translate([...cmdargs], [...state.path]);
+    var complist = newpath[newpath.length-1].list().filter(word => word.startsWith(cmdargs[cmdargs.length-1]));
     var completion = sharedStart(complist);
     if(complist.length > 1)
     {
@@ -96,11 +110,13 @@ function complete(userinput)
       complist.forEach((element) => print(element));
       return "@" + completion;
     }
-    return completion;
+    cmdargs.pop();
+    cmdargs.push(completion);
+    return cmdargs.join(" ");
   }
   else {
     print("");
-    location.list().sort().forEach((element) => print(element));
+    state.path[state.path.length-1].list().sort().forEach((element) => print(element));
     return null;
   }
 }
