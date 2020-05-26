@@ -108,7 +108,9 @@ function complete(userinput)
     {
       print("");
       complist.forEach((element) => print(element));
-      return "@" + completion;
+      cmdargs.pop();
+      cmdargs.push(completion);
+      return "@" + cmdargs.join(" ");
     }
     cmdargs.pop();
     cmdargs.push(completion);
