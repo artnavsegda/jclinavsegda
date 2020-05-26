@@ -129,8 +129,11 @@ class Option {
     //print("schema: " + JSON.stringify(this.schema.properties[command]));
     //print("data: " + this.data[command]);
     //print(this.data[command]);
-    return undefined;
-    //return new Setting(this.schema.properties[command], command, this.data[command]);
+    //return undefined;
+    if (this.schema.properties[command])
+      return new Setting(this.schema.properties[command], command, this.data[command]);
+    else
+      return undefined;
   }
 }
 
@@ -149,7 +152,13 @@ class Setting {
     return undefined;
   }
   execute(commandlist) {
-    print("executing" + commandlist);
+    if (commandlist.length > 0)
+      print("executing " + commandlist);
+    else
+    {
+      print(this.data);
+      //print("no argument");
+    }
   }
 }
 

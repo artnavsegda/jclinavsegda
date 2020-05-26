@@ -21,21 +21,6 @@ var state = {
   }
 };
 
-// function execute(cmdargs, path)
-// {
-//   if (cmdargs.length == 0)
-//     return path;
-//
-//   var location = path[path.length-1].traverse(cmdargs[0]);
-//   if (location) {
-//     path.push(location)
-//     cmdargs.shift();
-//     return execute(cmdargs,path);
-//   }
-//   else
-//     return undefined;
-// }
-
 function execute(cmdargs, path)
 {
   var args = [...cmdargs];
@@ -63,29 +48,18 @@ function translate(cmdargs, path)
 {
   var command;
   for (command of cmdargs) {
-    var result = path[path.length-1].traverse(command);
-    if (result)
-      path.push(result)
+    if (path[path.length-1].traversable) {
+      var result = path[path.length-1].traverse(command);
+      if (result)
+        path.push(result)
+      else
+        break;
+    }
     else
-      break;
+      break
   }
   return path;
 }
-
-// function translate(cmdargs, path)
-// {
-//   if (cmdargs.length == 0)
-//     return path;
-//
-//   var location = path[path.length-1].traverse(cmdargs[0]);
-//   if (location) {
-//     path.push(location)
-//     cmdargs.shift();
-//     return translate(cmdargs,path);
-//   }
-//   else
-//     return path;
-// }
 
 // mandatory function for CLI
 function interpret(cmdline)
