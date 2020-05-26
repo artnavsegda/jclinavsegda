@@ -78,8 +78,10 @@ class Face {
     }
     else
     {
-      return Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push(element));
+      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push(element));
     }
+    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => facelist.push(element));
+
     return facelist;
   }
   resolve(dataname) {
@@ -110,10 +112,11 @@ class Face {
 }
 
 class Option {
-  constructor(schema, name, data) {
+  constructor(schema, name, data, actions) {
     this.traversable = true;
     this.schema = schema;
     this.name = name;
+    this.actions = actions;
     if (data) {
       this.data = data;
     } else if (this.schema.acquire) {
