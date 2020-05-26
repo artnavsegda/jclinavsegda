@@ -99,6 +99,46 @@ function interpret(cmdline)
 }
 
 // tab completion callback
+function complete_help(userinput)
+{
+  function sharedStart(array){
+      var A= array.concat().sort(),
+      a1= A[0], a2= A[A.length-1], L= a1.length, i= 0;
+      while(i<L && a1.charAt(i)=== a2.charAt(i)) i++;
+      return a1.substring(0, i);
+  }
+
+  if (userinput) {
+    var completion;
+    var cmdargs = userinput.split(" ");
+    var newpath = translate([...cmdargs], [...state.path]);
+    var complist = newpath[newpath.length-1].list().filter(word => word.name.startsWith(cmdargs[cmdargs.length-1]));
+
+    if (complist.length == 0)
+      return userinput + " "
+
+    var completion = sharedStart(complist.map(e => e.name));
+
+    if(complist.length > 1)
+    {
+      print("");
+      complist.forEach((element) => print(element.name));
+      cmdargs.pop();
+      cmdargs.push(completion);
+      return "@" + cmdargs.join(" ");
+    }
+    cmdargs.pop();
+    cmdargs.push(completion);
+    return cmdargs.join(" ");
+  }
+  else {
+    print("");
+    state.path[state.path.length-1].list().map(e => e.name).sort().forEach((element) => print(element));
+    return null;
+  }
+}
+
+// tab completion callback
 function complete(userinput)
 {
   function sharedStart(array){
