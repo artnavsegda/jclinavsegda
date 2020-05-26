@@ -125,7 +125,7 @@ class Option {
   traverse(command) {
     //print("schema: " + JSON.stringify(this.schema.properties[command]));
     //print("data: " + this.data[command]);
-    print(this.data[command]);
+    //print(this.data[command]);
     return undefined;
   }
 }
