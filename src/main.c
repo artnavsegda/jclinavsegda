@@ -18,6 +18,10 @@
 #include "jerryscript-port-default.h"
 #include "exception.h"
 
+#ifndef INDEX_JS_PATH
+#define INDEX_JS_PATH "./index.js"
+#endif
+
 extern void irz_module_register (void);
 
 static const jerryx_module_resolver_t *resolvers[1] =
@@ -160,7 +164,7 @@ int main(int argc, char *argv[])
   register_js_function("print", jerryx_handler_print);
   register_js_function("require", handle_require);
 
-  char *buf = loadfile("./index.js");
+  char *buf = loadfile(INDEX_JS_PATH);
 
   if (!buf)
   {
