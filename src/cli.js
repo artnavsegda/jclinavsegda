@@ -57,7 +57,7 @@ class Proto extends Traversable {
     } else {
       var data = JSON.parse(IRZ.cat(filepath))
       if (data.properties)
-        this.facelist.push(new Option(data, this.basename(filepath)));
+        this.facelist.push(new Option(data, this.basename(filepath), data.actions));
       else
         this.facelist.push(new Face(data, this.basename(filepath)));
     }
@@ -119,17 +119,17 @@ class Face extends Traversable {
     if (this.schema.namesake) {
       var dataname = Object.getOwnPropertyNames(this.data).find((element) => command == this.data[element][this.schema.namesake])
       if (this.resolve(dataname))
-        return new Option(this.resolve(dataname), command, this.data[dataname])
+        return new Option(this.resolve(dataname), command, this.schema.patternProperties.actions, this.data[dataname])
     }
     else
       if (this.resolve(command))
-        return new Option(this.resolve(command), command, this.data[command])
+        return new Option(this.resolve(command), command, this.schema.patternProperties.actions, this.data[command])
     return undefined;
   }
 }
 
 class Option extends Traversable {
-  constructor(schema, name, data, actions) {
+  constructor(schema, name, actions, data) {
     super();
     this.schema = schema;
     this.help = this.schema.description;
@@ -139,7 +139,6 @@ class Option extends Traversable {
       this.data = data;
     } else if (this.schema.acquire) {
       var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
-      //print("piping " + now_script_path);
       var now_data = IRZ.pipe(now_script_path);
       if (now_data)
         this.data = JSON.parse(now_data);
@@ -148,14 +147,11 @@ class Option extends Traversable {
   list() {
     var optionlist = [];
     Object.getOwnPropertyNames(this.schema.properties).forEach((element) => optionlist.push({name: element, help: "Help"}));
-    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => optionlist.push({name: element, help: "Help"}));
+    if (this.actions)
+      Object.getOwnPropertyNames(this.actions).forEach((element) => optionlist.push({name: element, help: "Help"}));
     return optionlist;
   }
   traverse(command) {
-    //print("schema: " + JSON.stringify(this.schema.properties[command]));
-    //print("data: " + this.data[command]);
-    //print(this.data[command]);
-    //return undefined;
     if (this.schema.properties[command])
       return new Setting(this.schema.properties[command], command, this.data);
     else if (this.schema.actions[command])
