@@ -1,6 +1,7 @@
 
 class Proto {
   constructor(protoname, filelist, filepath) {
+    this.traversable = true;
     this.facelist = [];
     this.name = protoname;
     if (filelist)
@@ -57,6 +58,7 @@ class Proto {
 
 class Face {
   constructor(schema, name, data) {
+    this.traversable = true;
     this.schema = schema;
     this.name = name;
     if (data) {
@@ -107,6 +109,7 @@ class Face {
 
 class Option {
   constructor(schema, name, data) {
+    this.traversable = true;
     this.schema = schema;
     this.name = name;
     if (data) {
@@ -133,6 +136,7 @@ class Option {
 
 class Setting {
   constructor(schema, name, data) {
+    this.traversable = false;
     this.schema = schema;
     this.name = name;
     this.data = data;
@@ -143,6 +147,9 @@ class Setting {
   traverse(command) {
     this.data = command;
     return undefined;
+  }
+  execute(commandlist) {
+    print("executing" + commandlist);
   }
 }
 
