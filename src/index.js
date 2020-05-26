@@ -143,3 +143,6 @@ state.root.load(config.schema_path, JSON.parse(IRZ.pipe(config.script_list_path)
 //state.root = new Proto("cli", JSON.parse(IRZ.pipe(config.script_list_path)).list, config.schema_path);
 state.path.push(state.root);
 prompt = state.getPrompt();
+
+
+IRZ.pipe("./test.sh","value string");
