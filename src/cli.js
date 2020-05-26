@@ -207,5 +207,4 @@ class Setting extends Executable {
   }
 }
 
-
 export { Proto, Face, Option, Setting, Command };
