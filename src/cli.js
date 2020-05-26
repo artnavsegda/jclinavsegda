@@ -131,7 +131,7 @@ class Option {
     //print(this.data[command]);
     //return undefined;
     if (this.schema.properties[command])
-      return new Setting(this.schema.properties[command], command, this.data[command]);
+      return new Setting(this.schema.properties[command], command, this.data);
     else
       return undefined;
   }
@@ -153,11 +153,14 @@ class Setting {
   }
   execute(commandlist) {
     if (commandlist.length > 0)
+    {
       print("executing " + commandlist);
+      this.data[this.name] = commandlist[0];
+      print(this.data[this.name]);
+    }
     else
     {
-      print(this.data);
-      //print("no argument");
+      print(this.data[this.name]);
     }
   }
 }
