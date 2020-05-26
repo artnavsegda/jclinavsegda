@@ -170,6 +170,7 @@ int main(int argc, char *argv[])
       free (prompt);
       if (!input)
         break;
+      add_history(input);
       jerry_value_t ret_val = call_single_str(interpret, input);
       free(input);
       if (jerry_value_is_null(ret_val))
