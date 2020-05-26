@@ -1,7 +1,18 @@
-
-class Proto {
-  constructor(protoname, filelist, filepath) {
+class Traversable {
+  constructor() {
     this.traversable = true;
+  }
+}
+
+class Executable {
+  constructor() {
+    this.traversable = false;
+  }
+}
+
+class Proto extends Traversable {
+  constructor(protoname, filelist, filepath) {
+    super();
     this.facelist = [];
     this.name = protoname;
     if (filelist)
@@ -56,9 +67,9 @@ class Proto {
   }
 }
 
-class Face {
+class Face extends Traversable {
   constructor(schema, name, data) {
-    this.traversable = true;
+    super();
     this.schema = schema;
     this.name = name;
     if (data) {
@@ -111,9 +122,9 @@ class Face {
   }
 }
 
-class Option {
+class Option extends Traversable {
   constructor(schema, name, data, actions) {
-    this.traversable = true;
+    super();
     this.schema = schema;
     this.name = name;
     this.actions = actions;
@@ -142,9 +153,9 @@ class Option {
   }
 }
 
-class Command {
+class Command extends Executable {
   constructor(schema, name, data) {
-    this.traversable = false;
+    super();
     this.schema = schema;
     this.name = name;
     this.data = data;
@@ -168,11 +179,9 @@ class Command {
   }
 }
 
-export { Proto, Face, Option };
-
-class Setting {
+class Setting extends Executable {
   constructor(schema, name, data) {
-    this.traversable = false;
+    super();
     this.schema = schema;
     this.name = name;
     this.data = data;
@@ -198,4 +207,5 @@ class Setting {
   }
 }
 
-export { Proto, Face, Option };
+
+export { Proto, Face, Option, Setting, Command };
