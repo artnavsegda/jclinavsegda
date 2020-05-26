@@ -92,7 +92,7 @@ static jerry_value_t call_single_str(jerry_value_t function, char * argument)
   return ret_val;
 }
 
-static char * allocate_string(jerry_value_t string_val)
+char * allocate_string(jerry_value_t string_val)
 {
   jerry_size_t string_size = jerry_get_string_size (string_val);
   jerry_char_t *string_buffer_p = (jerry_char_t *) malloc (sizeof (jerry_char_t) * (string_size + 1));
@@ -136,6 +136,19 @@ static int jcli_completion(int count, int key)
   return 0;
 }
 
+static int jcli_help_completion(int count, int key)
+{
+  jerry_value_t global_obj_val = jerry_get_global_object ();
+  jerry_value_t complete = jerryx_get_property_str(global_obj_val, "complete_help");
+  if (jerry_value_is_function (complete))
+  {
+    jerry_release_value(global_obj_val);
+    jerry_value_t ret_val = call_single_str(complete, rl_line_buffer);
+    jerry_release_value(ret_val);
+  }
+  return 0;
+}
+
 int main(int argc, char *argv[])
 {
   // printf("ES6 status is %d\n", JERRY_ES2015);
@@ -163,6 +176,7 @@ int main(int argc, char *argv[])
   if (jerry_value_is_function (interpret))
   {
     rl_bind_key('\t', jcli_completion);
+    rl_bind_key('?', jcli_help_completion);
     while(1)
     {
       jerry_char_t *prompt = allocate_string_by_name(global_obj_val, "prompt");

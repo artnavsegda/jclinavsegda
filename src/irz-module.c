@@ -2,9 +2,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
 #include "jerryscript.h"
 #include "jerryscript-ext/module.h"
 #include "jerryscript-ext/handler.h"
+
+char * allocate_string(jerry_value_t string_val);
 
 #define MODULE_NAME irz_module
 
@@ -94,14 +97,32 @@ static jerry_value_t module_pipe_handler(const jerry_value_t function_object, co
       jerry_size_t copied_bytes = jerry_string_to_utf8_char_buffer (string_value, buffer, sizeof (buffer) - 1);
       buffer[copied_bytes] = '\0';
       jerry_release_value (string_value);
-      FILE * filetoread = popen(buffer, "r");
-      if (filetoread)
+
+      if (arguments_count == 1)
       {
-        char * filecontent = allocate_stream(filetoread);
-        pclose(filetoread);
-        jerry_value_t returnvalue = jerry_create_string (filecontent);
-        free(filecontent);
-        return returnvalue;
+        FILE * filetoread = popen(buffer, "r");
+        if (filetoread)
+        {
+          char * filecontent = allocate_stream(filetoread);
+          pclose(filetoread);
+          jerry_value_t returnvalue = jerry_create_string (filecontent);
+          free(filecontent);
+          return returnvalue;
+        }
+      }
+      if (arguments_count == 2)
+      {
+        if (jerry_value_is_string(arguments[1]))
+        {
+          FILE * filetowrite = popen(buffer, "w");
+          if (filetowrite)
+          {
+            char * filecontent = allocate_string(arguments[1]);
+            fwrite(filecontent, 1, strlen(filecontent), filetowrite);
+            free(filecontent);
+            pclose(filetowrite);
+          }
+        }
       }
     }
   }
