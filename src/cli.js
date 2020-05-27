@@ -64,7 +64,11 @@ class Proto extends Traversable {
   }
   list() {
     var protolist = [];
-    this.facelist.forEach((element) => protolist.push({name: element.name, help: element.help}));
+    this.facelist.forEach((element) => {
+      if (element.schema && element.schema.hidden){}
+      else
+        protolist.push({name: element.name, help: element.help})
+    });
     return protolist;
   }
   traverse(command) {
