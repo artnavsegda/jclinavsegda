@@ -285,7 +285,15 @@ class Setting extends Executable {
     this.data = data;
   }
   list() {
-    return this.data;
+    if (this.schema.type == "boolean")
+    {
+      return ["true", "false"];
+    }
+    else if (this.schema.enum)
+    {
+      return this.schema.enum
+    }
+    return undefined;
   }
   traverse(command) {
     //this.data = command;
@@ -293,6 +301,7 @@ class Setting extends Executable {
   }
   execute(commandlist) {
     print("Extracted schema: " + JSON.stringify(this.schema));
+    print(this.list());
 
     if (commandlist.length > 0)
     {
