@@ -284,7 +284,7 @@ class Setting extends Executable {
     this.name = name;
     this.data = data;
   }
-  list() {
+  list(root) {
     if (this.schema.type == "boolean")
     {
       return [{name: "true"}, {name: "false"}];
