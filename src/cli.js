@@ -183,7 +183,7 @@ class Option extends Traversable {
   getSchemaElement(elementName) {
     let ss = Object.assign({}, this.schema.properties[elementName]);
     if(ss["modificator"] !== undefined) {
-      let i = this.condProcess(ss["modificator"])
+      let i = this.condProcess(ss["modificator"],this.data)
       if(i !== -1){
         Object.assign(ss, ss["modificator"][i]["then"])
       }
