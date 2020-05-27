@@ -146,7 +146,10 @@ class Option extends Traversable {
   }
   list() {
     var optionlist = [];
-    Object.getOwnPropertyNames(this.schema.properties).forEach((element) => optionlist.push({name: element, help: "Help"}));
+    Object.getOwnPropertyNames(this.schema.properties).forEach((element) => {
+      if (!this.schema.properties[element].hidden)
+        optionlist.push({name: element, help: "Help"})
+    });
     if (this.actions)
       Object.getOwnPropertyNames(this.actions).forEach((element) => optionlist.push({name: element, help: "Help"}));
     return optionlist;
