@@ -203,8 +203,8 @@ class Option extends Traversable {
   traverse(command) {
     if (this.getSchemaElement(command))
       return new Setting(this.getSchemaElement(command), command, this.data);
-    else if (this.schema.actions[command])
-      return new Command(this.schema.actions[command], command);
+    else if (this.actions[command])
+      return new Command(this.actions[command], command);
     else
       return undefined;
   }
