@@ -48,15 +48,17 @@ function translate(cmdargs, path)
 {
   var command;
   for (command of cmdargs) {
-    if (path[path.length-1].traversable) {
-      var result = path[path.length-1].traverse(command);
-      if (result)
+    var result = path[path.length-1].traverse(command);
+    if (result) {
+      if (result.traversable)
         path.push(result)
-      else
-        break;
+      else {
+        return path;
+      }
     }
-    else
-      break
+    else {
+      return path;
+    }
   }
   return path;
 }
@@ -114,6 +116,7 @@ function complete_help(userinput)
     var completion;
     var cmdargs = userinput.split(" ");
     var newpath = translate([...cmdargs], [...state.path]);
+
     var complist = newpath[newpath.length-1].list().filter(word => word.name.startsWith(cmdargs[cmdargs.length-1]));
 
     if (complist.length == 0)
@@ -164,6 +167,7 @@ function complete(userinput)
     var completion;
     var cmdargs = userinput.split(" ");
     var newpath = translate([...cmdargs], [...state.path]);
+
     var complist = newpath[newpath.length-1].list().filter(word => word.name.startsWith(cmdargs[cmdargs.length-1]));
 
     if (complist.length == 0)
