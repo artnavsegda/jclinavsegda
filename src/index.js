@@ -50,11 +50,13 @@ function translate(cmdargs, path)
   for (command of cmdargs) {
     var result = path[path.length-1].traverse(command);
     if (result) {
-      if (result.traversable)
-        path.push(result)
-      else {
-        return path;
-      }
+      // if (result.traversable)
+      //   path.push(result)
+      // else {
+      //   print(result.list());
+      //   return path;
+      // }
+      path.push(result);
     }
     else {
       return path;

@@ -287,12 +287,12 @@ class Setting extends Executable {
   list() {
     if (this.schema.type == "boolean")
     {
-      return ["true", "false"];
+      return [{name: "true"}, {name: "false"}];
     }
-    else if (this.schema.enum)
-    {
-      return this.schema.enum
-    }
+    // else if (this.schema.enum)
+    // {
+    //   return this.schema.enum
+    // }
     return undefined;
   }
   traverse(command) {
