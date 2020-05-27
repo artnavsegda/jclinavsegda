@@ -144,10 +144,13 @@ class Option extends Traversable {
         this.data = JSON.parse(now_data);
     }
   }
+  getSchemaElement(elementName) {
+    return this.schema.properties[elementName];
+  }
   list() {
     var optionlist = [];
     Object.getOwnPropertyNames(this.schema.properties).forEach((element) => {
-      if (!this.schema.properties[element].hidden)
+      if (!this.getSchemaElement(element).hidden)
         optionlist.push({name: element, help: "Help"})
     });
     if (this.actions)
@@ -155,8 +158,8 @@ class Option extends Traversable {
     return optionlist;
   }
   traverse(command) {
-    if (this.schema.properties[command])
-      return new Setting(this.schema.properties[command], command, this.data);
+    if (this.getSchemaElement(command))
+      return new Setting(this.getSchemaElement(command), command, this.data);
     else if (this.schema.actions[command])
       return new Command(this.schema.actions[command], command);
     else
