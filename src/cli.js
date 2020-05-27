@@ -260,7 +260,7 @@ class Setting extends Executable {
   execute(commandlist) {
     if (commandlist.length > 0)
     {
-      print("executing " + commandlist);
+      print("inserting " + commandlist);
       this.data[this.name] = commandlist[0];
       print(this.data[this.name]);
     }
