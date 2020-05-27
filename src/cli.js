@@ -145,7 +145,11 @@ class Option extends Traversable {
     }
   }
   getSchemaElement(elementName) {
-    return this.schema.properties[elementName];
+    var schema = this.schema.properties[elementName];
+    if (schema.modificator) {
+      // to do
+    }
+    return schema;
   }
   list() {
     var optionlist = [];
