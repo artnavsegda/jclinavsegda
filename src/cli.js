@@ -181,14 +181,18 @@ class Option extends Traversable {
     }
   }
   getSchemaElement(elementName) {
-    let ss = Object.assign({}, this.schema.properties[elementName]);
-    if(ss["modificator"] !== undefined) {
-      let i = this.condProcess(ss["modificator"],this.data)
-      if(i !== -1){
-        Object.assign(ss, ss["modificator"][i]["then"])
+    if (this.schema.properties[elementName])
+    {
+      let ss = Object.assign({}, this.schema.properties[elementName]);
+      if(ss["modificator"] !== undefined) {
+        let i = this.condProcess(ss["modificator"],this.data)
+        if(i !== -1){
+          Object.assign(ss, ss["modificator"][i]["then"])
+        }
       }
+      return ss;
     }
-    return ss;
+    return undefined;
   }
   list() {
     var optionlist = [];
@@ -226,11 +230,11 @@ class Command extends Executable {
     print("executing " + config.script_path + "/" + this.schema.exec + " " + this.schema.args.join(" "));
     if (commandlist.length > 0)
     {
-      print("executing " + commandlist);
+      print("arguments " + commandlist);
     }
     else
     {
-      print("executing without arguments" + commandlist);
+      print("no arguments");
     }
   }
 }
@@ -258,6 +262,7 @@ class Setting extends Executable {
     }
     else
     {
+      print("displaying");
       print(this.data[this.name]);
     }
   }
