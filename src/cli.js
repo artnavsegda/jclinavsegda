@@ -171,6 +171,15 @@ class Option extends Traversable {
     }
     return -1
   }
+  refProperty(definitions, path) {
+    let ref = { "definitions": definitions }
+    for(const i in path) {
+      if(ref[path[i]] === undefined)
+        return {}
+      ref = ref[path[i]]
+    }
+    return ref
+  }
   refProcess(ss) {
     if(ss["$ref"] === undefined)
       return
@@ -182,11 +191,11 @@ class Option extends Traversable {
     ref_str = ref_str[1].split("/").filter((v) => {
       return (v)? true :false
     })
-    delete ss["$ref"]
-    ref = refProperty(this.definitions, ref_str)
+    delete ss["$ref"] //no plz
+    ref = this.refProperty(this.schema.definitions, ref_str)
     if(ref !== undefined)
       Object.assign(ss, ref)
-  }  
+  }
   constructor(schema, name, actions, data) {
     super();
     this.schema = schema;
@@ -206,14 +215,14 @@ class Option extends Traversable {
     if (this.schema.properties[elementName])
     {
       let ss = Object.assign({}, this.schema.properties[elementName]);
+      this.refProcess(ss);
+
       if(ss["modificator"] !== undefined) {
         let i = this.condProcess(ss["modificator"],this.data)
         if(i !== -1){
-          Object.assign(ss, ss["modificator"][i]["then"])
+          Object.assign(ss, ss["modificator"][i]["then"]);
+          this.refProcess(ss);
         }
-      }
-      if (ss.$ref){
-        //do some ref dereferencing
       }
       return ss;
     }
