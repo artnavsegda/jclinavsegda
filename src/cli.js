@@ -171,6 +171,22 @@ class Option extends Traversable {
     }
     return -1
   }
+  refProcess(ss) {
+    if(ss["$ref"] === undefined)
+      return
+    let ref_str
+    let ref
+    ref_str = ss["$ref"]
+    ref_str = ref_str.split("#")
+    // TODO: get definitions from external store ref_str[0]
+    ref_str = ref_str[1].split("/").filter((v) => {
+      return (v)? true :false
+    })
+    delete ss["$ref"]
+    ref = refProperty(this.definitions, ref_str)
+    if(ref !== undefined)
+      Object.assign(ss, ref)
+  }  
   constructor(schema, name, actions, data) {
     super();
     this.schema = schema;
