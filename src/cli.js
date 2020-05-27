@@ -103,14 +103,16 @@ class Face extends Traversable {
   }
   resolve(dataname) {
     if (this.data[dataname]) {
-      //print("data: " + JSON.stringify(this.data[command]));
       var schema_section;
       Object.getOwnPropertyNames(this.schema.patternProperties).forEach((pattern) => {
         let re = new RegExp(pattern);
         if (re.test(dataname))
-          schema_section = this.schema.patternProperties[pattern];
+          schema_section = Object.assign({}, this.schema.patternProperties[pattern]);
       });
-      //print("schema: " + JSON.stringify(schema_section));
+
+      if (this.schema.definitions)
+        schema_section.definitions = this.schema.definitions;
+
       return schema_section;
     }
     return undefined
@@ -194,6 +196,9 @@ class Option extends Traversable {
           Object.assign(ss, ss["modificator"][i]["then"])
         }
       }
+      if (ss.$ref){
+        //do some ref dereferencing
+      }
       return ss;
     }
     return undefined;
@@ -258,6 +263,8 @@ class Setting extends Executable {
     return undefined;
   }
   execute(commandlist) {
+    print("Extracted schema: " + JSON.stringify(this.schema));
+
     if (commandlist.length > 0)
     {
       print("inserting " + commandlist);
