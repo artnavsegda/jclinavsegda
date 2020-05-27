@@ -293,6 +293,19 @@ class Setting extends Executable {
     // {
     //   return this.schema.enum
     // }
+
+    // if (this.schema.cue)
+    // {
+    //   var cueSearchPath = this.schema.cue.split(" ");
+    //   var cueLocation = state.path[0]
+    //   for (elements of cueSearchPath)
+    //   {
+    //     if (cueLocation.traverse())
+    //       cueLocation = cueLocation.traverse();
+    //   }
+    //   return cueLocation.list();
+    // }
+
     return undefined;
   }
   traverse(command) {
