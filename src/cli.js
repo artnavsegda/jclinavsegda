@@ -271,10 +271,11 @@ class Option extends Traversable {
 }
 
 class Command extends Executable {
-  constructor(schema, name) {
+  constructor(schema, name, data) {
     super();
     this.schema = schema;
     this.name = name;
+    this.data = data;
   }
   list() {
     return undefined;
@@ -293,11 +294,16 @@ class Command extends Executable {
       print("no arguments");
     }
     //do something
-    if(this.schema.merge){
+    //if(this.schema.merge){
       //do pipe & data re-evaluation
-    } else {
+      //var output = IRZ.pipe("command");
+      //if (output) {
+      //  this.data = JSON.parse(data);
+      //  return true;
+      //}
+    //} else {
       //IRZ.system("command");
-    }
+    //}
     //end do something
     if(this.schema.reload)
       return true;
