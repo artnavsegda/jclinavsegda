@@ -9,6 +9,6 @@ fi
 
 if [ "x$1" = "xget" ]
 then
-cat $2.js
+cat $2.json
 fi
 
