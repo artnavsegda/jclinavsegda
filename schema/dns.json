@@ -6,13 +6,10 @@
   "properties": {
 
     "server": {
-      "type": "array",
-      "description": "List of DNS servers to forward requests to",
-      "title": "DNS Server List",
-      "example": "test",
-      "items": {
-        "type": "string"
-      }
+      "type": "string",
+      "description": "DNS server to forward requests to",
+      "title": "DNS Server",
+      "example": "test"
     },
 
     "interface": {

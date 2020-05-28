@@ -7,3 +7,8 @@ then
 cat >&2
 fi
 
+if [ "x$1" = "xget" ]
+then
+cat $2.js
+fi
+
