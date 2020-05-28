@@ -50,13 +50,13 @@ function translate(cmdargs, path)
   for (command of cmdargs) {
     var result = path[path.length-1].traverse(command);
     if (result) {
-      // if (result.traversable)
-      //   path.push(result)
-      // else {
-      //   print(result.list());
-      //   return path;
-      // }
-      path.push(result);
+      if (result.traversable)
+        path.push(result)
+      else {
+        path.push(result)
+        return path;
+      }
+      // path.push(result);
     }
     else {
       return path;
@@ -170,7 +170,7 @@ function complete(userinput)
     var cmdargs = userinput.split(" ");
     var newpath = translate([...cmdargs], [...state.path]);
 
-    var complist = newpath[newpath.length-1].list(state.path[0]).filter(word => word.name.startsWith(cmdargs[cmdargs.length-1]));
+    var complist = newpath[newpath.length-1].list().filter(word => word.name.startsWith(cmdargs[cmdargs.length-1]));
 
     if (complist.length == 0)
       return userinput + " "
