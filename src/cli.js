@@ -137,7 +137,7 @@ class Face extends Traversable {
         return new Option(this.resolve(command), command, this.schema.patternProperties.actions, this.data[command])
 
     if (this.schema.actions[command])
-      return new Command(this.schema.actions[command], command);
+      return new Command(this.schema.actions[command], command, this.data);
 
     return undefined;
   }
