@@ -84,6 +84,7 @@ class Face extends Traversable {
       var now_data = IRZ.pipe(now_script_path);
       if (now_data)
         this.data = JSON.parse(now_data);
+    }
   }
   constructor(schema, name, data) {
     super();
@@ -284,6 +285,7 @@ class Command extends Executable {
     this.schema = schema;
     this.name = name;
     this.data = data;
+    this.acquire = acquire;
   }
   list() {
     return undefined;
@@ -314,8 +316,10 @@ class Command extends Executable {
     //}
     //end do something
     if(this.schema.reload)
-      acquire();
+    {
+      this.acquire();
       return true;
+    }
     else
       return false;
   }
