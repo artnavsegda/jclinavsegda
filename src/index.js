@@ -77,7 +77,7 @@ function interpret(cmdline)
     if (command == "exit")
       return null;
     else if (command == "list") {
-      print(state.path[state.path.length-1].list().map(e => e.name));
+      print(state.path[state.path.length-1].list(state.root).map(e => e.name));
     } else if (command == "/") {
       state.path = [ state.root ];
     } else if (command == "..") {
@@ -119,7 +119,7 @@ function complete_help(userinput)
     var cmdargs = userinput.split(" ");
     var newpath = translate([...cmdargs], [...state.path]);
 
-    var complist = newpath[newpath.length-1].list().filter(word => word.name.startsWith(cmdargs[cmdargs.length-1]));
+    var complist = newpath[newpath.length-1].list(state.root).filter(word => word.name.startsWith(cmdargs[cmdargs.length-1]));
 
     if (complist.length == 0)
       return userinput + " "
@@ -145,7 +145,7 @@ function complete_help(userinput)
   }
   else {
     print("");
-    state.path[state.path.length-1].list().forEach((element) => {
+    state.path[state.path.length-1].list(state.root).forEach((element) => {
       if (element.help)
         print(element.name + ": " + element.help);
       else
@@ -191,7 +191,7 @@ function complete(userinput)
   }
   else {
     print("");
-    state.path[state.path.length-1].list().map(e => e.name).sort().forEach((element) => print(element));
+    state.path[state.path.length-1].list(state.root).map(e => e.name).sort().forEach((element) => print(element));
     return null;
   }
 }
