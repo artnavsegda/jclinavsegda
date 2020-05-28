@@ -1,6 +1,5 @@
 var IRZ = require ('irz_module');
 import * as config from "config.js";
-import * as utils from "jsoned.js";
 
 class Traversable {
   constructor() {
@@ -56,7 +55,7 @@ class Proto extends Traversable {
         });
       });
     } else {
-      var data = utils.json_clean(IRZ.cat(filepath))
+      var data = JSON.parse(IRZ.cat(filepath))
       if (data.properties)
         this.facelist.push(new Option(data, this.basename(filepath), data.actions));
       else
@@ -285,7 +284,7 @@ class Setting extends Executable {
     this.name = name;
     this.data = data;
   }
-  list() {
+  list(root) {
     if (this.schema.type == "boolean")
     {
       return [{name: "true"}, {name: "false"}];
@@ -294,6 +293,19 @@ class Setting extends Executable {
     // {
     //   return this.schema.enum
     // }
+
+    if (this.schema.cue)
+    {
+      var cueSearchPath = this.schema.cue.split(" ");
+      var cueLocation = root;
+      for (elements of cueSearchPath)
+      {
+        if (cueLocation.traverse())
+          cueLocation = cueLocation.traverse();
+      }
+      return cueLocation.list();
+    }
+
     return undefined;
   }
   traverse(command) {
