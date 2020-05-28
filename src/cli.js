@@ -294,7 +294,8 @@ class Command extends Executable {
     return undefined;
   }
   execute(commandlist) {
-    print("executing " + config.script_path + "/" + this.schema.exec + " " + this.schema.args.join(" "));
+    var commandstring = config.script_path + "/" + this.schema.exec + " " + this.schema.args.join(" ");
+    print("executing " + commandstring);
     if (commandlist.length > 0)
     {
       print("arguments " + commandlist);
@@ -312,7 +313,7 @@ class Command extends Executable {
       //  return true;
       //}
     //} else {
-      //IRZ.system("command");
+      IRZ.system("command");
     //}
     //end do something
     if(this.schema.reload)
