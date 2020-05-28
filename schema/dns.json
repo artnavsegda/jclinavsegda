@@ -28,7 +28,7 @@
         "type": "string",
         "cue": ["/network/interface", "/network/bridge"]
       }
-    },    
+    },
 
     "domainneeded": {
       "type": "boolean",
@@ -87,7 +87,8 @@
         "exec": "handler",
         "args": ["apply", "dns-server"],
         "argpass": true,
-        "hidden": false
+        "hidden": false,
+        "reload": true
     }
   },
 
@@ -96,7 +97,7 @@
     "args": ["set", "dns-server"],
     "argpass": true,
     "wait": true
-  },    
+  },
 
   "revert": {
     "exec": "handler",

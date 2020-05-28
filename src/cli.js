@@ -77,13 +77,17 @@ class Proto extends Traversable {
 }
 
 class Face extends Traversable {
-  aquire() {
+  acquire() {
     if (this.schema.acquire) {
       var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
-      //print("piping " + now_script_path);
+      print("acquiring " + now_script_path);
       var now_data = IRZ.pipe(now_script_path);
       if (now_data)
         this.data = JSON.parse(now_data);
+      else
+        this.data = {};
+    } else {
+      this.data = {};
     }
   }
   constructor(schema, name, data) {
@@ -93,17 +97,8 @@ class Face extends Traversable {
     this.name = name;
     if (data) {
       this.data = data;
-    } else if (this.schema.acquire) {
-      var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
-      //print("piping " + now_script_path);
-      var now_data = IRZ.pipe(now_script_path);
-      if (now_data)
-        this.data = JSON.parse(now_data);
-      else
-        this.data = {};
-    }
-    else
-    this.data = {};
+    } else
+      this.acquire();
   }
   list(target) {
     var facelist = [];
@@ -214,6 +209,19 @@ class Option extends Traversable {
     if(ref !== undefined)
       Object.assign(ss, ref)
   }
+  acquire(){
+    print("staring acquire");
+    if (this.schema.acquire) {
+      var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
+      print("acquring " + now_script_path);
+      var now_data = IRZ.pipe(now_script_path);
+      if (now_data)
+        this.data = JSON.parse(now_data);
+      else
+        this.data = {};
+    } else
+    this.data = {};
+  }
   constructor(schema, name, actions, data, section, setCommand) {
     super();
     this.section = section;
@@ -230,15 +238,8 @@ class Option extends Traversable {
     this.actions = actions;
     if (data) {
       this.data = data;
-    } else if (this.schema.acquire) {
-      var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
-      var now_data = IRZ.pipe(now_script_path);
-      if (now_data)
-        this.data = JSON.parse(now_data);
-      else
-        this.data = {};
     } else
-    this.data = {};
+      this.acquire();
   }
   getSchemaElement(elementName) {
     if (this.schema.properties[elementName])
@@ -273,7 +274,7 @@ class Option extends Traversable {
       return new Setting(this.getSchemaElement(command), command, this.data, this.setCommand, this.section);
     }
     else if (this.actions[command])
-      return new Command(this.actions[command], command);
+      return new Command(this.actions[command], command, this.data, this.acquire);
     else
       return undefined;
   }
@@ -318,6 +319,7 @@ class Command extends Executable {
     //end do something
     if(this.schema.reload)
     {
+      print("reloading data");
       this.acquire();
       return true;
     }
