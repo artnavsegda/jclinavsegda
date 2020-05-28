@@ -351,6 +351,7 @@ class Setting extends Executable {
         print("Script setter: " + JSON.stringify(this.setCommand));
         var commandstring = config.script_path + "/" + this.setCommand.exec + " " + this.setCommand.args.join(" ");
         print("executing " + commandstring);
+        IRZ.pipe(commandstring, "hello");
         // {_section: 'cfg01241', _option: 'ipaddr', _value: '1.1.1.1'}
       }
 
