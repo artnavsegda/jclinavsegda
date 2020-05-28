@@ -293,6 +293,11 @@ class Command extends Executable {
       print("no arguments");
     }
     //do something
+    if(this.schema.merge){
+      //do pipe & data re-evaluation
+    } else {
+      //IRZ.system("command");
+    }
     //end do something
     if(this.schema.reload)
       return true;
