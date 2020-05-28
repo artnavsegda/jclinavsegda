@@ -130,7 +130,7 @@ class Face extends Traversable {
     if (this.schema.namesake) {
       var dataname = Object.getOwnPropertyNames(this.data).find((element) => command == this.data[element][this.schema.namesake])
       if (this.resolve(dataname))
-        return new Option(this.resolve(dataname), command, this.schema.patternProperties.actions, this.data[dataname], dataname)
+        return new Option(this.resolve(dataname), command, this.schema.patternProperties.actions, this.data[dataname], dataname, this.schema.set)
     }
     else
       if (this.resolve(command))
@@ -205,10 +205,17 @@ class Option extends Traversable {
     if(ref !== undefined)
       Object.assign(ss, ref)
   }
-  constructor(schema, name, actions, data, section) {
+  constructor(schema, name, actions, data, section, setCommand) {
     super();
     this.section = section;
     this.schema = schema;
+    if (setCommand)
+      this.setCommand = setCommand;
+    else if (this.schema.set) {
+      this.setCommand = this.schema.set;
+    } else {
+      print("no setcommand in constructor");
+    }
     this.help = this.schema.description;
     this.name = name;
     this.actions = actions;
@@ -254,7 +261,7 @@ class Option extends Traversable {
   traverse(command) {
     if (this.getSchemaElement(command))
     {
-      return new Setting(this.getSchemaElement(command), command, this.data, this.schema.set, this.section);
+      return new Setting(this.getSchemaElement(command), command, this.data, this.setCommand, this.section);
     }
     else if (this.actions[command])
       return new Command(this.actions[command], command);
