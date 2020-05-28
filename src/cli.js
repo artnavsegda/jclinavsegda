@@ -288,12 +288,13 @@ class Command extends Executable {
 }
 
 class Setting extends Executable {
-  constructor(schema, name, data, setCommand) {
+  constructor(schema, name, data, setCommand, section) {
     super();
     this.schema = schema;
     this.name = name;
     this.data = data;
     this.setCommand = setCommand;
+    this.section = section;
   }
   list(root) {
     if (this.schema.type == "boolean")
@@ -351,7 +352,11 @@ class Setting extends Executable {
         print("Script setter: " + JSON.stringify(this.setCommand));
         var commandstring = config.script_path + "/" + this.setCommand.exec + " " + this.setCommand.args.join(" ");
         print("executing " + commandstring);
-        IRZ.pipe(commandstring, "hello");
+        if (this.section)
+        IRZ.pipe(commandstring, JSON.stringify({_section: this.section, _option: this.name, _value: commandlist[0]}));
+        else {
+          IRZ.pipe(commandstring, JSON.stringify({_option: this.name, _value: commandlist[0]}));
+        }
         // {_section: 'cfg01241', _option: 'ipaddr', _value: '1.1.1.1'}
       }
 
