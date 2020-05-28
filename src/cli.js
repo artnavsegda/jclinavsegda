@@ -90,7 +90,11 @@ class Face extends Traversable {
       var now_data = IRZ.pipe(now_script_path);
       if (now_data)
         this.data = JSON.parse(now_data);
+      else
+        this.data = {};
     }
+    else
+    this.data = {};
   }
   list(target) {
     var facelist = [];
@@ -214,7 +218,10 @@ class Option extends Traversable {
       var now_data = IRZ.pipe(now_script_path);
       if (now_data)
         this.data = JSON.parse(now_data);
-    }
+      else
+        this.data = {};
+    } else
+    this.data = {};
   }
   getSchemaElement(elementName) {
     if (this.schema.properties[elementName])
@@ -327,6 +334,7 @@ class Setting extends Executable {
   }
   execute(commandlist) {
     print("Extracted schema: " + JSON.stringify(this.schema));
+    print("Extracted data: " + JSON.stringify(this.data));
     //print(this.list());
 
     if (commandlist.length > 0)
