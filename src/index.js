@@ -32,7 +32,10 @@ function execute(cmdargs, path)
       if (result.traversable)
         path.push(result)
       else {
-        result.execute(args);
+        if (result.execute(args) == true)
+        {
+          // do full path reload evaluation
+        }
         return undefined;
       }
     }

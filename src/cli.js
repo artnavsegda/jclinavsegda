@@ -292,6 +292,12 @@ class Command extends Executable {
     {
       print("no arguments");
     }
+    //do something
+    //end do something
+    if(this.schema.reload)
+      return true;
+    else
+      return false;
   }
 }
 
