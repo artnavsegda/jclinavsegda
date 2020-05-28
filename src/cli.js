@@ -77,6 +77,14 @@ class Proto extends Traversable {
 }
 
 class Face extends Traversable {
+  aquire() {
+    if (this.schema.acquire) {
+      var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
+      //print("piping " + now_script_path);
+      var now_data = IRZ.pipe(now_script_path);
+      if (now_data)
+        this.data = JSON.parse(now_data);
+  }
   constructor(schema, name, data) {
     super();
     this.schema = schema;
@@ -137,7 +145,7 @@ class Face extends Traversable {
         return new Option(this.resolve(command), command, this.schema.patternProperties.actions, this.data[command])
 
     if (this.schema.actions[command])
-      return new Command(this.schema.actions[command], command, this.data);
+      return new Command(this.schema.actions[command], command, this.data, this.acquire);
 
     return undefined;
   }
@@ -271,7 +279,7 @@ class Option extends Traversable {
 }
 
 class Command extends Executable {
-  constructor(schema, name, data) {
+  constructor(schema, name, data, acquire) {
     super();
     this.schema = schema;
     this.name = name;
@@ -306,6 +314,7 @@ class Command extends Executable {
     //}
     //end do something
     if(this.schema.reload)
+      acquire();
       return true;
     else
       return false;
