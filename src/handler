@@ -1,3 +1,7 @@
 #!/bin/sh
 
-echo "Hello from script !" >&2
+if [ "x$1" = "xset" ]
+then
+cat >&2
+fi
+
