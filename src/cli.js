@@ -92,15 +92,16 @@ class Face extends Traversable {
         this.data = JSON.parse(now_data);
     }
   }
-  list() {
+  list(target) {
     var facelist = [];
-    if (this.schema.namesake) {
+    if (this.schema.namesake)
       Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: this.data[element][this.schema.namesake], help: "Help"}));
-    }
     else
-    {
       Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: element, help: "Help"}));
-    }
+
+    if (target == "elements")
+      return facelist;
+
     Object.getOwnPropertyNames(this.schema.actions).forEach((element) => facelist.push({name: element, help: "Help"}));
 
     return facelist;
@@ -297,18 +298,25 @@ class Setting extends Executable {
     if (this.schema.cue)
     {
       var cuelist = [];
-      this.schema.cue.forEach((element) => {
-        cuelist.push({name: element});
+      var cueLocation = root;
+      this.schema.cue.forEach((cueelement) => {
+        //cuelist.push({name: cueelement});
+        var cueSearchPath = cueelement.split("/");
+        var pathelement;
+        for (pathelement of cueSearchPath){
+          if (pathelement) {
+            //print("A:" + pathelement);
+            cueLocation.traverse(pathelement);
+            if (cueLocation.traverse(pathelement))
+              cueLocation = cueLocation.traverse(pathelement);
+            else {
+              break;
+            }
+          }
+        }
+        cuelist.push(...cueLocation.list("elements"))
       });
       return cuelist;
-      // var cueSearchPath = this.schema.cue.split(" ");
-      // var cueLocation = root;
-      // for (elements of cueSearchPath)
-      // {
-      //   if (cueLocation.traverse())
-      //     cueLocation = cueLocation.traverse();
-      // }
-      // return cueLocation.list();
     }
 
     return undefined;
@@ -319,7 +327,7 @@ class Setting extends Executable {
   }
   execute(commandlist) {
     print("Extracted schema: " + JSON.stringify(this.schema));
-    print(this.list());
+    //print(this.list());
 
     if (commandlist.length > 0)
     {
