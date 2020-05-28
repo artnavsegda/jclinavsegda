@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo handler $@ >&2
+
 if [ "x$1" = "xset" ]
 then
 cat >&2

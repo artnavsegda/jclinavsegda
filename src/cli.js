@@ -313,7 +313,7 @@ class Command extends Executable {
       //  return true;
       //}
     //} else {
-      IRZ.system("command");
+      IRZ.system(commandstring);
     //}
     //end do something
     if(this.schema.reload)
