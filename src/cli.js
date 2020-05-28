@@ -252,7 +252,9 @@ class Option extends Traversable {
   }
   traverse(command) {
     if (this.getSchemaElement(command))
-      return new Setting(this.getSchemaElement(command), command, this.data);
+    {
+      return new Setting(this.getSchemaElement(command), command, this.data, this.schema.set);
+    }
     else if (this.actions[command])
       return new Command(this.actions[command], command);
     else
@@ -286,11 +288,12 @@ class Command extends Executable {
 }
 
 class Setting extends Executable {
-  constructor(schema, name, data) {
+  constructor(schema, name, data, setCommand) {
     super();
     this.schema = schema;
     this.name = name;
     this.data = data;
+    this.setCommand = setCommand;
   }
   list(root) {
     if (this.schema.type == "boolean")
@@ -342,6 +345,15 @@ class Setting extends Executable {
       print("inserting " + commandlist);
       this.data[this.name] = commandlist[0];
       print(this.data[this.name]);
+
+      if (this.setCommand)
+      {
+        print("Script setter: " + JSON.stringify(this.setCommand));
+        var commandstring = config.script_path + "/" + this.setCommand.exec + " " + this.setCommand.args.join(" ");
+        print("executing " + commandstring);
+        // {_section: 'cfg01241', _option: 'ipaddr', _value: '1.1.1.1'}
+      }
+
     }
     else
     {
