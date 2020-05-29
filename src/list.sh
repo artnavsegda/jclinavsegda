@@ -1,4 +1,4 @@
 #!/bin/sh
 
-#cat list.txt
-cat list2.txt
+cat list.txt
+#cat list2.txt

@@ -39,30 +39,34 @@ class Proto extends Traversable {
       filelist.forEach((filename) => {
         var path = filename.split('/');
         var attachproto = this;
-        path.forEach((item, i) => {
-          if (i > 0) {
-            if (i == path.length-1)
-              attachproto.load(filepath + filename);
-            else {
-              var attachmaybe = attachproto.traverse(item);
-              if (!attachmaybe)
-              {
-                attachmaybe = new Proto(item);
-                attachproto.facelist.push(attachmaybe);
+        var filedata = utils.json_clean(IRZ.cat(filepath + filename));
+        if (filedata)
+        {
+          path.forEach((item, i) => {
+            if (i > 0) {
+              if (i == path.length-1)
+                attachproto.insert(filepath, filedata);
+              else {
+                var attachmaybe = attachproto.traverse(item);
+                if (!attachmaybe)
+                {
+                  attachmaybe = new Proto(item);
+                  attachproto.facelist.push(attachmaybe);
+                }
+                attachproto = attachmaybe;
               }
-              attachproto = attachmaybe;
             }
-          }
-        });
+          });
+        }
       });
-    } else {
-      var data = utils.json_clean(IRZ.cat(filepath))
-      if(data) {
-        if (data.properties)
-          this.facelist.push(new Option(data, this.basename(filepath), data.actions));
-        else
-          this.facelist.push(new Face(data, this.basename(filepath)));
-      }
+    }
+  }
+  insert(filepath, data) {
+    if(data) {
+      if (data.properties)
+        this.facelist.push(new Option(data, this.basename(filepath), data.actions));
+      else
+        this.facelist.push(new Face(data, this.basename(filepath)));
     }
   }
   list() {
@@ -328,6 +332,7 @@ class Command extends Executable {
     if (commandlist.length > 0)
     {
       print("arguments " + commandlist);
+      commandstring += " " + commandlist.join(" ");
     }
     else
     {
@@ -338,7 +343,7 @@ class Command extends Executable {
       //do pipe & data re-evaluation
       var output = IRZ.pipe(commandstring);
       if (output) {
-       this.parent.data = JSON.parse(data);
+       this.parent.data = JSON.parse(output);
        return true;
       }
     } else {
@@ -433,7 +438,9 @@ class Setting extends Executable {
     if(this.schema.readOnly === true)
       return
 
-    // print("inserting " + commandlist);
+    print("inserting " + commandlist);
+
+    this.data[this.name] = commandlist[0];
 
     var value
 

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+exit
+
 echo $_VALUES
 
 echo handler $@ >&2
