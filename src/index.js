@@ -237,7 +237,10 @@ function complete(userinput)
 print(IRZ.getenv("USER"));
 
 state.root = new CLI.Proto("");
-state.root.load(config.schema_path, JSON.parse(IRZ.pipe(config.script_list_path)).list);
+
+var script_list = JSON.parse(IRZ.pipe(config.script_list_path));
+
+state.root.load(config.schema_path, script_list.list, script_list.hidden);
 //state.root = new Proto("cli", JSON.parse(IRZ.pipe(config.script_list_path)).list, config.schema_path);
 state.path.push(state.root);
 prompt = state.getPrompt();

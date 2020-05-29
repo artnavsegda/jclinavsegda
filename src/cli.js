@@ -33,24 +33,31 @@ class Proto extends Traversable {
     var basename = path[path.length-1].split('.')
     return basename[0];
   }
-  load(filepath, filelist) {
+  load(filepath, filelist, filehidden) {
     if (filelist) {
       this.facelist = [];
       filelist.forEach((filename) => {
         var path = filename.split('/');
         var attachproto = this;
         var filedata = utils.json_clean(IRZ.cat(filepath + filename));
+
         if (filedata)
         {
           path.forEach((item, i) => {
             if (i > 0) {
               if (i == path.length-1)
-                attachproto.insert(filepath, filedata);
+                attachproto.insert(filepath + filename, filedata, filehidden == filename);
               else {
                 var attachmaybe = attachproto.traverse(item);
                 if (!attachmaybe)
                 {
                   attachmaybe = new Proto(item);
+                  //attachmaybe.hidden = hidden;
+                  var dirpath = path.slice(0, i).join("/") + "/" + item;
+                  print("new dir " + dirpath);
+                  attachmaybe.hidden = filehidden == dirpath;
+                  if (attachmaybe.hidden)
+                    print("hidden");
                   attachproto.facelist.push(attachmaybe);
                 }
                 attachproto = attachmaybe;
@@ -61,18 +68,22 @@ class Proto extends Traversable {
       });
     }
   }
-  insert(filepath, data) {
+  insert(filepath, data, hidden) {
     if(data) {
+      var element;
       if (data.properties)
-        this.facelist.push(new Option(data, this.basename(filepath), data.actions));
+        element = new Option(data, this.basename(filepath), data.actions);
       else
-        this.facelist.push(new Face(data, this.basename(filepath)));
+        element = new Face(data, this.basename(filepath));
+      element.hidden = hidden;
+
+      this.facelist.push(element);
     }
   }
   list() {
     var protolist = [];
     this.facelist.forEach((element) => {
-      if (element.schema && element.schema.hidden){}
+      if (element.hidden || element.schema && element.schema.hidden){}
       else
         protolist.push({name: element.name, help: element.help})
     });
