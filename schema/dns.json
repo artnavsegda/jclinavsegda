@@ -89,6 +89,13 @@
         "argpass": true,
         "hidden": false,
         "reload": true
+    },
+    "jack": {
+        "exec": "jack",
+        "args": ["some"],
+        "argpass": true,
+        "hidden": false,
+        "merge": true
     }
   },
 

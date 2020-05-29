@@ -242,5 +242,4 @@ state.root.load(config.schema_path, JSON.parse(IRZ.pipe(config.script_list_path)
 state.path.push(state.root);
 prompt = state.getPrompt();
 
-IRZ.put("hello");
-print("world");
+IRZ.system("_VALUES='"+ JSON.stringify({hello: "world"}) +"'; echo $_VALUES");

@@ -45,12 +45,10 @@ static jerry_value_t module_system_handler(const jerry_value_t function_object, 
 {
   if (arguments_count > 0)
   {
-    jerry_value_t string_value = jerry_value_to_string (arguments[0]);
-    jerry_char_t buffer[256];
-    jerry_size_t copied_bytes = jerry_string_to_utf8_char_buffer (string_value, buffer, sizeof (buffer) - 1);
-    buffer[copied_bytes] = '\0';
-    jerry_release_value (string_value);
-    return jerry_create_number (WEXITSTATUS(system(buffer)));
+    char * buffer = allocate_string(arguments[0]);
+    int returncode = WEXITSTATUS(system(buffer));
+    free(buffer);
+    return jerry_create_number (returncode);
   }
   else
     printf ("System handler was called\n");
@@ -92,15 +90,11 @@ static jerry_value_t module_pipe_handler(const jerry_value_t function_object, co
   {
     if (jerry_value_is_string(arguments[0]))
     {
-      jerry_value_t string_value = jerry_value_to_string (arguments[0]);
-      jerry_char_t buffer[256];
-      jerry_size_t copied_bytes = jerry_string_to_utf8_char_buffer (string_value, buffer, sizeof (buffer) - 1);
-      buffer[copied_bytes] = '\0';
-      jerry_release_value (string_value);
-
+      char * buffer = allocate_string(arguments[0]);
       if (arguments_count == 1)
       {
         FILE * filetoread = popen(buffer, "r");
+        free(buffer);
         if (filetoread)
         {
           char * filecontent = allocate_stream(filetoread);
@@ -115,6 +109,7 @@ static jerry_value_t module_pipe_handler(const jerry_value_t function_object, co
         if (jerry_value_is_string(arguments[1]))
         {
           FILE * filetowrite = popen(buffer, "w");
+          free(buffer);
           if (filetowrite)
           {
             char * filecontent = allocate_string(arguments[1]);
