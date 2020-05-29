@@ -42,7 +42,7 @@ function execute(cmdargs, path)
         if (result.execute(args) == true)
         {
           // do partial path reload evaluation
-          if (path[path.length-2]).traverse(path[path.length-1].name)
+          if (path[path.length-2].traverse(path[path.length-1].name))
           {
             print("section in place");
           }
