@@ -241,7 +241,7 @@ class Option extends Traversable {
         this.setCommand = parent.schema.set;
       else if (this.schema.set) {
         this.setCommand = this.schema.set;
-    }
+      }
     } else {
       print("no setcommand in constructor");
     }
