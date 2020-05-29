@@ -274,19 +274,19 @@ class Option extends Traversable {
       return new Setting(this.getSchemaElement(command), command, this.data, this.setCommand, this.section);
     }
     else if (this.actions[command])
-      return new Command(this.actions[command], command, this.data, this.acquire);
+      return new Command(this.actions[command], command, this.data, this);
     else
       return undefined;
   }
 }
 
 class Command extends Executable {
-  constructor(schema, name, data, acquire) {
+  constructor(schema, name, data, parent) {
     super();
     this.schema = schema;
     this.name = name;
     this.data = data;
-    this.acquire = acquire;
+    this.parent = parent;
   }
   list() {
     return undefined;
@@ -320,7 +320,7 @@ class Command extends Executable {
     if(this.schema.reload)
     {
       print("reloading data");
-      this.acquire();
+      this.parent.acquire();
       return true;
     }
     else
