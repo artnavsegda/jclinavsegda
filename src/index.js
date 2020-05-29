@@ -28,6 +28,7 @@ var state = {
 
 function execute(cmdargs, path)
 {
+  var orig_path = [...path];
   var args = [...cmdargs];
   var command;
   for (command of cmdargs) {
@@ -48,6 +49,8 @@ function execute(cmdargs, path)
           }
           else {
             print("section detached");
+            orig_path.pop();
+            return orig_path;
           }
         }
         return undefined;
