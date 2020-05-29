@@ -86,8 +86,6 @@ static char * allocate_stream(FILE * stream)
   return buf;
 }
 
-
-
 static jerry_value_t module_pipe_handler(const jerry_value_t function_object, const jerry_value_t function_this, const jerry_value_t arguments[], const jerry_length_t arguments_count)
 {
   if (arguments_count > 0)
@@ -147,6 +145,20 @@ static jerry_value_t module_getenv_handler(const jerry_value_t function_object, 
   return jerry_create_undefined();
 }
 
+static jerry_value_t module_put_handler(const jerry_value_t function_object, const jerry_value_t function_this, const jerry_value_t arguments[], const jerry_length_t arguments_count)
+{
+  if (arguments_count > 0)
+  {
+    if (jerry_value_is_string(arguments[0]))
+    {
+      char * print_string = allocate_string(arguments[0]);
+      fputs(print_string, stdout);
+      free(print_string);
+    }
+  }
+  return jerry_create_undefined();
+}
+
 static void register_module_js_function (jerry_value_t module, const char *name_p, jerry_external_handler_t handler_p)
 {
   jerry_value_t func_obj = jerry_create_external_function (handler_p);
@@ -162,6 +174,7 @@ static jerry_value_t irz_module_on_resolve (void)
   register_module_js_function(object, "system", module_system_handler);
   register_module_js_function(object, "pipe", module_pipe_handler);
   register_module_js_function(object, "getenv", module_getenv_handler);
+  register_module_js_function(object, "put", module_put_handler);
 
   return object;
 }
