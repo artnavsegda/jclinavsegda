@@ -86,12 +86,12 @@ function interpret(cmdline)
   {
     if (command == "exit")
       return null;
-    
+
     else if (command == "list") {
       print(state.path[state.path.length-1].list(state.root).map(e => e.name));
     } else if (command == "/") {
       state.path = [ state.root ];
-    
+
     } else if (command == "..") {
       if (state.path.length == 1)
         print("already at the root");
@@ -126,7 +126,7 @@ function sharedStart(array) {
 
   while(i < L && a1.charAt(i) === a2.charAt(i))
     i++;
-  
+
   return a1.substring(0, i);
 }
 
@@ -135,7 +135,7 @@ function separator(s, max_len, symb) {
 
   if(!symb)     symb = " "
   if(!max_len)  max_len = 25
-  
+
   for(var i = 0; i < max_len - s.length; i++)
     sep += symb;
   return sep
@@ -144,7 +144,7 @@ function separator(s, max_len, symb) {
 // tab completion callback
 function complete_help(userinput)
 {
-  
+
   if (userinput) {
     var completion;
     var cmdargs = userinput.split(" ");
@@ -181,7 +181,7 @@ function complete_help(userinput)
     state.path[state.path.length-1].list(state.root).forEach((element) => {
       if (element.help){
         print(element.name + separator(element.name) + "\x1b[33m" +element.help+ "\x1b[0m");
-      } 
+      }
       else
         print(element.name);
     });
@@ -231,3 +231,6 @@ state.root.load(config.schema_path, JSON.parse(IRZ.pipe(config.script_list_path)
 //state.root = new Proto("cli", JSON.parse(IRZ.pipe(config.script_list_path)).list, config.schema_path);
 state.path.push(state.root);
 prompt = state.getPrompt();
+
+IRZ.put("hello");
+print("world");
