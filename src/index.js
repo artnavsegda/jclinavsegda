@@ -1,14 +1,19 @@
 import * as jsonpointer from "jsonpointer.js";
 import * as CLI from "cli.js";
 import * as config from "config.js";
+
 var IRZ = require ('irz_module');
-var prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME") +"/>";
+
+var _USER     = IRZ.getenv("USER")
+var _HOSTNAME = IRZ.getenv("HOSTNAME") || "localhost"
+
+var prompt = _USER + "@" + _HOSTNAME;
 
 var state = {
   root: {},
   path: [],
   getPrompt: function(){
-    var gen_prompt = IRZ.getenv("USER") + "@" + IRZ.getenv("HOSTNAME");
+    var gen_prompt = _USER + "@" + _HOSTNAME + "\x1b[35m[";
     if (this.path.length == 1) {
       gen_prompt += "/"
     } else {
@@ -17,7 +22,7 @@ var state = {
         gen_prompt += "/" + item.name;
       });
     }
-    return gen_prompt + ">";
+    return gen_prompt + "]\x1b[0m>";
   }
 };
 
@@ -26,7 +31,9 @@ function execute(cmdargs, path)
   var args = [...cmdargs];
   var command;
   for (command of cmdargs) {
-    var result = path[path.length-1].traverse(command);
+    var result = path[path.length-1];
+    // print("exec res: '"+result+"'")
+    result = result.traverse(command)
     if (result) {
       args.shift();
       if (result.traversable)
@@ -71,7 +78,7 @@ function translate(cmdargs, path)
 // mandatory function for CLI
 function interpret(cmdline)
 {
-  var cmdargs = cmdline.split(" ");
+  var cmdargs = cmdline.split(" ").filter((e) => {return e && e !== undefined}); // cleanup
 
   var builtins = ["exit", "/", "..", "list"];
 
@@ -79,10 +86,12 @@ function interpret(cmdline)
   {
     if (command == "exit")
       return null;
+    
     else if (command == "list") {
       print(state.path[state.path.length-1].list(state.root).map(e => e.name));
     } else if (command == "/") {
       state.path = [ state.root ];
+    
     } else if (command == "..") {
       if (state.path.length == 1)
         print("already at the root");
@@ -107,16 +116,35 @@ function interpret(cmdline)
   return retval;
 }
 
+
+function sharedStart(array) {
+  var A  = array.concat().sort()
+  var a1 = A[0]
+  var a2 = A[A.length-1]
+  var L  = a1.length
+  var i  = 0
+
+  while(i < L && a1.charAt(i) === a2.charAt(i))
+    i++;
+  
+  return a1.substring(0, i);
+}
+
+function separator(s, max_len, symb) {
+  var sep = "";
+
+  if(!symb)     symb = " "
+  if(!max_len)  max_len = 25
+  
+  for(var i = 0; i < max_len - s.length; i++)
+    sep += symb;
+  return sep
+}
+
 // tab completion callback
 function complete_help(userinput)
 {
-  function sharedStart(array){
-      var A= array.concat().sort(),
-      a1= A[0], a2= A[A.length-1], L= a1.length, i= 0;
-      while(i<L && a1.charAt(i)=== a2.charAt(i)) i++;
-      return a1.substring(0, i);
-  }
-
+  
   if (userinput) {
     var completion;
     var cmdargs = userinput.split(" ");
@@ -133,14 +161,16 @@ function complete_help(userinput)
     {
       print("");
       complist.forEach((element) => {
-        if (element.help)
-          print(element.name + ": " + element.help)
+        if (element.help) {
+          print(element.name + separator(element.name) + "\x1b[33m" +element.help+ "\x1b[0m");
+        }
         else
           print(element.name)
       });
       cmdargs.pop();
       cmdargs.push(completion);
-      return "@" + cmdargs.join(" ");
+      // return "@" + cmdargs.join(" ");
+      return null
     }
     cmdargs.pop();
     cmdargs.push(completion);
@@ -149,8 +179,9 @@ function complete_help(userinput)
   else {
     print("");
     state.path[state.path.length-1].list(state.root).forEach((element) => {
-      if (element.help)
-        print(element.name + ": " + element.help);
+      if (element.help){
+        print(element.name + separator(element.name) + "\x1b[33m" +element.help+ "\x1b[0m");
+      } 
       else
         print(element.name);
     });
@@ -161,13 +192,6 @@ function complete_help(userinput)
 // tab completion callback
 function complete(userinput)
 {
-  function sharedStart(array){
-      var A= array.concat().sort(),
-      a1= A[0], a2= A[A.length-1], L= a1.length, i= 0;
-      while(i<L && a1.charAt(i)=== a2.charAt(i)) i++;
-      return a1.substring(0, i);
-  }
-
   if (userinput) {
     var completion;
     var cmdargs = userinput.split(" ");
@@ -190,16 +214,16 @@ function complete(userinput)
     }
     cmdargs.pop();
     cmdargs.push(completion);
-    return cmdargs.join(" ");
+    return cmdargs.join(" ") + " ";
   }
   else {
     print("");
-    state.path[state.path.length-1].list(state.root).map(e => e.name).sort().forEach((element) => print(element));
+    state.path[state.path.length-1].list(state.root).map(e => e.name).forEach((element) => print(element));
     return null;
   }
 }
 
-print("starting CLI");
+// print("starting CLI");
 print(IRZ.getenv("USER"));
 
 state.root = new CLI.Proto("");

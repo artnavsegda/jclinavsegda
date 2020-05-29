@@ -1,5 +1,6 @@
 var IRZ = require ('irz_module');
 import * as config from "config.js";
+import * as utils from "jsoned.js";
 
 class Traversable {
   constructor() {
@@ -55,11 +56,13 @@ class Proto extends Traversable {
         });
       });
     } else {
-      var data = JSON.parse(IRZ.cat(filepath))
-      if (data.properties)
-        this.facelist.push(new Option(data, this.basename(filepath), data.actions));
-      else
-        this.facelist.push(new Face(data, this.basename(filepath)));
+      var data = utils.json_clean(IRZ.cat(filepath))
+      if(data) {
+        if (data.properties)
+          this.facelist.push(new Option(data, this.basename(filepath), data.actions));
+        else
+          this.facelist.push(new Face(data, this.basename(filepath)));
+      }
     }
   }
   list() {
@@ -80,7 +83,7 @@ class Face extends Traversable {
   acquire() {
     if (this.schema.acquire) {
       var now_script_path = config.script_path + "/" + this.schema.acquire.exec + " " + this.schema.acquire.args.join(" ");
-      print("acquiring " + now_script_path);
+      // print("acquiring " + now_script_path);
       var now_data = IRZ.pipe(now_script_path);
       if (now_data)
         this.data = JSON.parse(now_data);
@@ -103,14 +106,15 @@ class Face extends Traversable {
   list(target) {
     var facelist = [];
     if (this.schema.namesake)
-      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: this.data[element][this.schema.namesake], help: "Help"}));
+      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: this.data[element][this.schema.namesake], help: this.help}));
     else
-      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: element, help: "Help"}));
+      Object.getOwnPropertyNames(this.data).forEach((element) => facelist.push({name: element, help: this.help}));
 
     if (target == "elements")
       return facelist;
 
-    Object.getOwnPropertyNames(this.schema.actions).forEach((element) => facelist.push({name: element, help: "Help"}));
+    if(this.schema.actions) // check
+      Object.getOwnPropertyNames(this.schema.actions).forEach((element) => facelist.push({name: element, help: this.schema.actions[element].description}));
 
     return facelist;
   }
@@ -140,8 +144,9 @@ class Face extends Traversable {
       if (this.resolve(command))
         return new Option(this.resolve(command), command, this.schema.patternProperties.actions, this.data[command])
 
-    if (this.schema.actions[command])
-      return new Command(this.schema.actions[command], command, this.data, this.acquire);
+    if(this.schema.actions) // check
+      if (this.schema.actions[command])
+        return new Command(this.schema.actions[command], command, this.data, this);
 
     return undefined;
   }
@@ -258,22 +263,25 @@ class Option extends Traversable {
     }
     return undefined;
   }
+
   list() {
     var optionlist = [];
     Object.getOwnPropertyNames(this.schema.properties).forEach((element) => {
       if (!this.getSchemaElement(element).hidden)
-        optionlist.push({name: element, help: "Help"})
+        optionlist.push({name: element, help: this.schema.properties[element].description})
     });
-    if (this.actions)
-      Object.getOwnPropertyNames(this.actions).forEach((element) => optionlist.push({name: element, help: "Help"}));
+
+    if (this.actions) {
+      Object.getOwnPropertyNames(this.actions).forEach((element) => optionlist.push({name: element, help: this.actions[element].description}));
+    }
+
     return optionlist;
   }
+
   traverse(command) {
     if (this.getSchemaElement(command))
-    {
       return new Setting(this.getSchemaElement(command), command, this.data, this.setCommand, this.section);
-    }
-    else if (this.actions[command])
+    else if (this.actions && this.actions[command]) // check
       return new Command(this.actions[command], command, this.data, this);
     else
       return undefined;
@@ -337,15 +345,14 @@ class Setting extends Executable {
     this.setCommand = setCommand;
     this.section = section;
   }
+
   list(root) {
+    // must return [{name: "name"}] !!!
+
     if (this.schema.type == "boolean")
     {
       return [{name: "true"}, {name: "false"}];
     }
-    // else if (this.schema.enum)
-    // {
-    //   return this.schema.enum
-    // }
 
     if (this.schema.cue)
     {
@@ -353,60 +360,130 @@ class Setting extends Executable {
       var cueLocation = root;
       this.schema.cue.forEach((cueelement) => {
         //cuelist.push({name: cueelement});
-        var cueSearchPath = cueelement.split("/");
+        var cueSearchPath = cueelement.split("/").filter((c) => {return c});
         var pathelement;
         for (pathelement of cueSearchPath){
-          if (pathelement) {
-            //print("A:" + pathelement);
-            cueLocation.traverse(pathelement);
-            if (cueLocation.traverse(pathelement))
-              cueLocation = cueLocation.traverse(pathelement);
-            else {
-              break;
-            }
+          cueLocation.traverse(pathelement);
+          if (cueLocation.traverse(pathelement))
+            cueLocation = cueLocation.traverse(pathelement);
+          else {
+            break;
           }
         }
         cuelist.push(...cueLocation.list("elements"))
       });
-      return cuelist;
+      return cuelist
     }
+
+    if (this.schema.enum) {
+      return this.schema.enum.map((element) => { return {name: element} })
+    }
+
+    if(this.schema.items.enum)
+      return this.schema.items.enum.map((element) => { return {name: element} })
 
     return undefined;
   }
+
   traverse(command) {
     //this.data = command;
     return undefined;
   }
+
   execute(commandlist) {
-    print("Extracted schema: " + JSON.stringify(this.schema));
-    print("Extracted data: " + JSON.stringify(this.data));
-    //print(this.list());
+    // print("Extracted schema: " + JSON.stringify(this.schema));
+    // print("Extracted data: " + JSON.stringify(this.data));
 
-    if (commandlist.length > 0)
-    {
-      print("inserting " + commandlist);
-      this.data[this.name] = commandlist[0];
-      print(this.data[this.name]);
+    commandlist = commandlist.filter((e)=>{
+      return e && e !== undefined
+    })
 
-      if (this.setCommand)
-      {
-        print("Script setter: " + JSON.stringify(this.setCommand));
-        var commandstring = config.script_path + "/" + this.setCommand.exec + " " + this.setCommand.args.join(" ");
-        print("executing " + commandstring);
-        if (this.section)
-        IRZ.pipe(commandstring, JSON.stringify({_section: this.section, _option: this.name, _value: commandlist[0]}));
-        else {
-          IRZ.pipe(commandstring, JSON.stringify({_option: this.name, _value: commandlist[0]}));
+    if (commandlist.length === 0) {
+      // print("displaying");
+      if(this.data[this.name] !== undefined)
+        if(this.schema.type == "array")
+          this.data[this.name].map((e)=>{
+            print(e)
+          })
+        else
+          print(this.data[this.name]);
+      return
+    }
+
+    if(this.schema.readOnly === true)
+      return
+
+    // print("inserting " + commandlist);
+
+    var value
+
+    if(this.schema.type == "array") {
+      value = []
+      if(this.data[this.name] !== undefined)
+        value = [...this.data[this.name]]
+
+      commandlist.map((e)=>{
+        if(e.substr(0, 1) == '-') {
+          e = e.substr(1, e.length)
+
+          if(e === "")
+            return
+
+          for(;;){ // delete all matches
+            var p = value.indexOf(e)
+            if (p == -1)
+              break
+            value.splice(p, 1)
+          }
+
+        } else {
+          if(this.schema.uniqueItems === true)
+            if(value.indexOf(e) !== -1)
+              return
+
+          if(this.schema.items.enum)
+            if(this.schema.items.enum.indexOf(e) === -1)
+              return
+
+          value.push(e)
         }
-        // {_section: 'cfg01241', _option: 'ipaddr', _value: '1.1.1.1'}
-      }
 
+      })
+
+    } else {
+      value = commandlist.join(" ");
+      if(value.substr(0, 1) == "-")
+        value = undefined
+
+      else {
+        if(this.schema.type == "boolean")
+          value = ["0", "", "false", false].indexOf(value) === -1
+
+        else if(this.schema.type == "number" || this.schema.type == "integer" ) {
+          if(isNaN(Number(value))) {
+            print("value must be number")
+            return
+          }
+          value = Number(value)
+        }
+      }
     }
-    else
-    {
-      print("displaying");
-      print(this.data[this.name]);
+
+    if (this.setCommand) {
+      print("Script setter: " + JSON.stringify(this.setCommand));
+      var commandstring = config.script_path + "/" + this.setCommand.exec + " " + this.setCommand.args.join(" ");
+      print("executing " + commandstring);
+
+      if (this.section)
+        var exit_code = IRZ.pipe(commandstring, JSON.stringify({_section: this.section, _option: this.name, _value: value}));
+      else {
+        var exit_code = IRZ.pipe(commandstring, JSON.stringify({_option: this.name, _value: value}));
+      }
+      // {_section: 'cfg01241', _option: 'ipaddr', _value: '1.1.1.1'}
     }
+
+    if(exit_code === 0)
+      this.data[this.name] = value;
   }
 }
 
