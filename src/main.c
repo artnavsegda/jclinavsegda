@@ -170,7 +170,10 @@ int main(int argc, char *argv[])
   register_js_function("print", jerryx_handler_print);
   register_js_function("require", handle_require);
 
-  char *buf = loadfile(INDEX_JS_PATH);
+  if (chdir(JS_PATH))
+    perror("cannot change path to " JS_PATH);
+
+  char *buf = loadfile(INDEX_JS);
 
   if (!buf)
   {
