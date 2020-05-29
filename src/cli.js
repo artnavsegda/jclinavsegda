@@ -138,18 +138,15 @@ class Face extends Traversable {
     if (this.schema.namesake) {
       var dataname = Object.getOwnPropertyNames(this.data).find((element) => command == this.data[element][this.schema.namesake])
       if (this.resolve(dataname))
-        return new Option(this.resolve(dataname), command, this.schema.patternProperties.actions, this.data[dataname], this.schema.definitions, this.schema.set, dataname)
+        return new Option(this.resolve(dataname), command, this.schema.patternProperties.actions, this.data[dataname], this, dataname)
     }
     else
       if (this.resolve(command))
-        return new Option(this.resolve(command), command, this.schema.patternProperties.actions, this.data[command], this.schema.definitions, this.schema.set)
+        return new Option(this.resolve(command), command, this.schema.patternProperties.actions, this.data[command], this)
 
     if(this.schema.actions) // check
       if (this.schema.actions[command])
-        if (this.parent)
-          return new Command(this.schema.actions[command], command, this.parent);
-        else
-          return new Command(this.schema.actions[command], command, this);
+        return new Command(this.schema.actions[command], command, this);
 
     return undefined;
   }
@@ -230,18 +227,21 @@ class Option extends Traversable {
     } else
     this.data = {};
   }
-  constructor(schema, name, actions, data, definitions, setCommand, section, parent) {
+  constructor(schema, name, actions, data, parent, section) {
     super();
     this.section = section;
     this.schema = schema;
-    if (definitions)
-      this.definitions = definitions;
-    else
-      this.definitions = this.schema.definitions;
-    if (setCommand)
-      this.setCommand = setCommand;
-    else if (this.schema.set) {
-      this.setCommand = this.schema.set;
+    if (parent)
+    {
+      if (parent.definitions)
+        this.definitions = parent.definitions;
+      else
+        this.definitions = this.schema.definitions;
+      if (parent.setCommand)
+        this.setCommand = parent.schema.set;
+      else if (this.schema.set) {
+        this.setCommand = this.schema.set;
+    }
     } else {
       print("no setcommand in constructor");
     }
@@ -289,7 +289,15 @@ class Option extends Traversable {
     if (this.getSchemaElement(command))
       return new Setting(this.getSchemaElement(command), command, this.data, this.setCommand, this.section);
     else if (this.actions && this.actions[command]) // check
-      return new Command(this.actions[command], command, this);
+    {
+      if (this.parent){
+        print("has parent");
+        return new Command(this.actions[command], command, this.parent);
+      } else {
+        print("no parent");
+        return new Command(this.actions[command], command, this);
+      }
+    }
     else
       return undefined;
   }
