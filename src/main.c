@@ -7,6 +7,7 @@
 #include <linux/limits.h>
 #include <dirent.h>
 #include <assert.h>
+#include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "jerryscript-config.h"
@@ -164,6 +165,12 @@ static int jcli_help_completion(int count, int key)
   return 0;
 }
 
+void ctrl_c(int signal) {
+   rl_replace_line("", 1);
+   puts("");
+   rl_forced_update_display();
+}
+
 int main(int argc, char *argv[])
 {
   // printf("ES6 status is %d\n", JERRY_ES2015);
@@ -193,6 +200,7 @@ int main(int argc, char *argv[])
   jerry_release_value(global_obj_val);
   if (jerry_value_is_function (interpret))
   {
+    signal(SIGINT, ctrl_c);
     rl_bind_key('\t', jcli_completion);
     rl_bind_key('?', jcli_help_completion);
     while(1)
