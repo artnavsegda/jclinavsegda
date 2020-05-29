@@ -18,8 +18,12 @@
 #include "jerryscript-port-default.h"
 #include "exception.h"
 
-#ifndef INDEX_JS_PATH
-#define INDEX_JS_PATH "./index.js"
+#ifndef JS_PATH
+#define JS_PATH "./"
+#endif
+
+#ifndef INDEX_JS
+#define INDEX_JS "./index.js"
 #endif
 
 extern void irz_module_register (void);
