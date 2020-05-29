@@ -122,7 +122,7 @@ static jerry_value_t module_pipe_handler(const jerry_value_t function_object, co
             char * filecontent = allocate_string(arguments[1]);
             fwrite(filecontent, 1, strlen(filecontent), filetowrite);
             free(filecontent);
-            pclose(filetowrite);
+            return jerry_create_number(pclose(filetowrite));
           }
         }
       }
