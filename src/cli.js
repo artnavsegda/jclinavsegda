@@ -146,7 +146,10 @@ class Face extends Traversable {
 
     if(this.schema.actions) // check
       if (this.schema.actions[command])
-        return new Command(this.schema.actions[command], command, this.data, this);
+        if (this.parent)
+          return new Command(this.schema.actions[command], command, this.parent);
+        else
+          return new Command(this.schema.actions[command], command, this);
 
     return undefined;
   }
@@ -227,7 +230,7 @@ class Option extends Traversable {
     } else
     this.data = {};
   }
-  constructor(schema, name, actions, data, definitions, setCommand, section) {
+  constructor(schema, name, actions, data, definitions, setCommand, section, parent) {
     super();
     this.section = section;
     this.schema = schema;
@@ -286,18 +289,17 @@ class Option extends Traversable {
     if (this.getSchemaElement(command))
       return new Setting(this.getSchemaElement(command), command, this.data, this.setCommand, this.section);
     else if (this.actions && this.actions[command]) // check
-      return new Command(this.actions[command], command, this.data, this);
+      return new Command(this.actions[command], command, this);
     else
       return undefined;
   }
 }
 
 class Command extends Executable {
-  constructor(schema, name, data, parent) {
+  constructor(schema, name, parent) {
     super();
     this.schema = schema;
     this.name = name;
-    this.data = data;
     this.parent = parent;
   }
   list() {
@@ -322,7 +324,7 @@ class Command extends Executable {
       //do pipe & data re-evaluation
       var output = IRZ.pipe("command");
       if (output) {
-       this.data = JSON.parse(data);
+       this.parent.data = JSON.parse(data);
        return true;
       }
     } else {

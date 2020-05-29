@@ -57,6 +57,7 @@
       "apply": {
         "exec": "handler",
         "args": ["apply", "switch-port"],
+        "reload": true,
         "argpass": true
       }
     }
