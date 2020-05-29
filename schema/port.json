@@ -52,7 +52,7 @@
         }
       }
     },
-    
+
     "actions": {
       "apply": {
         "exec": "handler",
@@ -60,12 +60,13 @@
         "argpass": true
       }
     }
-    
+
   },
   "actions": {
     "apply": {
       "exec": "handler",
-      "args": ["apply", "switch-port"]
+      "args": ["apply", "switch-port"],
+      "reload": true
     }
   },
 

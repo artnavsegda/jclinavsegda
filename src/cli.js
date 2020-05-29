@@ -138,11 +138,11 @@ class Face extends Traversable {
     if (this.schema.namesake) {
       var dataname = Object.getOwnPropertyNames(this.data).find((element) => command == this.data[element][this.schema.namesake])
       if (this.resolve(dataname))
-        return new Option(this.resolve(dataname), command, this.schema.patternProperties.actions, this.data[dataname], dataname, this.schema.set)
+        return new Option(this.resolve(dataname), command, this.schema.patternProperties.actions, this.data[dataname], this.schema.definitions, this.schema.set, dataname)
     }
     else
       if (this.resolve(command))
-        return new Option(this.resolve(command), command, this.schema.patternProperties.actions, this.data[command])
+        return new Option(this.resolve(command), command, this.schema.patternProperties.actions, this.data[command], this.schema.definitions, this.schema.set)
 
     if(this.schema.actions) // check
       if (this.schema.actions[command])
@@ -210,7 +210,7 @@ class Option extends Traversable {
       return (v)? true :false
     })
     delete ss["$ref"] //no plz
-    ref = this.refProperty(this.schema.definitions, ref_str)
+    ref = this.refProperty(this.definitions, ref_str)
     if(ref !== undefined)
       Object.assign(ss, ref)
   }
@@ -227,10 +227,14 @@ class Option extends Traversable {
     } else
     this.data = {};
   }
-  constructor(schema, name, actions, data, section, setCommand) {
+  constructor(schema, name, actions, data, definitions, setCommand, section) {
     super();
     this.section = section;
     this.schema = schema;
+    if (definitions)
+      this.definitions = definitions;
+    else
+      this.definitions = this.schema.definitions;
     if (setCommand)
       this.setCommand = setCommand;
     else if (this.schema.set) {
