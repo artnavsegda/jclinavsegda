@@ -34,7 +34,12 @@ class Proto extends Traversable {
     return basename[0];
   }
   checkhide(filehidden, path){
-    return filehidden[0] == path;
+    for (var element of filehidden){
+      let re = new RegExp(element);
+      if (re.test(path))
+        return true;
+    }
+    return false;
   }
   load(filepath, filelist, filehidden) {
     if (filelist) {
