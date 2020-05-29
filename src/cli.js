@@ -329,7 +329,7 @@ class Command extends Executable {
     //do something
     if(this.schema.merge){
       //do pipe & data re-evaluation
-      var output = IRZ.pipe("command");
+      var output = IRZ.pipe(commandstring);
       if (output) {
        this.parent.data = JSON.parse(data);
        return true;
