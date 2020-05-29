@@ -292,9 +292,9 @@ class Option extends Traversable {
     else if (this.actions && this.actions[command]) // check
     {
       if (this.parent){
-        return new Command(this.actions[command], command, this.parent);
+        return new Command(this.actions[command], command, this.parent, this.section);
       } else {
-        return new Command(this.actions[command], command, this);
+        return new Command(this.actions[command], command, this, this.section);
       }
     }
     else
@@ -303,11 +303,12 @@ class Option extends Traversable {
 }
 
 class Command extends Executable {
-  constructor(schema, name, parent) {
+  constructor(schema, name, parent, section) {
     super();
     this.schema = schema;
     this.name = name;
     this.parent = parent;
+    this.section = section;
   }
   list() {
     return undefined;
@@ -317,6 +318,12 @@ class Command extends Executable {
   }
   execute(commandlist) {
     var commandstring = config.script_path + "/" + this.schema.exec + " " + this.schema.args.join(" ");
+
+    if (this.section)
+    {
+      commandstring = "_VALUES='"+ JSON.stringify({section: this.section}) +"';" + commandstring;
+    }
+
     print("executing " + commandstring);
     if (commandlist.length > 0)
     {
