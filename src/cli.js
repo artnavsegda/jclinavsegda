@@ -33,6 +33,9 @@ class Proto extends Traversable {
     var basename = path[path.length-1].split('.')
     return basename[0];
   }
+  checkhide(filehidden, path){
+    return filehidden[0] == path;
+  }
   load(filepath, filelist, filehidden) {
     if (filelist) {
       this.facelist = [];
@@ -46,7 +49,7 @@ class Proto extends Traversable {
           path.forEach((item, i) => {
             if (i > 0) {
               if (i == path.length-1)
-                attachproto.insert(filepath + filename, filedata, filehidden == filename);
+                attachproto.insert(filepath + filename, filedata, this.checkhide(filehidden, filename));
               else {
                 var attachmaybe = attachproto.traverse(item);
                 if (!attachmaybe)
@@ -55,7 +58,7 @@ class Proto extends Traversable {
                   //attachmaybe.hidden = hidden;
                   var dirpath = path.slice(0, i).join("/") + "/" + item;
                   print("new dir " + dirpath);
-                  attachmaybe.hidden = filehidden == dirpath;
+                  attachmaybe.hidden = this.checkhide(filehidden, dirpath);
                   if (attachmaybe.hidden)
                     print("hidden");
                   attachproto.facelist.push(attachmaybe);
