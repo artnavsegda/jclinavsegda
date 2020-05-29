@@ -41,7 +41,14 @@ function execute(cmdargs, path)
       else {
         if (result.execute(args) == true)
         {
-          // do full path reload evaluation
+          // do partial path reload evaluation
+          if (path[path.length-2]).traverse(path[path.length-1].name)
+          {
+            print("section in place");
+          }
+          else {
+            print("section detached");
+          }
         }
         return undefined;
       }

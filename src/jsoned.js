@@ -1,4 +1,4 @@
-const json_clean = function(data) {
+var json_clean = function(data) {
 	switch(typeof data) {
 		case 'string':
 			data = data.replace(/,[ \t\r\n]+}/g, '}')
