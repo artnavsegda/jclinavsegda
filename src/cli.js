@@ -231,6 +231,7 @@ class Option extends Traversable {
     super();
     this.section = section;
     this.schema = schema;
+    this.parent = parent;
     if (parent)
     {
       if (parent.definitions)
@@ -291,10 +292,8 @@ class Option extends Traversable {
     else if (this.actions && this.actions[command]) // check
     {
       if (this.parent){
-        print("has parent");
         return new Command(this.actions[command], command, this.parent);
       } else {
-        print("no parent");
         return new Command(this.actions[command], command, this);
       }
     }
