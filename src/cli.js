@@ -124,7 +124,7 @@ class Face extends Traversable {
       Object.getOwnPropertyNames(this.schema.patternProperties).forEach((pattern) => {
         let re = new RegExp(pattern);
         if (re.test(dataname))
-          schema_section = Object.assign({}, this.schema.patternProperties[pattern]);
+          schema_section = this.schema.patternProperties[pattern];
       });
 
       if (this.schema.definitions)
