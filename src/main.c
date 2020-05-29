@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 {
   // printf("ES6 status is %d\n", JERRY_ES2015);
   // printf("module status is %d\n", JERRY_ES2015_MODULE_SYSTEM);
-  // jerry_port_default_set_log_level(JERRY_LOG_LEVEL_TRACE);
+  jerry_port_default_set_log_level(JERRY_LOG_LEVEL_TRACE);
 
   irz_module_register();
   jerry_init (JERRY_INIT_EMPTY);
