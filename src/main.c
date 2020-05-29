@@ -95,6 +95,11 @@ static jerry_value_t call_single_str(jerry_value_t function, char * argument)
   args[0] = jerry_create_string_from_utf8 (argument);
   jerry_value_t this_val = jerry_create_undefined();
   jerry_value_t ret_val = jerry_call_function(function, this_val, args, 1);
+  if (jerry_value_is_error (ret_val))
+  {
+    ret_val = jerry_get_value_from_error (ret_val, true);
+    print_unhandled_exception (ret_val);
+  }
   jerry_release_value(this_val);
   jerry_release_value(args[0]);
   return ret_val;
