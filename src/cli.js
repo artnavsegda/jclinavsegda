@@ -306,16 +306,16 @@ class Command extends Executable {
       print("no arguments");
     }
     //do something
-    //if(this.schema.merge){
+    if(this.schema.merge){
       //do pipe & data re-evaluation
-      //var output = IRZ.pipe("command");
-      //if (output) {
-      //  this.data = JSON.parse(data);
-      //  return true;
-      //}
-    //} else {
+      var output = IRZ.pipe("command");
+      if (output) {
+       this.data = JSON.parse(data);
+       return true;
+      }
+    } else {
       IRZ.system(commandstring);
-    //}
+    }
     //end do something
     if(this.schema.reload)
     {
